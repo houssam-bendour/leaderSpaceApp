@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Turnover</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .grow {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .grow:hover {
+            transform: scale(1.05);
+        }
+
+        .separator {
+            margin-top: 30px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #dee2e6;
+        }
+    </style>
+    <script>
+        function validateDates() {
+            var dateDebut = new Date(document.getElementsByName('date_debut')[0].value);
+            var dateFin = new Date(document.getElementsByName('date_fin')[0].value);
+            if (dateDebut > dateFin) {
+                alert("La date de début doit être antérieure à la date de fin.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="card shadow-lg grow">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">Chiffre d'affaires</h2>
+            <form method="get" th:action="@{/manager/charts}" onsubmit="return validateDates()" class="row g-3">
+                <div class="col-md-5">
+                    <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
+                </div>
+                <div class="col-md-5">
+                    <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
+                </div>
+                <div class="col-md-2 d-grid">
+                    <button type="submit" class="btn btn-primary">Chart</button>
+                </div>
+            </form>
+            <div class="mt-4 text-center">
+                <div class="text-center mt-3">
+                    <a class="btn btn-secondary" th:href="@{/manager/turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},turnover='detail')}">Cancel</a>
+                </div>
+                <th:block th:if="${param.date_debut != null && param.date_fin != null}">
+                    <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = '+${totaleTurnoverCherts}"></h4>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    <div th:if="${!labelsNormale.isEmpty() || !labelsRoom.isEmpty() || !labelsDesk.isEmpty() || !labelsContracts.isEmpty()}">
+        <div class="separator"></div>
+        <div class="card shadow-lg grow" style="height: 450px;">
+            <div class="card-body" style="height: 100%;">
+                <h4>Chiffre d'affaires total</h4>
+                <div style="height: 95%;">
+                    <canvas id="turnoverTotalChart" style="height: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="separator"></div>
+        <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
+        <div class="separator"></div>
+        <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsTurnover.isEmpty()}">
+            <div class="card-body" style="height: 100%;">
+                <h4>Les visits normale</h4>
+                <div style="height: 95%;">
+                    <canvas id="turnoverChart" style="height: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="separator"></div>
+        <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsRoom.isEmpty()}">
+            <div class="card-body" style="height: 100%;">
+                <h4>Visits de la salle de conférence</h4>
+                <div style="height: 95%;">
+                    <canvas id="turnoverVisitRoomChart" style="height: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="separator"></div>
+        <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsDesk.isEmpty()}">
+            <div class="card-body" style="height: 100%;">
+                <h4>Les visites de bureau</h4>
+                <div style="height: 95%;">
+                    <canvas id="turnoverVisitDeskChart" style="height: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="separator"></div>
+        <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsSubscriptions.isEmpty()}">
+            <div class="card-body" style="height: 100%;">
+                <h4>Les abonnements</h4>
+                <div style="height: 95%;">
+                    <canvas id="turnoverSubscriptionsChart" style="height: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="separator"></div>
+        <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsContracts.isEmpty()}">
+            <div class="card-body" style="height: 100%;">
+                <h4>Contrats Totals</h4>
+                <div style="height: 95%;">
+                    <canvas id="contractsTotalChart" style="height: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="separator"></div>
+        <div class="separator"></div>
+    </div>
+</div>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const labelsTurnover = [[${labelsTurnover}]];
+        const dataTurnover = [[${dataTurnover}]];
+        const ctxTurnover = document.getElementById('turnoverTotalChart').getContext('2d');
+        ctxTurnover.canvas.height = 190;
+        new Chart(ctxTurnover, {
+            type: 'line',
+            data: {
+                labels: labelsTurnover,
+                datasets: [{
+                    label: 'Chiffre d\'affaires total',
+                    data: dataTurnover,
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chiffre d\'affaires (MAD)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+<!-- turnoverChart.js -->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const labelsNormale = [[${labelsNormale}]];
+        const dataNormale = [[${dataNormale}]];
+        const ctx = document.getElementById('turnoverChart').getContext('2d');
+        ctx.canvas.height = 190;
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labelsNormale,
+                datasets: [{
+                    label: 'Chiffre d\'affaires Normal',
+                    data: dataNormale,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chiffre d\'affaires (MAD)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+<!-- turnoverVisitRoomChart.js -->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const labelsRoom = [[${labelsRoom}]];
+        const dataRoom = [[${dataRoom}]];
+        const ctxRoom = document.getElementById('turnoverVisitRoomChart').getContext('2d');
+        ctxRoom.canvas.height = 190;
+        new Chart(ctxRoom, {
+            type: 'line',
+            data: {
+                labels: labelsRoom,
+                datasets: [{
+                    label: 'Visites de la salle de conférence',
+                    data: dataRoom,
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chiffre d\'affaires (MAD)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+<!-- turnoverVisitDeskChart.js -->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const labelsDesk = [[${labelsDesk}]];
+        const dataDesk = [[${dataDesk}]];
+        const ctxDesk = document.getElementById('turnoverVisitDeskChart').getContext('2d');
+        ctxDesk.canvas.height = 190;
+        new Chart(ctxDesk, {
+            type: 'line',
+            data: {
+                labels: labelsDesk,
+                datasets: [{
+                    label: 'Visites de bureau',
+                    data: dataDesk,
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chiffre d\'affaires (MAD)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+<!-- turnoverSubscriptionsChart.js -->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const labelsSubscriptions = [[${labelsSubscriptions}]];
+        const dataSubscriptions = [[${dataSubscriptions}]];
+        const ctxSubscriptions = document.getElementById('turnoverSubscriptionsChart').getContext('2d');
+        ctxSubscriptions.canvas.height = 190;
+        new Chart(ctxSubscriptions, {
+            type: 'line',
+            data: {
+                labels: labelsSubscriptions,
+                datasets: [{
+                    label: 'Subscriptions',
+                    data: dataSubscriptions,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chiffre d\'affaires (MAD)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+<!-- contractsTotalChart.js -->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const labelsContracts = [[${labelsContracts}]];
+        const dataContracts = [[${dataContracts}]];
+        const ctxContracts = document.getElementById('contractsTotalChart').getContext('2d');
+        ctxContracts.canvas.height = 190;
+        new Chart(ctxContracts, {
+            type: 'line',
+            data: {
+                labels: labelsContracts,
+                datasets: [{
+                    label: 'Contrats Totals',
+                    data: dataContracts,
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chiffre d\'affaires (MAD)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

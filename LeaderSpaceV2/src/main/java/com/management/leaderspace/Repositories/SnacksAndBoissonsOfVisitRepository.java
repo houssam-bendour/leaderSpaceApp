@@ -21,4 +21,15 @@ public interface SnacksAndBoissonsOfVisitRepository extends JpaRepository<Snacks
     SnacksAndBoissonsOfVisit getByParticipantOfRoomIdAndSnackId(@Param("participantId") UUID participantId,@Param("snackId") UUID snackId);
     @Query("select s from SnacksAndBoissonsOfVisit s where s.visitOfDesk.id =:visitId and s.snacksAndBoissons.id = :snackId")
     SnacksAndBoissonsOfVisit getByVisitOfDeskIdAndSnackId(@Param("visitId") UUID visitId, @Param("snackId") UUID snackId);
+
+
+    @Query("select coalesce(sum(sbv.quantity*sbv.selling_price), 0.0) from SnacksAndBoissonsOfVisit sbv where sbv.visitOfRoom.id=:uuid")
+    Double getTotalPriceOfSnacksAndBoissonsByVisitOfRoom(@Param("uuid") UUID uuid);
+
+    @Query("select coalesce(sum(sbv.quantity*sbv.selling_price), 0.0) from SnacksAndBoissonsOfVisit sbv where sbv.participant.id=:uuid")
+    Double getTotalPriceOfSnacksAndBoissonsByParticipant(@Param("uuid") UUID uuid);
+
+    @Query("select coalesce(sum(sbv.quantity*sbv.selling_price), 0.0) from SnacksAndBoissonsOfVisit sbv where sbv.visitOfDesk.id=:uuid")
+    Double getTotalPriceOfSnacksAndBoissonsByVisitOfDesk(@Param("uuid") UUID uuid);
+
 }

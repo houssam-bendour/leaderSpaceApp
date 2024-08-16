@@ -45,6 +45,7 @@ public class ManagerServiceImp implements ManagerService {
     SubscriptionTypeRepository subscriptionTypeRepository;
     PasswordEncoder passwordEncoder;
     SubscriberRepository subscriberRepository;
+    ContratRepository contratRepository;
 
     @Override
     public Manager getProfile() {
@@ -554,5 +555,137 @@ public class ManagerServiceImp implements ManagerService {
         return somme;
     }
 
+    @Override
+    public Map<LocalDate, Double> totaleVisitsNormaleCharts(LocalDate dateDebut, LocalDate dateFin) {
+        List<Visit> visits = visitRepository.getAllVisitsBetweenStartDayAndEndTime(dateDebut,dateFin);
+        Map<LocalDate,Double> totaleVisitsCharts = new HashMap<>();
+        if (!visits.isEmpty()) {
+            for (Visit visit : visits){
+                Double sommme=0.0;
+                sommme+=visit.getService_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisit(visit.getId());
+                if (totaleVisitsCharts.containsKey(visit.getDay())) {
+                    sommme+=totaleVisitsCharts.get(visit.getDay());
+                }
+                totaleVisitsCharts.put(visit.getDay(), sommme);
+            }
+        }
+        return totaleVisitsCharts;
+    }
+
+    @Override
+    public Map<LocalDate, Double> totaleVisitsRoomCharts(LocalDate dateDebut, LocalDate dateFin) {
+        List<VisitOfRoom> allVisitsRoom = visitOfRoomRepository.findVisitsOfRoomByDate(dateDebut,dateFin);
+        Map<LocalDate,Double> totaleVisitsRoomeCharts = new HashMap<>();
+        if (!allVisitsRoom.isEmpty()) {
+            for (VisitOfRoom visitOfRoom : allVisitsRoom) {
+                Double somme = 0.0;
+                somme+=visitOfRoom.getService_room_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisitOfRoom(visitOfRoom.getId());
+                for (ParticipantOfvisitRoom participantOfvisitRoom : visitOfRoom.getParticipant()) {
+                    somme+= snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByParticipant(participantOfvisitRoom.getId());
+                }
+                if (totaleVisitsRoomeCharts.containsKey(visitOfRoom.getDay())) {
+                    somme+=totaleVisitsRoomeCharts.get(visitOfRoom.getDay());
+                }
+                totaleVisitsRoomeCharts.put(visitOfRoom.getDay(), somme);
+            }
+        }
+        return totaleVisitsRoomeCharts;
+    }
+
+    @Override
+    public Map<LocalDate, Double> totaleVisitOfDesk(LocalDate dateDebut, LocalDate dateFin) {
+        List<VisitOfDesk> allVisitsOfDesk = visitOfDeskRepository.visitsOfTodayOfDesk(dateDebut,dateFin);
+        Map<LocalDate,Double> totaleVisitOfDesk = new HashMap<>();
+        if (!allVisitsOfDesk.isEmpty()) {
+            for (VisitOfDesk visitOfDesk : allVisitsOfDesk) {
+                Double somme = 0.0;
+                somme+=visitOfDesk.getService_desk_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisitOfDesk(visitOfDesk.getId());
+                if (totaleVisitOfDesk.containsKey(visitOfDesk.getDay())) {
+                    somme+=totaleVisitOfDesk.get(visitOfDesk.getDay());
+                }
+                totaleVisitOfDesk.put(visitOfDesk.getDay(), somme);
+            }
+        }
+        return totaleVisitOfDesk;
+    }
+
+    @Override
+    public Map<LocalDate, Double> totaleSubscriptions(LocalDate dateDebut, LocalDate dateFin) {
+        List<SubscriptionHistory> allSubsciptions = subscriptionHistoryRepository.findAllSubscriptionsByDateDebutBetweenStartDayAndEndDay(dateDebut,dateFin);
+        Map<LocalDate,Double> totaleSubscriptions = new HashMap<>();
+        if (!allSubsciptions.isEmpty()) {
+            for (SubscriptionHistory subscriptionHistory : allSubsciptions) {
+                Double somme = 0.0;
+                somme+=subscriptionHistory.getPrice();
+                if (totaleSubscriptions.containsKey(subscriptionHistory.getStartDate())) {
+                    somme+=totaleSubscriptions.get(subscriptionHistory.getStartDate());
+                }
+                totaleSubscriptions.put(subscriptionHistory.getStartDate(), somme);
+            }
+        }
+        return totaleSubscriptions;
+    }
+
+    @Override
+    public Map<LocalDate, Double> totaleTurnoverForCharts(Map<LocalDate, Double> totaleVisitsNormaleCharts, Map<LocalDate, Double> totaleVisitsRoomCharts, Map<LocalDate, Double> totaleVisitOfDesk, Map<LocalDate, Double> totaleSubscriptions, Map<LocalDate, Double> totaleContractsCherts) {
+
+        for (LocalDate date : totaleVisitsRoomCharts.keySet()) {
+            if (totaleVisitsNormaleCharts.containsKey(date)) {
+                totaleVisitsNormaleCharts.put(date, totaleVisitsNormaleCharts.get(date)+totaleVisitsRoomCharts.get(date));
+            }else {
+                totaleVisitsNormaleCharts.put(date,totaleVisitsRoomCharts.get(date));
+            }
+
+        }
+        for (LocalDate date : totaleVisitOfDesk.keySet()) {
+            if (totaleVisitsNormaleCharts.containsKey(date)) {
+                totaleVisitsNormaleCharts.put(date, totaleVisitsNormaleCharts.get(date)+totaleVisitOfDesk.get(date));
+            }else {
+                totaleVisitsNormaleCharts.put(date,totaleVisitOfDesk.get(date));
+            }
+
+        }
+        for (LocalDate date : totaleSubscriptions.keySet()) {
+            if (totaleVisitsNormaleCharts.containsKey(date)) {
+                totaleVisitsNormaleCharts.put(date, totaleVisitsNormaleCharts.get(date)+totaleSubscriptions.get(date));
+            }else {
+                totaleVisitsNormaleCharts.put(date,totaleSubscriptions.get(date));
+            }
+        }
+        for (LocalDate date : totaleContractsCherts.keySet()) {
+            if (totaleVisitsNormaleCharts.containsKey(date)) {
+                totaleVisitsNormaleCharts.put(date, totaleVisitsNormaleCharts.get(date)+totaleContractsCherts.get(date));
+            }else {
+                totaleVisitsNormaleCharts.put(date,totaleContractsCherts.get(date));
+            }
+        }
+        return totaleVisitsNormaleCharts;
+    }
+
+    @Override
+    public Map<LocalDate, Double> totaleContractsCherts(LocalDate dateDebut, LocalDate dateFin) {
+        List<Contrat> allContracts = contratRepository.allContractByDate(dateDebut,dateFin);
+        Map<LocalDate,Double> totaleContractsCherts = new HashMap<>();
+        if (!allContracts.isEmpty()) {
+            for (Contrat contrat : allContracts) {
+                Double somme = 0.0;
+                somme+=contrat.getMontant_de_location_chiffre();
+                if (totaleContractsCherts.containsKey(contrat.getDate())) {
+                    somme+=totaleContractsCherts.get(contrat.getDate());
+                }
+                totaleContractsCherts.put(contrat.getDate(), somme);
+            }
+        }
+        return totaleContractsCherts;
+    }
+
+    @Override
+    public Double totaleTurnoverCherts(Map<LocalDate, Double> totaleTurnoverForCharts) {
+        Double somme = 0.0;
+        for (LocalDate date : totaleTurnoverForCharts.keySet()) {
+            somme+=totaleTurnoverForCharts.get(date);
+        }
+        return somme;
+    }
 
 }

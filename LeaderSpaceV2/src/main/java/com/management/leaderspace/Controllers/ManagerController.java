@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/manager")
@@ -507,20 +508,27 @@ public class ManagerController {
 
     @GetMapping("turnover")
     public String turnover(@RequestParam(name = "date_debut", required = false) String ch_date_debut,
-                           @RequestParam(name = "date_fin", required = false) String ch_date_fin, Model model) {
+                           @RequestParam(name = "date_fin", required = false) String ch_date_fin,
+                           @RequestParam(name = "turnover", required = false) String turnover, Model model) {
+
         List<Visit> listAllVisitsBetweenStartDayAndEndTime = new ArrayList<>();
         List<SubscriptionHistory> allSubscriptionsByDateDebutBetweenStartDayAndEndDay = new ArrayList<>();
         Map<UUID, Double> mapTotalPriceOfSnacksAndBoissonsByVisit = new HashMap<>();
-        List<VisitOfRoom> allVisitsOfRoomByDate = new ArrayList<>();
-        Map<UUID, Double> sommeOfSnacksAndBoissonsOfRoom = new HashMap<>();
-        Map<UUID, Map<UUID, Double>> mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = new HashMap<>();
-        Map<UUID, Double> mapCalculeSommeForVisitOfRoom = new HashMap<>();
-        List<VisitOfDesk> allVisitsOfDesdByDate = new ArrayList<>();
-        Map<UUID, Double> sommeOfsnacksAndBoissonsByVisit = new HashMap<>();
+        List<VisitOfRoom> allVisitsOfRoomByDate= new ArrayList<>();
+        Map<UUID,Double> sommeOfSnacksAndBoissonsOfRoom = new HashMap<>();
+        Map<UUID,Map<UUID,Double>> mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = new HashMap<>();
+        Map<UUID,Double> mapCalculeSommeForVisitOfRoom = new HashMap<>();
+        List<VisitOfDesk> allVisitsOfDesdByDate= new ArrayList<>();
+        Map<UUID,Double> sommeOfsnacksAndBoissonsByVisit = new HashMap<>();
+        List<Contrat> allContractsByDate = new ArrayList<>();
+        double totaleMontantOfContractsByDates;
         if (ch_date_debut != null && ch_date_fin != null) {
             if (ch_date_debut.isEmpty() || ch_date_fin.isEmpty()) {
                 return "redirect:/manager/turnover";
             } else {
+                if(turnover.equals("chart")){
+                    return "redirect:/manager/charts?date_debut="+ch_date_debut+"&date_fin="+ch_date_fin;
+                }
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate dateDebut = LocalDate.parse(ch_date_debut, formatter);
                 LocalDate dateFin = LocalDate.parse(ch_date_fin, formatter);
@@ -528,13 +536,16 @@ public class ManagerController {
                 listAllVisitsBetweenStartDayAndEndTime = managerServiceImp.getAllVisitsBetweenStartDayAndEndTime(dateDebut, dateFin);
                 allSubscriptionsByDateDebutBetweenStartDayAndEndDay = managerServiceImp.getAllSubscriptionsByDateDebutBetweenStartDayAndEndDay(dateDebut, dateFin);
                 mapTotalPriceOfSnacksAndBoissonsByVisit = managerServiceImp.getTotalPriceOfSnacksAndBoissons(listAllVisitsBetweenStartDayAndEndTime);
-                allVisitsOfRoomByDate = managerServiceImp.findVisitOfRoomByDate(dateDebut, dateFin);
+                allVisitsOfRoomByDate = managerServiceImp.findVisitOfRoomByDate(dateDebut,dateFin);
                 sommeOfSnacksAndBoissonsOfRoom = managerServiceImp.sommeOfSnacksAndBoissonsOfRoom(allVisitsOfRoomByDate);
                 mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = managerServiceImp.sommeOfSnacksAndBoissonsForParticipantOfVisitRoom(allVisitsOfRoomByDate);
-                mapCalculeSommeForVisitOfRoom = managerServiceImp.calculeSommeForVisitOfRoom(allVisitsOfRoomByDate, sommeOfSnacksAndBoissonsOfRoom, mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
+                mapCalculeSommeForVisitOfRoom = managerServiceImp.calculeSommeForVisitOfRoom(allVisitsOfRoomByDate,sommeOfSnacksAndBoissonsOfRoom,mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
                 ///////////////////////////////////////////////////////////////
-                allVisitsOfDesdByDate = managerServiceImp.findVisitOfDeskByDate(dateDebut, dateFin);
+                allVisitsOfDesdByDate  = managerServiceImp.findVisitOfDeskByDate(dateDebut,dateFin);
                 sommeOfsnacksAndBoissonsByVisit = managerServiceImp.sommeOfsnacksAndBoissonsByVisit(allVisitsOfDesdByDate);
+                //////////////////////////////////////
+                allContractsByDate = contratRepository.allContractByDate(dateDebut,dateFin);
+                totaleMontantOfContractsByDates = contratRepository.totaleMontantOfContractByDates(dateDebut,dateFin);
 
             }
             model.addAttribute("listAllVisitBetweenStartDayAndEndTime", listAllVisitsBetweenStartDayAndEndTime);
@@ -547,34 +558,129 @@ public class ManagerController {
 
             model.addAttribute("totaleOfSubscriptions", managerServiceImp.calculeTotaleOfSubscriptions(allSubscriptionsByDateDebutBetweenStartDayAndEndDay));
 
-            model.addAttribute("allVisitsOfRoomByDate", allVisitsOfRoomByDate);
+            model.addAttribute("allVisitsOfRoomByDate",allVisitsOfRoomByDate);
 
-            model.addAttribute("sommeOfSnacksAndBoissonsOfRoom", sommeOfSnacksAndBoissonsOfRoom);
+            model.addAttribute("sommeOfSnacksAndBoissonsOfRoom",sommeOfSnacksAndBoissonsOfRoom);
 
-            model.addAttribute("mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom", mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
+            model.addAttribute("mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom",mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
 
             model.addAttribute("mapCalculeSommeForVisitOfRoom", mapCalculeSommeForVisitOfRoom);
 
-            model.addAttribute("totaleOfAllVisitsOfRoom", managerServiceImp.calculeTotaleOfAllVisitsOfRoom(mapCalculeSommeForVisitOfRoom));
+            model.addAttribute("totaleOfAllVisitsOfRoom",managerServiceImp.calculeTotaleOfAllVisitsOfRoom(mapCalculeSommeForVisitOfRoom));
             ////////////////////////////////////////////
-            model.addAttribute("allvisitsOfDeskByDate", allVisitsOfDesdByDate);
+            model.addAttribute("allvisitsOfDeskByDate",allVisitsOfDesdByDate);
 
-            model.addAttribute("sommeOfsnacksAndBoissonsByVisit", sommeOfsnacksAndBoissonsByVisit);
+            model.addAttribute("sommeOfsnacksAndBoissonsByVisit",sommeOfsnacksAndBoissonsByVisit);
 
-            model.addAttribute("totaleOfVisitsOfDesk", managerServiceImp.totaleOfVisitsOfDesk(allVisitsOfDesdByDate, sommeOfsnacksAndBoissonsByVisit));
+            model.addAttribute("totaleOfVisitsOfDesk",managerServiceImp.totaleOfVisitsOfDesk(allVisitsOfDesdByDate,sommeOfsnacksAndBoissonsByVisit));
             /////////////////////////////////////////////////////////////
-            model.addAttribute("sommeConsommationsNormaleVisits", managerServiceImp.calculeSommeOfConsommations(mapTotalPriceOfSnacksAndBoissonsByVisit));
-            model.addAttribute("sommeConsommationsForRoom", managerServiceImp.calculeSommeOfConsommations(sommeOfSnacksAndBoissonsOfRoom));
-            model.addAttribute("sommeConsommationsForDesk", managerServiceImp.calculeSommeOfConsommations(sommeOfsnacksAndBoissonsByVisit));
-            model.addAttribute("sommeConsommationsForRoomParticipants", managerServiceImp.calculeSommeConsommationForRoomParticipants(mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom));
+            model.addAttribute("sommeConsommationsNormaleVisits",managerServiceImp.calculeSommeOfConsommations(mapTotalPriceOfSnacksAndBoissonsByVisit));
+            model.addAttribute("sommeConsommationsForRoom",managerServiceImp.calculeSommeOfConsommations(sommeOfSnacksAndBoissonsOfRoom));
+            model.addAttribute("sommeConsommationsForDesk",managerServiceImp.calculeSommeOfConsommations(sommeOfsnacksAndBoissonsByVisit));
+            model.addAttribute("sommeConsommationsForRoomParticipants",managerServiceImp.calculeSommeConsommationForRoomParticipants(mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom));
 
-            model.addAttribute("sommeServicePriceOfNormaleVisits", managerServiceImp.calculeSommeOfServicePriceForNormaleVisits(listAllVisitsBetweenStartDayAndEndTime));
-            model.addAttribute("sommeServicePriceForRoomVisits", managerServiceImp.calculeSommeOfServicePriceForRoom(allVisitsOfRoomByDate));
-            model.addAttribute("sommeServicePriceForDeskVisits", managerServiceImp.calculeSommeOfServicePriceForDesk(allVisitsOfDesdByDate));
+            model.addAttribute("sommeServicePriceOfNormaleVisits",managerServiceImp.calculeSommeOfServicePriceForNormaleVisits(listAllVisitsBetweenStartDayAndEndTime));
+            model.addAttribute("sommeServicePriceForRoomVisits",managerServiceImp.calculeSommeOfServicePriceForRoom(allVisitsOfRoomByDate));
+            model.addAttribute("sommeServicePriceForDeskVisits",managerServiceImp.calculeSommeOfServicePriceForDesk(allVisitsOfDesdByDate));
+            //////////////////////////////////////////////////////
+            model.addAttribute("allContractsByDate",allContractsByDate);
+            model.addAttribute("totaleMontantOfContracts",totaleMontantOfContractsByDates);
 
         }
         return "Manager_espace/turnover";
     }
+    /*
+     *
+     *
+     * */
+
+    @GetMapping("charts")
+    public String charts(@RequestParam(name = "date_debut") LocalDate dateDebut,
+                         @RequestParam(name = "date_fin") LocalDate dateFin, Model model){
+
+        Map<LocalDate, Double> totaleVisitsNormaleCharts = managerService.totaleVisitsNormaleCharts(dateDebut,dateFin);
+        Map<LocalDate, Double> totaleVisitsRoomCharts = managerService.totaleVisitsRoomCharts(dateDebut, dateFin);
+        Map<LocalDate, Double> totaleVisitsDeskCharts = managerServiceImp.totaleVisitOfDesk(dateDebut, dateFin);
+        Map<LocalDate, Double> totaleSubscriptionsCharts = managerServiceImp.totaleSubscriptions(dateDebut, dateFin);
+        Map<LocalDate,Double> totaleContractsCherts = managerService.totaleContractsCherts(dateDebut,dateFin);
+        Map<LocalDate, Double> totaleTurnoverForCharts = managerServiceImp.totaleTurnoverForCharts(
+                new HashMap<>(totaleVisitsNormaleCharts), totaleVisitsRoomCharts, totaleVisitsDeskCharts, totaleSubscriptionsCharts,totaleContractsCherts);
+
+        List<String> labelsNormale = totaleVisitsNormaleCharts.keySet().stream()
+                .sorted()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+        List<Double> dataNormale = labelsNormale.stream()
+                .map(date -> totaleVisitsNormaleCharts.get(LocalDate.parse(date)))
+                .collect(Collectors.toList());
+
+        // Créer les labels et les données pour les visites de la salle
+        List<String> labelsRoom = totaleVisitsRoomCharts.keySet().stream()
+                .sorted()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+        List<Double> dataRoom = labelsRoom.stream()
+                .map(date->totaleVisitsRoomCharts.get(LocalDate.parse(date)))
+                .collect(Collectors.toList());
+
+        // Créer les labels et les données pour les visites de bureau
+        List<String> labelsDesk = totaleVisitsDeskCharts.keySet().stream()
+                .sorted()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+        List<Double> dataDesk = labelsDesk.stream()
+                .map(date->totaleVisitsDeskCharts.get(LocalDate.parse(date)))
+                .collect(Collectors.toList());
+
+        // Créer les labels et les données pour les abonnements
+        List<String> labelsSubscriptions = totaleSubscriptionsCharts.keySet().stream()
+                .sorted()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+        List<Double> dataSubscriptions = labelsSubscriptions.stream()
+                .map(date->totaleSubscriptionsCharts.get(LocalDate.parse(date)))
+                .collect(Collectors.toList());
+
+        // Créer les labels et les données pour le chiffre d'affaires total
+        List<String> labelsTurnover = totaleTurnoverForCharts.keySet().stream()
+                .sorted()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+        List<Double> dataTurnover = labelsTurnover.stream()
+                .map(date->totaleTurnoverForCharts.get(LocalDate.parse(date)))
+                .collect(Collectors.toList());
+
+        List<String> labelsContracts = totaleContractsCherts.keySet().stream()
+                .sorted()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+
+        List<Double> dataContracts = labelsContracts.stream()
+                .map(date->totaleContractsCherts.get(LocalDate.parse(date)))
+                .collect(Collectors.toList());
+
+        // Ajouter les labels et les données au modèle
+        model.addAttribute("labelsNormale", labelsNormale);
+        model.addAttribute("dataNormale", dataNormale);
+        model.addAttribute("labelsRoom", labelsRoom);
+        model.addAttribute("dataRoom", dataRoom);
+        model.addAttribute("labelsDesk", labelsDesk);
+        model.addAttribute("dataDesk", dataDesk);
+        model.addAttribute("labelsSubscriptions", labelsSubscriptions);
+        model.addAttribute("dataSubscriptions", dataSubscriptions);
+        model.addAttribute("labelsTurnover", labelsTurnover);
+        model.addAttribute("dataTurnover", dataTurnover);
+        model.addAttribute("labelsContracts", labelsContracts);
+        model.addAttribute("dataContracts", dataContracts);
+        model.addAttribute("totaleTurnoverCherts",managerService.totaleTurnoverCherts(totaleTurnoverForCharts));
+
+        return "Manager_espace/turnover-charts";
+    }
+
+    /*
+     *
+     *
+     * */
 
     //==============================SERVICE CRUD============================
     @GetMapping("list-services")

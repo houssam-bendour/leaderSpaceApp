@@ -56,12 +56,15 @@
                         <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
                     </div>
                     <div class="col-md-2 d-grid">
-                        <button type="submit" name="turnover" value="turnover" class="btn btn-primary">Chercher</button>
+                        <button type="submit" name="turnover" value="detail" class="btn btn-primary">Chercher</button>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" name="turnover" value="chart" class="btn btn-primary">Chart</button>
                     </div>
                 </form>
                 <div class="mt-4 text-center">
                     <th:block th:if="${param.date_debut != null && param.date_fin != null}">
-                        <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totalPriceByVisits + totaleOfSubscriptions + totaleOfAllVisitsOfRoom +totaleOfVisitsOfDesk }"></h4>
+                        <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totalPriceByVisits + totaleOfSubscriptions + totaleOfAllVisitsOfRoom +totaleOfVisitsOfDesk +totaleMontantOfContracts}"></h4>
                     </th:block>
                 </div>
                 <div class="text-center mt-3">
@@ -70,7 +73,7 @@
             </div>
         </div>
         <div th:if="${param.date_debut!=null && param.date_fin!=null}">
-            <div th:if="${!listAllVisitBetweenStartDayAndEndTime.isEmpty() || !allSubscriptionsByDateDebutBetweenStartDayAndEndDay.isEmpty() || !allVisitsOfRoomByDate.isEmpty() || !allvisitsOfDeskByDate.isEmpty()}" class="fade-in mt-5">
+            <div th:if="${!listAllVisitBetweenStartDayAndEndTime.isEmpty() || !allSubscriptionsByDateDebutBetweenStartDayAndEndDay.isEmpty() || !allVisitsOfRoomByDate.isEmpty() || !allvisitsOfDeskByDate.isEmpty() || !allContractsByDate.isEmpty()}" class="fade-in mt-5">
                 <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
                 <div class="separator"></div>
                 <div class="card shadow-lg grow mb-4">
@@ -209,7 +212,7 @@
                     </div>
                 </div>
                 <div class="separator"></div>
-                <div th:if="${!allVisitsOfRoomByDate.isEmpty()}" class="mt-4">
+                <div th:if="${!allvisitsOfDeskByDate.isEmpty()}" class="mt-4">
                     <div class="card shadow-lg grow mb-4">
                         <div class="card-body">
                             <h4>Visits bureau</h4>
@@ -296,6 +299,38 @@
                                 <tr>
                                     <td colspan="9"><h4>Totale</h4></td>
                                     <td><h4 th:text="${totaleOfSubscriptions}"></h4></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="separator"></div>
+                <div th:if="${!allContractsByDate.isEmpty()}" class="fade-in">
+                    <div class="card shadow-lg grow mb-4">
+                        <div class="card-body">
+                            <h4>Contracts</h4>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Jour</th>
+                                    <th>Nom du business</th>
+                                    <th>Représentant</th>
+                                    <th>Durée</th>
+                                    <th>Prix</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="contract : ${allContractsByDate}">
+                                    <td th:text="${contract.date}"></td>
+                                    <td th:text="${contract.business_name}"></td>
+                                    <td th:text="${contract.the_person_who_represents_him}"></td>
+                                    <td th:text="${contract.duree}"></td>
+                                    <td th:text="${contract.montant_de_location_chiffre}"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"><h4>Totale</h4></td>
+                                    <td><h4 th:text="${totaleMontantOfContracts}"></h4></td>
                                 </tr>
                                 </tbody>
                             </table>
