@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html><!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List des factures</title>
+    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+</head>
+<body>
+<header>
+    <h1>List des factures</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+    <!-- Search form -->
+    <!--<div class="search-form">
+        <form th:action="@{/reception/subscriber-Search}" method="get">
+            <input type="text" name="Name" placeholder="Search by name" />
+            <button type="submit">Search</button>
+        </form>
+    </div>-->
+</header>
+<main>
+    <div class="main-buttons">
+        <form th:action="@{/manager/contrat}" method="get">
+            <button type="submit">add</button>
+        </form>
+    </div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>date</th>
+            <th>client type</th>
+            <th>client id</th>
+            <th>client name</th>
+            <th>cin</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="dev : ${contrats}"
+            th:onclick="window.location.href = '/manager/contrat-pdf?contratId=' + [[${dev.id}]];"
+            style="cursor: pointer;">
+
+            <td th:text="${dev.date}">date</td>
+            <td th:text="${dev.type_client}">client type</td>
+            <td th:text="${dev.business_id!=null?dev.business_id:dev.association_number}">client id</td>
+            <td th:text="${dev.business_name}">client name</td>
+            <td th:text="${dev.cin}">cin</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

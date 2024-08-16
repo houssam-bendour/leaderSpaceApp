@@ -1,0 +1,132 @@
+
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header form {
+    display: inline-block;
+    margin-left: 20px;
+}
+
+header form button {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+header form button:hover {
+    background-color: #777;
+}
+
+main {
+    padding: 20px;
+}
+
+main section {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+main section h2 {
+    margin-top: 0;
+}
+
+main section form {
+    display: flex;
+    flex-direction: column;
+}
+
+main section form div {
+    margin-bottom: 10px;
+}
+
+main section form label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+main section form input[type="number"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+main section form button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+
+main section form button:hover {
+    background-color: #555;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    bottom: 0;
+    width: 100%;
+}
+
+.snack-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.snack-item {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.snack-item h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.snack-item p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.snack-item button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.snack-item button:hover {
+    background-color: #555;
+}

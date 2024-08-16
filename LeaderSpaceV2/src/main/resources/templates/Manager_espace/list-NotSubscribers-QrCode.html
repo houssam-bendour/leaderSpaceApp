@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/manager/list-NotSubscribers-QrCode.css}">
+</head>
+<body>
+<header>
+    <h1>Welcome to the Manager Home Page</h1>
+    <form th:action="@{/}" method="get">
+        <button type="submit">cancel</button>
+    </form>
+    <button id="downloadAllBtn">Download All QR Codes</button>
+</header>
+
+<main>
+    <div>
+        <div class="buttons">
+            <button onclick="showForm('generer')">generer QR CODE</button>
+        </div><br>
+        <div id="generat-qr-code-form" style="display: none;">
+            <form th:action="@{/manager/generat-qr-code} " method="post">
+                <label for="QR">number of Qr code</label><br>
+                <input type="number" id="QR" name="numbreQR" min="0" value="0"><br>
+                <div class="form-actions">
+                    <button type="submit">Generate</button>
+                    <button onclick="showForm('close')">close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <section>
+        <div th:each="Qr:${QrCode}">
+            <div>
+                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${Qr}}"/>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    function showForm(action) {
+        document.getElementById('generat-qr-code-form').style.display = action === 'generer' ? 'block' : 'none';
+    }
+</script>
+<script type="text/javascript" th:src="@{/js/manager/ZIP.js}"></script>
+<script type="text/javascript" th:src="@{/js/manager/list-NotSubscribers-QrCode.js}"></script>
+</body>
+</html>

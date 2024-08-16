@@ -1,0 +1,114 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #f8f9fa;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+#download-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#download-btn:hover {
+    background-color: #0056b3;
+}
+
+.container {
+    width: 216mm; /* Adjusted width to A4 */
+    height: 279mm; /* Adjusted height to A4 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 10mm;
+    border: 1px solid #000;
+    box-sizing: border-box;
+}
+
+.content-header, .client-info, .services, .totals, .additional-info {
+    margin-bottom: 5px;
+}
+
+.content-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 80px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.devis-number, .date {
+    margin: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #000;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+}
+
+.totals {
+    text-align: right;
+}
+
+.amount {
+    font-weight: bold;
+}
+
+.content-footer {
+    text-align: center;
+    border-top: 1px solid #000;
+    background-color: rgb(210, 208, 208);
+    padding-top: 10px;
+}
+
+.footer {
+    margin: 0;
+}
+.date_num{
+    text-align: center;
+}

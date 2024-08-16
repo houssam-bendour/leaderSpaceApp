@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Visits</title>
+    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+</head>
+<body>
+<header>
+    <h1>List of visits</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+    <!-- Search form -->
+    <div class="search-form">
+        <form th:action="@{/reception/visit-Search}" method="get">
+            <input type="text" name="Name" placeholder="Search by name" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</header>
+<div class="visitType-buttons">
+    <button onclick="showTable('Subscribers')">Visits of Subscribers</button>
+    <button onclick="showTable('Non-Subscribers')">Visits of Non-Subscribers</button>
+    <button onclick="showTable('Desk')">Visits of Desk</button>
+    <button onclick="showTable('Room')">Visits of Conference Room</button>
+</div>
+<main id="Table-Subscribers" style="display: block;">
+    <h2>Visits of Subscribers</h2>
+
+    <table border="1">
+
+        <thead>
+        <tr>
+            <th>CIN</th>
+            <th>subscription type</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th>Day</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Snacks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="visit : ${visitOfSubscribers}">
+            <td th:text="${visit.subscriber.CIN}">CIN</td>
+            <td th:text="${visit.subscriber.subscription_type.name}">subscription type</td>
+            <td th:text="${visit.subscriber.first_name}">First name</td>
+            <td th:text="${visit.subscriber.last_name}">Last name</td>
+            <td th:text="${visit.subscriber.email}">Email</td>
+            <td th:text="${visit.day}">Day</td>
+            <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
+            <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
+            <td>
+                <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                    <li th:text="${snack.snacksAndBoissons.name}"></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<main id="Table-Non-Subscribers" style="display: none;">
+    <h2>Visits of Non-Subscribers</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Day</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Snacks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="visit : ${visitOfNotSubscribers}">
+            <td th:text="${visit.day}">Day</td>
+            <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
+            <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
+            <td>
+                <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                    <li th:text="${snack.snacksAndBoissons.name}"></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<main id="Table-Desk" style="display: none;">
+    <h2>Visits of Desk</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Day</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Snacks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="visit : ${visitOfDesks}"
+            th:onclick="window.location.href = '/reception/visit-of-desk?visitId=' + [[${visit.id}]];"
+            style="cursor: pointer;">
+            <td th:text="${visit.day}">Day</td>
+            <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
+            <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
+            <td>
+                <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                    <li th:text="${snack.snacksAndBoissons.name}"></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<main id="Table-Room" style="display: none;">
+    <h2>Visits of Conference Room</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Day</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Snacks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="visit : ${visitOfRooms}"
+            th:onclick="window.location.href = '/reception/visit-of-room?visitId=' + [[${visit.id}]];"
+            style="cursor: pointer;">
+
+
+            <td th:text="${visit.day}">Day</td>
+            <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
+            <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
+            <td>
+                <ul th:each="snack : ${visit.snacksAndBoissonsOfVisitRoom}">
+                    <li th:text="${snack.snacksAndBoissons.name}"></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</main>
+<script>
+    function showTable(language) {
+        document.getElementById('Table-Subscribers').style.display = language === 'Subscribers' ? 'block' : 'none';
+        document.getElementById('Table-Non-Subscribers').style.display = language === 'Non-Subscribers' ? 'block' : 'none';
+        document.getElementById('Table-Desk').style.display = language === 'Desk' ? 'block' : 'none';
+        document.getElementById('Table-Room').style.display = language === 'Room' ? 'block' : 'none';
+    }
+</script>
+</body>
+</html>

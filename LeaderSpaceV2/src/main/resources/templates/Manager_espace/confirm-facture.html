@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Formulaire de Devis</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+    .form-container div {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-actions {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="form-container">
+  <form th:action="@{/manager/submit-facture}" th:object="${facture}" method="post">
+    <input type="hidden" th:field="*{id}" th:value="${facture.id}"/>
+    <input type="hidden" th:field="*{facture_N}" th:value="${facture.facture_N}"/>
+    <input type="hidden" th:field="*{date}" th:value="${facture.date}"/>
+    <input type="hidden" th:field="*{client_name}" th:value="${facture.client_name}"/>
+    <input type="hidden" th:field="*{client_ID}" th:value="${facture.client_ID}"/>
+    <input type="hidden" th:field="*{payment_method}" th:value="${facture.payment_method}"/>
+    <div th:each="service, iterStat : ${facture.designations}">
+      <input type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.name}" th:value="${service.subscriptionType.name}"/>
+      <input type="hidden" th:field="*{designations[__${iterStat.index}__].quantity}" th:value="${service.quantity}"/>
+      <input type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.HT}" th:value="${service.subscriptionType.HT}"/>
+      <input type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.price}" th:value="${service.subscriptionType.price}"/>
+    </div>
+    <input type="hidden" th:field="*{total_TTC}" th:value="${facture.total_TTC}"/>
+    <input type="hidden" th:field="*{total_TVA}" th:value="${facture.total_TVA}"/>
+    <input type="hidden" th:field="*{total_HT}" th:value="${facture.total_HT}"/>
+    <div>
+      <label for="ttc-to-word" th:text="${facture.total_TTC}+' MAD'"></label>
+      <input type="text" id="ttc-to-word" th:field="*{total_TTC_to_words}" th:value="${facture.total_TTC_to_words}" required>
+    </div>
+    <div class="form-actions">
+      <button type="submit">confirmer</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Formulaire de Devis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-actions {
+            text-align: center;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div class="language-buttons">
+    <button onclick="showForm('particulier')">Particulier</button>
+    <button onclick="showForm('société')">Société</button>
+    <button onclick="showForm('association/coopérative')">association/coopérative</button>
+</div>
+<div class="form-container" id="form-particulier" style="display: none;">
+    <form id="particulier" th:action="@{/manager/submit-devis}" th:object="${devis}" method="post">
+
+        <input type="hidden" th:field="*{id}" th:value="${devis.id}"/>
+        <div>
+            <label for="client">Nom de Client</label>
+            <input type="text" id="client" th:field="*{client_name}" required>
+        </div>
+        <div>
+            <label for="cin">CIN</label>
+            <input type="text" id="cin" th:field="*{client_ID}" required>
+        </div>
+        <div>
+            <label for="validity-period-particulier">Délai de validité des prix</label>
+            <input type="number" id="validity-period-particulier" th:field="*{price_validity_period}" required>
+        </div>
+        <div>
+            <label for="designation">Désignation</label>
+            <table id="designation">
+                <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Quantité</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="service, iterStat : ${devis.designations}">
+                    <td th:text="${service.serviceType!=null ? service.serviceType.name: service.subscriptionType.name}"></td>
+                    <td th:text="${service.quantity}"></td>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.name}" th:value="${service.serviceType.name}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.name}" th:value="${service.subscriptionType.name}"/>
+                    <input type="hidden" th:field="*{designations[__${iterStat.index}__].quantity}" th:value="${service.quantity}"/>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.price}" th:value="${service.serviceType.price}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.price}" th:value="${service.subscriptionType.price}"/>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.HT}" th:value="${service.serviceType.HT}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.HT}" th:value="${service.subscriptionType.HT}"/>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Générer PDF</button>
+        </div>
+    </form>
+</div>
+<!--===========================société=============================-->
+<div class="form-container" id="form-société" style="display: none;">
+    <form id="société" th:action="@{/manager/submit-devis}" th:object="${devis}" method="post">
+
+        <input type="hidden" th:field="*{id}" th:value="${devis.id}"/>
+        <div>
+            <label for="client-société">Nom de société</label>
+            <input type="text" id="client-société" th:field="*{client_name}" required>
+        </div>
+        <div>
+            <label for="ice">ICE</label>
+            <input type="text" id="ice" th:field="*{client_ID}" required>
+        </div>
+        <div>
+            <label for="validity-period-société">Délai de validité des prix</label>
+            <input type="number" id="validity-period-société" th:field="*{price_validity_period}" required>
+        </div>
+        <div>
+            <label for="designation-société">Désignation</label>
+            <table id="designation-société">
+                <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Quantité</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="service, iterStat : ${devis.designations}">
+                    <td th:text="${service.serviceType!=null ? service.serviceType.name: service.subscriptionType.name}"></td>
+                    <td th:text="${service.quantity}"></td>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.name}" th:value="${service.serviceType.name}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.name}" th:value="${service.subscriptionType.name}"/>
+                    <input type="hidden" th:field="*{designations[__${iterStat.index}__].quantity}" th:value="${service.quantity}"/>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.price}" th:value="${service.serviceType.price}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.price}" th:value="${service.subscriptionType.price}"/>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.HT}" th:value="${service.serviceType.HT}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.HT}" th:value="${service.subscriptionType.HT}"/>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Générer PDF</button>
+        </div>
+    </form>
+</div>
+<div class="form-container" id="form-association-coopérative" style="display: none;">
+    <!--===========================association-coopérative=============================-->
+    <form id="association-coopérative" th:action="@{/manager/submit-devis}" th:object="${devis}" method="post">
+
+        <input type="hidden" th:field="*{id}" th:value="${devis.id}"/>
+        <div>
+            <label for="client-association-coopérative">Nom de coopérative/association</label>
+            <input type="text" id="client-association-coopérative" th:field="*{client_name}" required>
+        </div>
+        <div>
+            <label for="num-ordinal">Numéro d'enregistrement ordinal</label>
+            <input type="text" id="num-ordinal" th:field="*{client_ID}" required>
+        </div>
+        <div>
+            <label for="validity-period">Délai de validité des prix</label>
+            <input type="number" id="validity-period" th:field="*{price_validity_period}" required>
+        </div>
+        <div>
+            <label for="designation-association-coopérative">Désignation</label>
+            <table id="designation-association-coopérative">
+                <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Quantité</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="service, iterStat : ${devis.designations}">
+                    <td th:text="${service.serviceType!=null ? service.serviceType.name: service.subscriptionType.name}"></td>
+                    <td th:text="${service.quantity}"></td>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.name}" th:value="${service.serviceType.name}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.name}" th:value="${service.subscriptionType.name}"/>
+                    <input type="hidden" th:field="*{designations[__${iterStat.index}__].quantity}" th:value="${service.quantity}"/>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.price}" th:value="${service.serviceType.price}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.price}" th:value="${service.subscriptionType.price}"/>
+                    <input th:if="${service.serviceType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].serviceType.HT}" th:value="${service.serviceType.HT}"/>
+                    <input th:if="${service.subscriptionType!=null}" type="hidden" th:field="*{designations[__${iterStat.index}__].subscriptionType.HT}" th:value="${service.subscriptionType.HT}"/>
+                </tr>
+                </tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Générer PDF</button>
+        </div>
+    </form>
+</div>
+<script>
+    document.getElementById('particulier').addEventListener('submit', function(event) {
+        var cinField = document.getElementById('cin');
+        var cinValue = cinField.value;
+
+        if (!cinValue.startsWith('CIN :  ')) {
+            cinField.value = 'CIN :  ' + cinValue;
+        }
+    });
+    document.getElementById('société').addEventListener('submit', function(event) {
+        var cinField = document.getElementById('ice');
+        var cinValue = cinField.value;
+
+        if (!cinValue.startsWith('ICE :  ')) {
+            cinField.value = 'ICE :  ' + cinValue;
+        }
+    });
+    document.getElementById('association-coopérative').addEventListener('submit', function(event) {
+        var cinField = document.getElementById('num-ordinal');
+        var cinValue = cinField.value;
+
+        if (!cinValue.startsWith("numéro d'enregistrement ordinal :  ")) {
+            cinField.value = "numéro d'enregistrement ordinal :  " + cinValue;
+        }
+    });
+</script>
+<script>
+    function showForm(language) {
+        document.getElementById('form-particulier').style.display = language === 'particulier' ? 'block' : 'none';
+        document.getElementById('form-société').style.display = language === 'société' ? 'block' : 'none';
+        document.getElementById('form-association-coopérative').style.display = language === 'association/coopérative' ? 'block' : 'none';
+    }
+</script>
+</body>
+</html>

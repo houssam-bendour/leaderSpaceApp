@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Receptionist Home</title>
+    <link rel="stylesheet" type="text/css" href="/css/addsnaksforvisit.css">
+</head>
+<body>
+<header>
+    <h1>Welcome to the Manager Home Page</h1>
+    <form th:action="@{/}" method="get">
+        <button type="submit">Cancel</button>
+    </form>
+</header>
+
+<main>
+    <section>
+
+        <form th:action="@{/manager/save-services-to-devis(devisId=${devis.id})}" th:object="${designationForm}" method="post">
+            <h2>Choose Services</h2>
+            <div th:each="service : ${serviceTypes}">
+                <span th:text="${service.name}"></span>
+                <input type="number" th:field="*{serviceQuantities[__${service.id}__]}" min="0" value="0"/>
+            </div>
+            <h2>Choose Subscription</h2>
+            <div th:each="subscription : ${subscriptionTypes}">
+                <span th:text="${subscription.name}"></span>
+                <input type="number" th:field="*{serviceQuantities[__${subscription.id}__]}" min="0" value="0"/>
+            </div>
+            <button type="submit">Save</button>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <p>© 2024 leader space. All Rights Reserved.</p>
+</footer>
+</body>
+</html>

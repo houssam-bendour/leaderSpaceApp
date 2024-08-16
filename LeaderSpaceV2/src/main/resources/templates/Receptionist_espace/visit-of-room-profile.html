@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Visit Home</title>
+    <link rel="stylesheet" type="text/css" href="/css/visitor.css">
+</head>
+<body>
+<header>
+    <h1>Welcome to the Visit Page</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+        <form th:action="@{/reception/add-snacks-to-visitRoom(visitId=${visitOfRoom.id})}" method="post">
+            <button type="submit">Add Snacks</button>
+        </form>
+        <form th:action="@{/reception/snacks-to-participantRoom(visitId=${visitOfRoom.id})}" method="post">
+            <button type="submit">Add Snacks to participant</button>
+        </form>
+    </div>
+</header>
+<main>
+    <section>
+        <div>
+            <h1>Totale: <span th:text="${total}"></span></h1>
+        </div>
+    </section>
+    <section>
+        <h2>Visit Information</h2>
+        <div>
+            <label>ID: </label>
+            <span th:text="${visitOfRoom.id}"></span>
+        </div>
+        <div>
+            <label>Day: </label>
+            <span th:text="${visitOfRoom.day}"></span>
+        </div>
+        <div>
+            <label>Entry Time: </label>
+            <span th:text="${#temporals.format(visitOfRoom.startTime, 'HH:mm')}"></span>
+        </div>
+        <div>
+            <label>Checkout Time: </label>
+            <tr>
+                <th><span th:text="${#temporals.format(visitOfRoom.endTime, 'HH:mm')}"></span></th>
+                <th><span>
+                <form th:action="@{/reception/update-checkout-time-of-visit-room}" method="post">
+                    <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
+                    <button type="submit">update</button>
+                </form>
+            </span>
+                </th>
+            </tr>
+
+
+        </div>
+        <div>
+            <label>price of visit: </label>
+            <span th:text="${visitOfRoom.service_room_price}+' MAD'"></span>
+            <span>
+                <form th:action="@{/reception/update-price-of-visit-room}" method="post">
+                    <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
+                    <button type="submit">update</button>
+                </form>
+            </span>
+        </div>
+    </section>
+    <section>
+        <h2>Snacks</h2>
+        <table th:if="${visitOfRoom.snacksAndBoissonsOfVisitRoom != null}">
+            <thead>
+            <tr>
+                <th>Logo</th>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Total</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="snack : ${visitOfRoom.snacksAndBoissonsOfVisitRoom}">
+                <td>
+                    <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.snacksAndBoissons.base64Image}}"
+                         alt="QR Code" width="50"/>
+                </td>
+                <td th:text="${snack.snacksAndBoissons.name}"></td>
+                <td th:text="${snack.quantity}"></td>
+                <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
+                <td>
+                    <div class="action-buttons">
+                        <form th:action="@{/reception/delete-snack-for-room}" method="post">
+                            <input type="hidden" name="visitId" th:value="${visitOfRoom.id}"/>
+                            <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}"/>
+                            <button type="submit">Delete Snack</button>
+                        </form>
+                        <form th:action="@{/reception/update-snack-form-for-room}" method="post">
+                            <input type="hidden" name="visitId" th:value="${visitOfRoom.id}"/>
+                            <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}"/>
+                            <button type="submit">Update Snack</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+    <section>
+        <h2>Participants</h2>
+        <table th:if="${visitOfRoom.participant != null}">
+            <thead>
+            <tr>
+                <th>id</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="snack : ${visitOfRoom.participant}">
+
+                <td th:text="${snack.id}"></td>
+
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+<footer>
+    <p>© 2024 Leader Space. All Rights Reserved.</p>
+</footer>
+</body>
+</html>

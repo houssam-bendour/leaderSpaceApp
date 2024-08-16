@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Visit Home</title>
+  <link rel="stylesheet" type="text/css" href="/css/visitor.css">
+</head>
+<body>
+<header>
+  <h1>Welcome to the Visit Page</h1>
+  <div class="header-buttons">
+    <form th:action="@{/}" method="get">
+      <button type="submit">Cancel</button>
+    </form>
+    <form th:action="@{/reception/add-snacks-to-visitDesk(visitId=${visitOfDesk.id})}" method="post">
+      <button type="submit">Add Snacks</button>
+    </form>
+    <form th:action="@{/reception/visit-of-desk-checkout(visitId=${visitOfDesk.id})}" method="post">
+      <button type="submit">Checkout</button>
+    </form>
+  </div>
+</header>
+<main>
+  <section>
+    <div>
+      <h1>Totale: <span th:text="${total}"></span></h1>
+    </div>
+  </section>
+  <section>
+    <h2>Visit Information</h2>
+    <div>
+      <label>ID: </label>
+      <span th:text="${visitOfDesk.id}"></span>
+    </div>
+    <div>
+      <label>Day: </label>
+      <span th:text="${visitOfDesk.day}"></span>
+    </div>
+    <div>
+      <label>Entry Time: </label>
+      <span th:text="${#temporals.format(visitOfDesk.startTime, 'HH:mm')}"></span>
+    </div>
+    <div>
+      <label>Checkout Time: </label>
+      <tr>
+        <th><span th:text="${#temporals.format(visitOfDesk.endTime, 'HH:mm')}"></span></th>
+        <th><span>
+                <form th:action="@{/reception/update-checkout-time-of-visit-desk}" method="post">
+                    <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
+                    <button type="submit">update</button>
+                </form>
+            </span>
+        </th>
+      </tr>
+
+
+    </div>
+    <div>
+      <label>price of visit: </label>
+      <span th:text="${visitOfDesk.service_desk_price}+' MAD'"></span>
+      <span>
+                <form th:action="@{/reception/update-price-of-visit-desk}" method="post">
+                    <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
+                    <button type="submit">update</button>
+                </form>
+            </span>
+    </div>
+  </section>
+  <section>
+    <h2>Snacks</h2>
+    <table th:if="${visitOfDesk.snacksAndBoissonsOfVisits != null}">
+      <thead>
+      <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="snack : ${visitOfDesk.snacksAndBoissonsOfVisits}">
+        <td>
+          <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.snacksAndBoissons.base64Image}}"
+               alt="QR Code" width="50"/>
+        </td>
+        <td th:text="${snack.snacksAndBoissons.name}"></td>
+        <td th:text="${snack.quantity}"></td>
+        <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
+        <td>
+          <div class="action-buttons">
+            <form th:action="@{/reception/delete-snack-for-desk}" method="post">
+              <input type="hidden" name="visitId" th:value="${visitOfDesk.id}"/>
+              <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}"/>
+              <button type="submit">Delete Snack</button>
+            </form>
+            <form th:action="@{/reception/update-snack-form-for-desk}" method="post">
+              <input type="hidden" name="visitId" th:value="${visitOfDesk.id}"/>
+              <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}"/>
+              <button type="submit">Update Snack</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+  <section>
+    <h2>Additional service</h2>
+    <div th:if="${visitOfDesk.service_suplementaire==null || visitOfDesk.service_suplementaire_price==0}">
+      <form th:action="@{/reception/add-Additional-service-of-visit-desk}" method="post">
+        <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
+        <button type="submit">add</button>
+      </form>
+    </div>
+    <div th:if="${visitOfDesk.service_suplementaire!=null && visitOfDesk.service_suplementaire_price!=0}">
+      <p th:text="${visitOfDesk.service_suplementaire}"></p><br>
+      <p th:text="'price :  '+${visitOfDesk.service_suplementaire_price}+' MAD'"></p><br>
+      <form th:action="@{/reception/update-Additional-service-of-visit-desk}" method="post">
+        <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
+        <button type="submit">update</button>
+      </form>
+      <form th:action="@{/reception/delete-Additional-service-of-visit-desk}" method="post">
+        <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
+        <button type="submit">delete</button>
+      </form>
+    </div>
+  </section>
+
+</main>
+<footer>
+  <p>© 2024 Leader Space. All Rights Reserved.</p>
+</footer>
+</body>
+</html>

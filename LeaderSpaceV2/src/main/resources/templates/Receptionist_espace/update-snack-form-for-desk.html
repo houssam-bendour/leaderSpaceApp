@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Snack</title>
+    <link rel="stylesheet" type="text/css" href="/css/snaksforvisit.css">
+</head>
+<body>
+<header>
+    <h1>Update Snack</h1>
+    <form th:action="@{/reception/visit-of-desk}" method="get">
+        <input type="hidden" name="visitId" th:value="${visitId}" />
+        <button type="submit">Cancel</button>
+    </form>
+</header>
+<main>
+    <section>
+        <h2>Update Snack Information</h2>
+        <form th:action="@{/reception/update-snack-for-desk}" method="post">
+            <input type="hidden" name="visitId" th:value="${visitId}" />
+            <input type="hidden" name="snackId" th:value="${snackAndBoisson.id}" />
+            <div>
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" th:value="${quantity}" min="1" required />
+            </div>
+            <button type="submit">Save Changes</button>
+        </form>
+
+    </section>
+</main>
+
+</body>
+</html>

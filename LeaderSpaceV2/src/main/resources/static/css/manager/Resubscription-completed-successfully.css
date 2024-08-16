@@ -1,0 +1,30 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #d9f8d7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.error-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+    border: 1px solid #ccf5c6;
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #79e603;
+}
+
+p {
+    margin-top: 0;
+    color: #495057;
+}

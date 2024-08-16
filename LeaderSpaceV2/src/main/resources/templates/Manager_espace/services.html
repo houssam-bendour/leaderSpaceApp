@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Subscribers</title>
+    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+</head>
+<body>
+<header>
+    <h1>List of services</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+    <!-- Search form -->
+    <!--<div class="search-form">
+        <form th:action="@{/reception/subscriber-Search}" method="get">
+            <input type="text" name="Name" placeholder="Search by name" />
+            <button type="submit">Search</button>
+        </form>
+    </div>-->
+</header>
+<main>
+    <div class="main-buttons">
+        <form th:action="@{/manager/add-service}" method="get">
+            <button type="submit">add</button>
+        </form>
+    </div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>name</th>
+            <th>duration (par heurs)</th>
+            <th>Nombre de boissons gratuites</th>
+            <th>prix</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="service : ${services}">
+            <td th:text="${service.name}">name</td>
+            <td th:text="${service.duration}">duration (par heurs)</td>
+            <td th:text="${service.number_of_Free_Drinks}">Nombre de boissons gratuites</td>
+            <td th:text="${service.price}">prix</td>
+            <td>
+                <form th:action="@{/manager/update-service(serviceId=${service.id})}" method="post">
+                    <button type="submit">modifier</button>
+                </form>
+                <form th:action="@{/manager/delete-service(serviceId=${service.id})}" method="post">
+                    <button type="submit">supprimer</button>
+                </form>
+            </td>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

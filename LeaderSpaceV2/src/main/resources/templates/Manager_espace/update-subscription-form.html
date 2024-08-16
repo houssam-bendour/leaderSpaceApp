@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-container div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-actions {
+            text-align: center;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .button-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container" id="form-particulier" >
+    <form id="particulier" th:action="@{/manager/save-update-subscription}" th:object="${subscription}" method="post">
+        <input type="hidden" th:field="*{id}" th:value="${subscription.id}"/>
+        <div>
+            <label for="name">name</label>
+            <input type="text" id="name" th:field="*{name}" th:value="${subscription.name}" required>
+        </div>
+        <div>
+            <label for="duration">Durée (par jour)</label>
+            <input type="number" id="duration" th:field="*{duration}" th:value="${subscription.duration}" required>
+        </div>
+        <div>
+            <label for="endtime">Flexibilité de durée (par mois)</label>
+            <input type="number" id="endtime" th:field="*{flexibility_duration}" th:value="${subscription.flexibility_duration}" required>
+        </div>
+        <div>
+            <label for="nbr">Nombre de boissons gratuites par jour</label>
+            <input type="number" id="nbr" th:field="*{number_of_Free_Drinks_of_day}" th:value="${subscription.number_of_Free_Drinks_of_day}" required>
+        </div>
+        <div>
+            <label for="nbr_jrs">Nombre d'heures par jour</label>
+            <input type="number" id="nbr_jrs" th:field="*{hour_of_day}" th:value="${subscription.hour_of_day}" required>
+        </div>
+        <div>
+            <label for="price">Prix de l'abonnement(mad) </label>
+            <input type="number" step="0.01" id="price" th:field="*{price}" th:value="${subscription.price}" required>
+        </div>
+        <div class="form-actions">
+            <button type="submit">save</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

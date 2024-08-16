@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Subscribers</title>
+    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+</head>
+<body>
+<header>
+    <h1>List of Subscribers</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+    <!-- Search form -->
+    <div class="search-form">
+        <form th:action="@{/reception/subscriber-Search}" method="get">
+            <input type="text" name="Name" placeholder="Search by name" />
+            <button type="submit">Search</button>
+        </form>
+    </div>
+</header>
+<main>
+    <div class="main-buttons">
+        <form th:action="@{/reception/add-subscriber}" method="get">
+            <button type="submit">add</button>
+        </form>
+    </div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>CIN</th>
+            <th>subscription type</th>
+            <th>Quntity</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+            <th>phone</th>
+            <th>Start date</th>
+            <th>End date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="subscriber : ${subscribers}">
+            <td th:text="${subscriber.CIN}">CIN</td>
+            <td th:text="${subscriber.subscription_type.name}">subscription type</td>
+            <td th:text="${subscriber.quantity}">Quantity</td>
+            <td th:text="${subscriber.first_name}">First name</td>
+            <td th:text="${subscriber.last_name}">Last name</td>
+            <td th:text="${subscriber.email}">Email</td>
+            <td th:text="${subscriber.phone}">phone</td>
+            <td th:text="${subscriber.date_debut}">Start date</td>
+            <td th:text="${subscriber.date_fin}">End date</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+<footer>
+    <p>© 2024 Leader Space. All Rights Reserved.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Business Home</title>
+    <link rel="stylesheet" type="text/css" href="/css/Home.css">
+    <script th:src="@{/js/modal.js}"></script>
+</head>
+<body>
+<header>
+    <h1>Welcome to the Business Home Page</h1>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</header>
+
+<main>
+    <section>
+        <h2>Company Information</h2>
+        <div>
+            <label>Company name: </label>
+            <span th:text="${profile.company_name}"></span>
+        </div>
+        <div>
+            <label>Company ICE: </label>
+            <span th:text="${profile.ICE}"></span>
+        </div>
+        <h2>The company's representative</h2>
+        <div>
+            <label>CIN: </label>
+            <span th:text="${profile.CIN}"></span>
+        </div>
+        <div>
+            <label>First Name: </label>
+            <span th:text="${profile.first_name}"></span>
+        </div>
+        <div>
+            <label>Last Name: </label>
+            <span th:text="${profile.last_name}"></span>
+        </div>
+        <div>
+            <label>Email: </label>
+            <span th:text="${profile.email}"></span>
+        </div>
+        <div>
+            <label>Phone: </label>
+            <span th:text="${profile.phone}"></span>
+        </div>
+        <div th:if="${profile.CNSS_number != null }">
+            <label>CNSS Number: </label>
+            <span th:text="${profile.CNSS_number}"></span>
+        </div>
+        <!--<div>
+            <label>Deleted: </label>
+            <span th:text="${profile.is_deleted ? 'Yes' : 'No'}"></span>
+        </div>-->
+        <div>
+            <button id="qrCodeBtn">QR code</button>
+        </div>
+
+        <!-- Modal for QR Code -->
+        <div id="qrCodeModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" alt="QR Code" th:data-filename="${profile.first_name +'_'+ profile.last_name}"/>
+
+                <br>
+                <button id="downloadBtn">Download QR code</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>© 2024 leader space. All Rights Reserved.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contrat de Domiciliation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        .container {
+            width: 210mm;
+            padding: 20mm;
+            /*border: 1px solid #ccc;*/
+            background: #fff;
+            margin: auto;
+            /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+        }
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 20px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p, ul, ol {
+            margin: 0 0 1em;
+            line-height: 1.6;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="content">
+    <h1><u>CONTRAT DE DOMICILIATION</u></h1>
+    <p><strong>Entre les deux sites ci-dessous :</strong></p>
+    <h2><u>Domiciliant :</u></h2>
+    <p>Raison sociale de l’entreprise : LEADER SPACE SARL</p>
+    <p>Son adresse : Kessou Meddah, Résidence BELLA, n°28, bureau n°4, Taza.</p>
+    <p>Numéro d’identification unifié de l’entreprise : 003198568000092</p>
+    <p>Numéro d'immatriculation commerciale : 6819</p>
+    <p>Numéro fiscal professionnel : 53296402</p>
+    <p>Elle est représentée dans son associée gérante par Mme HIBA ESSAIH, titulaire du numéro de carte d'identité nationale : Z597330.</p>
+
+    <h2><u>Domicilié :</u></h2>
+    <p th:if="${contrat.type_client.equals('Entreprise')}">Nom de l’entreprise : <span th:text="${contrat.business_name}"></span></p>
+    <p th:if="${contrat.type_client.equals('Association')}">Nom de l’association : <span th:text="${contrat.business_name}"></span></p>
+    <p th:if="${contrat.type_client.equals('cooperative')}">Nom de la coopérative : <span th:text="${contrat.business_name}"></span></p>
+    <p th:if="${contrat.type_client.equals('Entreprise')}">Numéro d'identifiant commun de l’entreprise : <span th:text="${contrat.business_id}"></span></p>
+    <p th:if="${contrat.type_client.equals('Association')}">Numéro d’enregistrement ordinal : <span th:text="${contrat.association_number}"></span></p>
+    <p th:if="${contrat.type_client.equals('cooperative')}">Numéro d’enregistrement ordinal : <span th:text="${contrat.association_number}"></span></p>
+    <p>Elle est représentée par son <span th:text="${contrat.the_person_who_represents_him}"></span>, titulaire de la carte nationale numéro: <span th:text="${contrat.cin}"></span></p>
+
+    <p><strong>Les accords suivants ont été convenus entre les deux parties :</strong></p>
+    <h2><u>Sujet :</u></h2>
+    <p>Ce contrat vise à fixer le domicile de la personne « domiciliée » en application des exigences de l'article 544 de la loi n° 15.95 relatives au Code de commerce.</p>
+
+    <h2><u>Prestations de service :</u></h2>
+    <ul>
+        <p>Le domiciliant s'engage à permettre à la personne résidente mentionnée à l'article premier ci-dessus de bénéficier des services suivants :</p>
+        <li>Utiliser son adresse de domicile comme adresse du siège social de la personne domiciliée ;</li>
+        <li>Mettre à sa disposition des commerces ou des commerces équipés de moyens de communication destinés aux bureaux ;</li>
+        <li>Coins disposés à conserver les registres et documents prévus par les textes législatifs et réglementaires en vigueur et à permettre de le conserver et le réviser tout en s’engageant à le mettre à jour.</li>
+        <li>Recevoir, stocker et transférer le courrier quotidien.</li>
+    </ul>
+
+    <h2><u>Obligations des deux parties :</u></h2>
+    <h3><u>1- Obligations du « domiciliant »</u></h3>
+    <P>Pendant toute la durée du contrat, le « domiciliant » est tenu aux obligations suivantes :</P>
+    <br><br><br><br><br><br><br><br><br>
+    <ul>
+        <li>Tenir pour chaque personne un dossier (« domicilié ») contenant les pièces justificatives relatives, pour les personnes physiques, à leurs adresses personnelles, numéros de téléphone et numéros de carte d'identité, ainsi que leurs adresses email, et pour ce qui concerne personnes morales, les documents prouvant les adresses, numéros de téléphone et cartes d'identité de leurs dirigeants, ainsi que leurs adresses email ;</li>
+        <li>Veiller à ce que le « domicile » soit inscrit au registre du commerce dans un délai de trois mois à compter de la date de conclusion du contrat de réinstallation, lorsque cette inscription est obligatoire en vertu des textes législatifs et réglementaires en vigueur ;</li>
+        <li>Fournir au fisc et au trésor public du Royaume, et le cas échéant, à l'administration des douanes, la liste des ressortissants au cours de l'année écoulée, avant le 31 janvier de chaque année ;</li>
+        <li>Informer le greffe du tribunal compétent, l'administration fiscale, le trésor général du Royaume et, le cas échéant, l'administration des douanes, de l'expiration du contrat de règlement ou de sa résiliation anticipée, dans un délai d'un mois à compter de la date à laquelle de cessation du contrat ;</li>
+        <li>Fournir aux commissaires judiciaires et aux services de recouvrement des créances publiques, titulaires d'un titre exécutif, les informations suffisantes pour leur permettre de communiquer par le domicilié ;</li>
+        <li>Veiller au respect de la confidentialité des informations et données liées au « domicilié » ;</li>
+        <li>Notifier à l'administration fiscale et au trésor public du Royaume, et le cas échéant, à l'administration douanière, dans un délai n'excédant pas quinze jours à compter de la date de réception des lettres garanties adressées par l'administration fiscale aux nationaux, de l'impossibilité de les leur livrer.</li>
+    </ul>
+
+    <h3><u>2- Obligations du « domicilié »</u></h3>
+    <P>La personne « domiciliée » doit, pendant toute la durée du contrat, respecter les obligations suivantes :</P>
+    <ul>
+        <li>L'usage effectif et exclusif des magasins comme siège social du contrat ou de la société, ou si le siège social est à l'étranger, comme agence, succursale, représentation ou toute institution qui lui est affiliée, quelle que soit sa nature ;</li>
+        <li>Déclarer au « domiciliant », s'il s'agit d'une personne physique, tout changement de son adresse personnelle et de son activité, et s'il s'agit d'une personne morale, déclarer tout changement dans sa forme juridique, sa dénomination et son objet, ainsi que les dénominations et adresses des administrateurs et des personnes qui ont l'autorisation du « domicilié » pour contracter en son nom avec « le domiciliant » et lui remettre les documents s'y rapportant ;</li>
+        <li>Informer le greffe du tribunal compétent, l'administration fiscale, la trésorerie générale du Royaume et, le cas échéant, l'administration des douanes, de la cessation de la réinstallation, dans un délai d'un mois à compter de la date de fin de la durée du contrat ou sa résiliation anticipée ;</li>
+        <li>Mentionner sa qualité de domicilié avec son « domiciliant » dans toutes ses factures, correspondances, documents de mise en demeure, tarifs, publications et autres documents commerciaux établis pour des tiers ;</li>
+        <li>Donner une procuration acceptée par « le domiciliant », recevant toutes les notifications en son nom ;</li>
+        <li>Remettre au « domiciliant » tous les registres et documents prévus par les textes législatifs et réglementaires en vigueur et nécessaires à l'exécution de ses obligations ;</li>
+        <li>Informer le « domiciliant » dans un délai de dix jours à compter de la date du changement de tout changement du ou des lieux de stockage des marchandises importées ou destinées à l'exportation ;</li>
+        <li>Informer le domicile de tout litige ou cas potentiel dans lequel la société domiciliée est partie concernant son activité commerciale.</li>
+    </ul>
+    <br><br><br><br><br><br><br><br><br><br><br>
+    <h2><u>Dossier de domiciliation</u></h2>
+    <p>La personne domiciliée dépose auprès du résident le dossier de réinstallation, composé des documents suivants :</p>
+    <ul>
+        <li>Une copie de la pièce d'identité du représentant légal de l'entreprise locale ;</li>
+        <li>Une copie d'un document prouvant le domicile du représentant légal de la société domiciliée ;</li>
+        <li>Relevé bancaire ;</li>
+        <li>Le numéro de téléphone du représentant légal de l'entreprise locale ;</li>
+        <li>Adresse électronique de réexpédition du courrier ;</li>
+        <li>Une copie du statut juridique ;</li>
+    </ul>
+    <h2><u>Durée de contrat</u></h2>
+    <p>Le contrat de réinstallation est pour une durée de <span th:text="${contrat.duree}"></span>, renouvelable, calculée à compter de la date de détermination de la date de début du contrat jusqu'à la date de détermination de la fin du contrat</p>
+    <p>A l'expiration de la durée du contrat de règlement ou de sa résiliation anticipée, le « résident » et le domicile sont tenus d'en informer le greffe du tribunal compétent, l'administration fiscale, la trésorerie générale du Royaume et, le cas échéant, le l'administration douanière, de la cessation du règlement dans un délai d'un mois à compter de la cessation du contrat. </p>
+    <h2><u>Le montant de location</u></h2>
+    <p>Le contrat de réinstallation est en échange d'un loyer mensuel de <b><span th:text="${contrat.montant_de_location}"></span> dirhams</b>, qui comprend les prestations visées ci-dessus.</p>
+
+    <h2><u>Résolution de conflit</u></h2>
+    <p>Tout litige qui pourrait naître entre les deux parties lors de l'exécution du contrat sera soumis au tribunal compétent du siège de son domicile.</p>
+
+    <h2><u>Choix du domicile</u></h2>
+    <p>Les parties déterminent l'adresse de leur siège social telle qu'indiquée au début du contrat.</p>
+    <br><hr><br><br>
+    <div style="text-align: center;">
+        <p>Ce contrat est rédigé à la ville de TAZA</p>
+        <p>Le :  <span th:text="${contrat.date}"></span> </p>
+        <p>En sept (7) copies</p>
+    </div>
+    <span>La signature du domicilié</span><span style="margin-left: 10cm;">La signature du domiciliant</span>
+</div>
+
+<div class="button-container">
+    <button onclick="downloadPDF()">Télécharger en PDF</button>
+    <form th:action="@{/manager/annulation-du-contrat(contratId=${contrat.id})}" method="post">
+        <button type="submit">Annuler</button>
+    </form>
+    <form th:action="@{/manager/confirm-domiciliation-facture(factureId=${contrat.domiciliationFacture.id})}" method="post">
+        <button type="submit">La facture </button>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script>
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const container = document.getElementById('content');
+
+        html2canvas(container).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'pt', 'a4');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgProps = pdf.getImageProperties(imgData);
+            const imgHeight = imgProps.height * pdfWidth / imgProps.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+                heightLeft -= pdfHeight;
+            }
+
+            pdf.save('contrat_de_domiciliation.pdf');
+        });
+    }
+</script>
+
+</body>
+</html>

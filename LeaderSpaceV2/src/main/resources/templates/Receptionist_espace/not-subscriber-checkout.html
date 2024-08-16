@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitor Checkout</title>
+    <link rel="stylesheet" type="text/css" href="/css/visitor-checkout.css">
+</head>
+<body>
+<header>
+    <h1>Visitor Checkout</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+</header>
+<main>
+    <section class="visit-info">
+        <h2>Visit Information</h2>
+        <div>
+            <label>ID:</label>
+            <span th:text="${visit.id}"></span>
+        </div>
+        <div>
+            <label>Day:</label>
+            <span th:text="${visit.day}"></span>
+        </div>
+        <div>
+            <label>Entry Time:</label>
+            <span th:text="${#temporals.format(visit.startTime, 'HH:mm')}"></span>
+        </div>
+        <div>
+            <label>Checkout Time:</label>
+            <span th:text="${visit.endTime}"></span>
+        </div>
+    </section>
+    <section class="snacks-info">
+        <h2>Snacks</h2>
+        <table >
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                <td th:text="${snack.snacksAndBoissons.name}"></td>
+                <td th:text="${snack.snacksAndBoissons.purchase_price}"></td>
+                <td>
+                    <span th:text="${snack.quantity == 0 ? '' : snack.quantity}"></span>
+                    <span th:text="${msg.containsKey(snack.id) ? ' ' + msg.get(snack.id) : ''}"></span>
+                </td>
+
+                <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
+            </tr>
+            <tr>
+                <td colspan="3" th:text="${visit.service_price==15?'Demi-journée':'Journée'}"></td>
+                <td  th:text="${visit.service_price}"></td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="3"><b>Total</b></td>
+                <td class="total" th:text="${total}" ></td>
+            </tr>
+            </tfoot>
+        </table>
+    </section>
+</main>
+<footer>
+    <p>© 2024 Leader Space. All Rights Reserved.</p>
+</footer>
+</body>
+</html>

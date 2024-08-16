@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of devis</title>
+    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+</head>
+<body>
+<header>
+    <h1>List of devis</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+    <!-- Search form -->
+    <!--<div class="search-form">
+        <form th:action="@{/reception/subscriber-Search}" method="get">
+            <input type="text" name="Name" placeholder="Search by name" />
+            <button type="submit">Search</button>
+        </form>
+    </div>-->
+</header>
+<main>
+    <div class="main-buttons">
+        <form th:action="@{/manager/devis}" method="get">
+            <button type="submit">add</button>
+        </form>
+    </div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>date</th>
+            <th>devis number</th>
+            <th>client id</th>
+            <th>client name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="dev : ${devis}"
+            th:onclick="window.location.href = '/manager/devis-pdf?divisId=' + [[${dev.id}]];"
+            style="cursor: pointer;">
+
+            <td th:text="${dev.date}">date</td>
+            <td th:text="${dev.devis_N}">devis number</td>
+            <td th:text="${dev.client_ID}">client id</td>
+            <td th:text="${dev.client_name}">client name</td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

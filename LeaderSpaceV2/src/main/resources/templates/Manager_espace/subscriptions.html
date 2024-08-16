@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Subscribers</title>
+    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+</head>
+<body>
+<header>
+    <h1>List of Subscriptions</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+    <!-- Search form -->
+    <!--<div class="search-form">
+        <form th:action="@{/reception/subscriber-Search}" method="get">
+            <input type="text" name="Name" placeholder="Search by name" />
+            <button type="submit">Search</button>
+        </form>
+    </div>-->
+</header>
+<main>
+    <div class="main-buttons">
+        <form th:action="@{/manager/add-subscription}" method="get">
+            <button type="submit">add</button>
+        </form>
+    </div>
+    <table border="1">
+        <thead>
+        <tr>
+            <th>name</th>
+            <th>Durée (par jour)</th>
+            <th>Flexibilité de durée (par mois)</th>
+            <th>Nombre de boissons gratuites par jour</th>
+            <th>Nombre d'heures par jour</th>
+            <th>Prix de l'abonnement(mad)</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="subscription : ${subscriptions}">
+            <td th:text="${subscription.name}">name</td>
+            <td th:text="${subscription.duration}">Durée (par jour)</td>
+            <td th:text="${subscription.flexibility_duration}">Flexibilité de durée (par mois)</td>
+            <td th:text="${subscription.number_of_Free_Drinks_of_day}">Nombre de boissons gratuites par jour</td>
+            <td th:text="${subscription.hour_of_day}">Nombre d'heures par jour</td>
+            <td th:text="${subscription.price}">Prix de l'abonnement(mad)</td>
+            <td>
+                <form th:action="@{/manager/update-subscription(subscriptionId=${subscription.id})}" method="post">
+                    <button type="submit">modifier</button>
+                </form>
+                <form th:action="@{/manager/delete-subscription(subscriptionId=${subscription.id})}" method="post">
+                    <button type="submit">supprimer</button>
+                </form>
+            </td>
+        </tbody>
+    </table>
+</main>
+</body>
+</html>

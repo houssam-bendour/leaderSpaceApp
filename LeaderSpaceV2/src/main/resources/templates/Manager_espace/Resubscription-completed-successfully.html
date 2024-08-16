@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Error Page</title>
+  <link rel="stylesheet" type="text/css" href="/css/manager/Resubscription-completed-successfully.css">
+</head>
+<body>
+<div class="error-container">
+  <h1>Resubscription completed successfully</h1>
+  <p th:text="${subscriber.first_name}+' '+${subscriber.last_name}"></p>
+  <p th:text="'Subscription type: '+${subscriber.subscription_type.name}"></p>
+  <p th:text="'Quantity: '+${subscriber.quantity}"></p>
+  <p th:text="'Price: '+${subscriber.price_actuel_d_abonnemet}"></p>
+  <form th:action="@{/} " method="get">
+    <button type="submit">cancel</button>
+  </form>
+</div>
+</body>
+</html>

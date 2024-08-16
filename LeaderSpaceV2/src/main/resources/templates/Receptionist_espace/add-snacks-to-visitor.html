@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Receptionist Home</title>
+    <link rel="stylesheet" type="text/css" href="/css/addsnaksforvisit.css">
+</head>
+<body>
+<header>
+    <h1>Welcome to the Receptionist Home Page</h1>
+    <!--<form th:action="@{/reception/visit-subscriber-profile(visitId=${visit_id})}" method="post">
+        <button type="submit">cancel</button>
+    </form>-->
+    <form th:action="@{/reception/visit-subscriber-profile}" method="get">
+        <input type="hidden" name="visitId" th:value="${visit_id}" />
+        <button type="submit">Cancel</button>
+    </form>
+</header>
+
+<main>
+    <section>
+        <h2>Choose Snacks</h2>
+        <form th:action="@{/reception/save-snacks-to-visitor(visitId=${visit_id})}" th:object="${snaks}" method="post">
+            <div th:each="snack : ${snacksAndBoissan}">
+                <span>
+                     <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="QR Code" width="50"/>
+                </span>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" value="0"/>
+            </div>
+            <button type="submit">Save Snacks</button>
+        </form>
+    </section>
+</main>
+
+<footer>
+    <p>© 2024 leader space. All Rights Reserved.</p>
+</footer>
+</body>
+</html>
