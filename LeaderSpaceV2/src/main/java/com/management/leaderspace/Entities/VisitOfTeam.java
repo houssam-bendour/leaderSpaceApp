@@ -32,6 +32,8 @@ public class VisitOfTeam {
 
     private double service_suplementaire_price =0;
 
+    private boolean freeBoissons=false;
+
     @OneToMany(mappedBy = "visitOfTeam", cascade = CascadeType.ALL, orphanRemoval = true)
     List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisits;
 }

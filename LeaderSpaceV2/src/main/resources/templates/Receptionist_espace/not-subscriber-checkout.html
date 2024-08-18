@@ -56,15 +56,20 @@
 
                 <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
             </tr>
+            <tr th:if="visit.service_suplementaire_price!=0">
+                <td colspan="3" th:text="${visit.service_suplementaire}"></td>
+                <td  th:text="${visit.service_suplementaire_price}"></td>
+            </tr>
             <tr>
                 <td colspan="3" th:text="${visit.service_price==15?'Demi-journée':'Journée'}"></td>
                 <td  th:text="${visit.service_price}"></td>
             </tr>
+
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="3"><b>Total</b></td>
-                <td class="total" th:text="${total}" ></td>
+                <td class="total" th:text="${total+visit.service_price}" ></td>
             </tr>
             </tfoot>
         </table>

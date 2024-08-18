@@ -105,6 +105,29 @@
             </tbody>
         </table>
     </section>
+
+    <section>
+        <h2>Additional service</h2>
+        <div th:if="${visitOfRoom.service_suplementaire==null || visitOfRoom.service_suplementaire_price==0}">
+            <form th:action="@{/reception/add-Additional-service-of-visit-room}" method="post">
+                <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
+                <button type="submit">add</button>
+            </form>
+        </div>
+        <div th:if="${visitOfRoom.service_suplementaire!=null && visitOfRoom.service_suplementaire_price!=0}">
+            <p th:text="${visitOfRoom.service_suplementaire}"></p><br>
+            <p th:text="'price :  '+${visitOfRoom.service_suplementaire_price}+' MAD'"></p><br>
+            <form th:action="@{/reception/update-Additional-service-of-visit-room}" method="post">
+                <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
+                <button type="submit">update</button>
+            </form>
+            <form th:action="@{/reception/delete-Additional-service-of-visit-room}" method="post">
+                <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
+                <button type="submit">delete</button>
+            </form>
+        </div>
+    </section>
+
     <section>
         <h2>Participants</h2>
         <table th:if="${visitOfRoom.participant != null}">
@@ -122,6 +145,8 @@
             </tbody>
         </table>
     </section>
+
+
 </main>
 <footer>
     <p>© 2024 Leader Space. All Rights Reserved.</p>

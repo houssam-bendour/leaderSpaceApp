@@ -62,9 +62,13 @@
                 <td colspan="3"><b>prix de visit</b></td>
                 <td class="total" th:text="${visit.service_desk_price}" ></td>
             </tr>
+            <tr th:if="visit.service_suplementaire_price!=0">
+                <td colspan="3" th:text="${visit.service_suplementaire}"></td>
+                <td  th:text="${visit.service_suplementaire_price}"></td>
+            </tr>
             <tr>
                 <td colspan="3"><b>Total</b></td>
-                <td class="total" th:text="${total}" ></td>
+                <td class="total" th:text="${total+visit.service_suplementaire_price}" ></td>
             </tr>
             </tfoot>
         </table>

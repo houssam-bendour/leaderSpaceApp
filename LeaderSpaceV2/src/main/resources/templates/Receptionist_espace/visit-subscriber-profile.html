@@ -122,6 +122,27 @@
             </tbody>
         </table>
     </section>
+    <section>
+        <h2>Additional service</h2>
+        <div th:if="${visit.service_suplementaire==null || visit.service_suplementaire_price==0}">
+            <form th:action="@{/reception/add-Additional-service-of-visit}" method="post">
+                <input type="hidden" name="visitId" th:value="${visit.id}">
+                <button type="submit">add</button>
+            </form>
+        </div>
+        <div th:if="${visit.service_suplementaire!=null && visit.service_suplementaire_price!=0}">
+            <p th:text="${visit.service_suplementaire}"></p><br>
+            <p th:text="'price :  '+${visit.service_suplementaire_price}+' MAD'"></p><br>
+            <form th:action="@{/reception/update-Additional-service-of-visit}" method="post">
+                <input type="hidden" name="visitId" th:value="${visit.id}">
+                <button type="submit">update</button>
+            </form>
+            <form th:action="@{/reception/delete-Additional-service-of-visit}" method="post">
+                <input type="hidden" name="visitId" th:value="${visit.id}">
+                <button type="submit">delete</button>
+            </form>
+        </div>
+    </section>
 </main>
 <footer>
     <p>© 2024 Leader Space. All Rights Reserved.</p>

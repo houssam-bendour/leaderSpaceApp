@@ -1019,7 +1019,18 @@ public class ReceptionistController {
         return "redirect:/reception/visit-of-desk?visitId=" + visitOfDesk.getId();
     }
 
-    //======================Additional-service-of-visit-desk=====================
+    @PostMapping("delete-Additional-service-of-visit-desk")
+    String deleteAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId) {
+        VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
+        assert visitOfDesk != null;
+        visitOfDesk.setService_suplementaire(null);
+        visitOfDesk.setService_suplementaire_price(0);
+        visitOfDeskRepository.save(visitOfDesk);
+
+        return "redirect:/reception/visit-of-desk?visitId=" + visitOfDesk.getId();
+    }
+
+    //======================Additional-service-of-visit-room=====================
     @PostMapping("add-Additional-service-of-visit-room")
     String addAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,Model model) {
         model.addAttribute("visitRoomId",visitId);
@@ -1056,7 +1067,7 @@ public class ReceptionistController {
     }
 
     @PostMapping("delete-Additional-service-of-visit-room")
-    String deleteAdditionalServiceOfVisitDesk(@RequestParam("visitRoomId") UUID visitId) {
+    String deleteAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         assert visitOfRoom != null;
         visitOfRoom.setService_suplementaire(null);
@@ -1065,6 +1076,51 @@ public class ReceptionistController {
 
         return "redirect:/reception/visit-of-room?visitId=" + visitOfRoom.getId();
     }
+
+    //======================Additional-service-of-visit-normal=====================
+    @PostMapping("add-Additional-service-of-visit")
+    String addAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,Model model) {
+        model.addAttribute("visitId",visitId);
+        return "Receptionist_espace/Additional-service-of-visit-form";
+    }
+
+    @PostMapping("save-Additional-service-of-visit")
+    String saveAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+        Visit visit = visitRepository.findById(visitId).orElse(null);
+        assert visit != null;
+        visit.setService_suplementaire(service);
+        visit.setService_suplementaire_price(price);
+        visitRepository.save(visit);
+        return "redirect:/reception/visit-subscriber-profile?visitId=" + visit.getId();
+    }
+    @PostMapping("update-Additional-service-of-visit")
+    String updateAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,Model model) {
+        Visit visit = visitRepository.findById(visitId).orElse(null);
+        model.addAttribute("visit", visit);
+        model.addAttribute("visitId",visitId);
+        return "Receptionist_espace/update-Additional-service-of-visit-form";
+    }
+
+    @PostMapping("save-update-Additional-service-of-visit")
+    String saveUpdateAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+        Visit visit = visitRepository.findById(visitId).orElse(null);
+        assert visit != null;
+        visit.setService_suplementaire(service);
+        visit.setService_suplementaire_price(price);
+        visitRepository.save(visit);
+        return "redirect:/reception/visit-subscriber-profile?visitId=" + visit.getId();
+    }
+
+    @PostMapping("delete-Additional-service-of-visit")
+    String deleteAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId) {
+        Visit visit = visitRepository.findById(visitId).orElse(null);
+        assert visit != null;
+        visit.setService_suplementaire(null);
+        visit.setService_suplementaire_price(0);
+        visitRepository.save(visit);
+        return "redirect:/reception/visit-subscriber-profile?visitId=" + visit.getId();
+    }
+
 
 
     //============================CHANGE PASSWORD=================================
