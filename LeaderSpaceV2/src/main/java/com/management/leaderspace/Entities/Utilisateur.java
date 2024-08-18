@@ -33,6 +33,8 @@ public abstract class Utilisateur {
 
     private String CNSS_number;
 
+    private String resetToken;
+
     public String getDiscriminatorValue() {
         DiscriminatorValue annotation = this.getClass().getAnnotation(DiscriminatorValue.class);
         return (annotation != null) ? annotation.value() : null;
