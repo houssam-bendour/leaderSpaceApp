@@ -23,4 +23,7 @@ public interface VisitOfDeskRepository extends JpaRepository<VisitOfDesk, UUID> 
 
     @Query("select v from VisitOfDesk v where (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime> :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime< :dateFin) or (v.day = :day and v.StartTime> :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime< :dateFin) or (v.day = :day and v.StartTime= :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.EndTime= :dateFin) or (v.day = :day and v.StartTime= :dateDebut and v.EndTime= :dateFin)")
     List<VisitOfDesk> getVisitByDayAndStartTime(@Param("day") LocalDate day, @Param("dateDebut") LocalTime startTime, @Param("dateFin") LocalTime endTime);
+
+    @Query("select coalesce(sum(vd.service_suplementaire_price),0.0) from VisitOfDesk vd where vd.day>= :dateDebut and vd.day<= :dateFin")
+    Double sommeServiceSupplimentaiePriceOfDisk(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 }

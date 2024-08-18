@@ -248,7 +248,7 @@ public class ManagerServiceImp implements ManagerService {
                 if (!visit.getSnacksAndBoissonsOfVisits().isEmpty()) {
                     total += map.get(visit.getId());
                 }
-                total += visit.getService_price();
+                total += visit.getService_price()+visit.getService_suplementaire_price();
             }
         }
         return total;
@@ -500,7 +500,7 @@ public class ManagerServiceImp implements ManagerService {
         if (listAllVisitOfRoom!=null){
             for (VisitOfRoom visitOfRoom : listAllVisitOfRoom) {
                 double somme = 0.0;
-                somme+=(visitOfRoom.getService_room_price()+sommeOfSnacksAndBoissonsOfRoom.get(visitOfRoom.getId()));
+                somme+=(visitOfRoom.getService_room_price()+visitOfRoom.getService_suplementaire_price()+sommeOfSnacksAndBoissonsOfRoom.get(visitOfRoom.getId()));
                 if (sommeOfSnacksAndBoissonsForParticipantOfVisitRoom.get(visitOfRoom.getId())!=null) {
                     for (ParticipantOfvisitRoom participantOfvisitRoom : visitOfRoom.getParticipant()) {
                         somme+=sommeOfSnacksAndBoissonsForParticipantOfVisitRoom.get(visitOfRoom.getId()).get(participantOfvisitRoom.getId());
@@ -549,7 +549,7 @@ public class ManagerServiceImp implements ManagerService {
         double somme = 0.0;
         if (allVisitOfDeskByDate != null) {
             for (VisitOfDesk visitOfDesk : allVisitOfDeskByDate) {
-                somme+=sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.getId())+visitOfDesk.getService_desk_price();
+                somme+=sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.getId())+visitOfDesk.getService_desk_price()+visitOfDesk.getService_suplementaire_price();
             }
         }
         return somme;
@@ -562,7 +562,7 @@ public class ManagerServiceImp implements ManagerService {
         if (!visits.isEmpty()) {
             for (Visit visit : visits){
                 Double sommme=0.0;
-                sommme+=visit.getService_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisit(visit.getId());
+                sommme+=visit.getService_price()+visit.getService_suplementaire_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisit(visit.getId());
                 if (totaleVisitsCharts.containsKey(visit.getDay())) {
                     sommme+=totaleVisitsCharts.get(visit.getDay());
                 }
@@ -579,7 +579,7 @@ public class ManagerServiceImp implements ManagerService {
         if (!allVisitsRoom.isEmpty()) {
             for (VisitOfRoom visitOfRoom : allVisitsRoom) {
                 Double somme = 0.0;
-                somme+=visitOfRoom.getService_room_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisitOfRoom(visitOfRoom.getId());
+                somme+=visitOfRoom.getService_room_price()+visitOfRoom.getService_suplementaire_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisitOfRoom(visitOfRoom.getId());
                 for (ParticipantOfvisitRoom participantOfvisitRoom : visitOfRoom.getParticipant()) {
                     somme+= snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByParticipant(participantOfvisitRoom.getId());
                 }
@@ -599,7 +599,7 @@ public class ManagerServiceImp implements ManagerService {
         if (!allVisitsOfDesk.isEmpty()) {
             for (VisitOfDesk visitOfDesk : allVisitsOfDesk) {
                 Double somme = 0.0;
-                somme+=visitOfDesk.getService_desk_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisitOfDesk(visitOfDesk.getId());
+                somme+=visitOfDesk.getService_desk_price()+visitOfDesk.getService_suplementaire_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisitOfDesk(visitOfDesk.getId());
                 if (totaleVisitOfDesk.containsKey(visitOfDesk.getDay())) {
                     somme+=totaleVisitOfDesk.get(visitOfDesk.getDay());
                 }

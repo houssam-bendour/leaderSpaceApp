@@ -31,11 +31,16 @@ public interface VisitRepository extends JpaRepository<Visit, UUID> {
     List<Visit> getVisitsBetween(@Param("date1") LocalDate localDate1, @Param("date2") LocalDate localDate2);
     @Query("select v from Visit v where v.subscriber.id = :id and v.day = :day")
     List<Visit> getVisitsTodayOfSubscriberAndDate(@Param("id") UUID id,@Param("day")LocalDate localDate);
-    @Query("select v from Visit v where v.day>= :dateDebut and  v.day<= :dateFin and (v.service_price!=0 or v.snacksAndBoissonsOfVisits is not EMPTY )")
-    List<Visit> getAllVisitsBetweenStartDayAndEndTime(@Param("dateDebut") LocalDate dateDebut,@Param("dateFin") LocalDate dateFin);
+
+    @Query("select v from Visit v where v.day >= :dateDebut and v.day <= :dateFin and (v.service_suplementaire_price != 0 or v.service_price != 0 or v.snacksAndBoissonsOfVisits is not empty) order by v.day desc , v.StartTime desc ")
+    List<Visit> getAllVisitsBetweenStartDayAndEndTime(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
+
     @Query("select v from Visit v where v.notSubscriber is null order by v.day DESC, v.StartTime DESC")
     List<Visit> getVisitsOfSubscribers();
     @Query("select v from Visit v where v.subscriber is null order by v.day DESC, v.StartTime DESC")
     List<Visit> getVisitsOfNotSubscribers();
+
+    @Query("select coalesce(sum(v.service_suplementaire_price),0.0) from Visit v where v.day>= :dateDebut and v.day<= :dateFin")
+    Double sommeServiePriceSupplementaireOfVisits(@Param("dateDebut") LocalDate dateDebut,@Param("dateFin") LocalDate dateFin);
 }
 

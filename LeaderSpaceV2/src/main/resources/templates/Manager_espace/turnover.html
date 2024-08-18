@@ -90,6 +90,7 @@
                                     <!--                            <th>Nom du service</th>-->
                                     <!--                            <th>Durée du service</th>-->
                                     <th>Prix du service</th>
+                                    <th>service supplémentaire</th>
                                     <th>Consommations (quantité)</th>
                                     <th>Total payé dans la visite</th>
                                 </tr>
@@ -103,6 +104,7 @@
                                     <!--                                <td th:text="${visit.serviceType.name}"></td>-->
                                     <!--                                <td th:text="${visit.serviceType.duration}"></td>-->
                                     <td th:text="${visit.subscriber == null ? visit.service_price : 'Inscrit'}"></td>
+                                    <td th:text="${visit.service_suplementaire_price}"></td>
                                     <td>
                                         <ul>
                                             <li th:each="snacksAndBoissonsOfVisit : ${visit.snacksAndBoissonsOfVisits}">
@@ -119,12 +121,13 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <h4 th:text="${visit.subscriber == null ? visit.service_price + mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id) : mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)}"></h4>
+                                        <h4 th:text="${visit.subscriber == null ? visit.service_price + mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price : mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price}"></h4>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="4"><h4>Totale</h4></td>
                                     <td><h4 th:text="${sommeServicePriceOfNormaleVisits}"></h4></td>
+                                    <td><h4 th:text="${sommeServiePriceSupplementaireOfVisits}"></h4></td>
                                     <td><h4 th:text="${sommeConsommationsNormaleVisits}"></h4></td>
                                     <td><h4 th:text="${totalPriceByVisits}"></h4></td>
                                 </tr>
@@ -145,6 +148,7 @@
                                     <th>Heure de début</th>
                                     <th>Heure de fin</th>
                                     <th>Prix du service</th>
+                                    <th>service supplémentaire</th>
                                     <th>Consommations (quantité)</th>
                                     <th>Consommation des participants</th>
                                     <th>Total payé par la réservation</th>
@@ -156,6 +160,7 @@
                                     <td th:text="${visitOfRoom.startTime}"></td>
                                     <td th:text="${visitOfRoom.endTime}"></td>
                                     <td th:text="${visitOfRoom.service_room_price}"></td>
+                                    <td th:text="${visitOfRoom.service_suplementaire_price}"></td>
                                     <td>
                                         <ul th:if="${!visitOfRoom.snacksAndBoissonsOfVisitRoom.isEmpty()}">
                                             <li th:each="snacksAndBoissonsOfVisit : ${visitOfRoom.snacksAndBoissonsOfVisitRoom}">
@@ -202,6 +207,7 @@
                                 <tr>
                                     <td colspan="3"><h4>Totale</h4></td>
                                     <td><h4 th:text="${sommeServicePriceForRoomVisits}"></h4></td>
+                                    <td><h4 th:text="${sommeServiceSuplimentaireOfVisitRoom}"></h4></td>
                                     <td><h4 th:text="${sommeConsommationsForRoom}"></h4></td>
                                     <td><h4 th:text="${sommeConsommationsForRoomParticipants}"></h4></td>
                                     <td><h4 th:text="${totaleOfAllVisitsOfRoom}"></h4></td>
@@ -223,6 +229,7 @@
                                     <th>Heure de début</th>
                                     <th>Heure de fin</th>
                                     <th>Prix du service</th>
+                                    <th>service supplémentaire</th>
                                     <th>Consommations (quantité)</th>
                                     <th>Total payé dans la résirvation</th>
                                 </tr>
@@ -233,6 +240,7 @@
                                     <td th:text="${visitOfDesk.startTime}"></td>
                                     <td th:text="${visitOfDesk.endTime}"></td>
                                     <td th:text="${visitOfDesk.service_desk_price}"></td>
+                                    <td th:text="${visitOfDesk.service_suplementaire_price}"></td>
                                     <td>
                                         <ul th:if="${!visitOfDesk.snacksAndBoissonsOfVisits.isEmpty()}">
                                             <li th:each="snacksAndBoissonsOfVisit : ${visitOfDesk.snacksAndBoissonsOfVisits}">
@@ -249,12 +257,13 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <h4 th:text="${visitOfDesk.service_desk_price+sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)}"></h4>
+                                        <h4 th:text="${visitOfDesk.service_desk_price+sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)+visitOfDesk.service_suplementaire_price}"></h4>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="3"><h4>Totale</h4></td>
                                     <td><h4 th:text="${sommeServicePriceForDeskVisits}"></h4></td>
+                                    <td><h4 th:text="${sommeServiceSupplimentaiePriceOfDisk}"></h4></td>
                                     <td><h4 th:text="${sommeConsommationsForDesk}"></h4></td>
                                     <td><h4 th:text="${totaleOfVisitsOfDesk}"></h4></td>
                                 </tr>

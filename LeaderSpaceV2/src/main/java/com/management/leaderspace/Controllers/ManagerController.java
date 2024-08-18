@@ -35,6 +35,9 @@ public class ManagerController {
     private final SnacksAndBoissonsHistoryRepository snacksAndBoissonsHistoryRepository;
     private final ManagerRepository managerRepository;
     private final ReceptionistRepository receptionistRepository;
+    private final VisitRepository visitRepository;
+    private final VisitOfRoomRepository visitOfRoomRepository;
+    private final VisitOfDeskRepository visitOfDeskRepository;
     private SubscriptionTypeRepository subscriptionTypeRepository;
     private final SubscriberRepository subscriberRepository;
     private final SubscriptionHistoryRepository subscriptionHistoryRepository;
@@ -522,6 +525,9 @@ public class ManagerController {
         Map<UUID,Double> sommeOfsnacksAndBoissonsByVisit = new HashMap<>();
         List<Contrat> allContractsByDate = new ArrayList<>();
         double totaleMontantOfContractsByDates;
+        double sommeServiePriceSupplementaireOfVisits;
+        double sommeServiceSuplimentaireOfVisitRoom;
+        double sommeServiceSupplimentaiePriceOfDisk;
         if (ch_date_debut != null && ch_date_fin != null) {
             if (ch_date_debut.isEmpty() || ch_date_fin.isEmpty()) {
                 return "redirect:/manager/turnover";
@@ -546,6 +552,10 @@ public class ManagerController {
                 //////////////////////////////////////
                 allContractsByDate = contratRepository.allContractByDate(dateDebut,dateFin);
                 totaleMontantOfContractsByDates = contratRepository.totaleMontantOfContractByDates(dateDebut,dateFin);
+                //////////////////////////////////////////////////////
+                sommeServiePriceSupplementaireOfVisits = visitRepository.sommeServiePriceSupplementaireOfVisits(dateDebut,dateFin);
+                sommeServiceSuplimentaireOfVisitRoom= visitOfRoomRepository.sommeServiceSuplimentaireOfVisitRoom(dateDebut,dateFin);
+                sommeServiceSupplimentaiePriceOfDisk = visitOfDeskRepository.sommeServiceSupplimentaiePriceOfDisk(dateDebut,dateFin);
 
             }
             model.addAttribute("listAllVisitBetweenStartDayAndEndTime", listAllVisitsBetweenStartDayAndEndTime);
@@ -585,6 +595,10 @@ public class ManagerController {
             //////////////////////////////////////////////////////
             model.addAttribute("allContractsByDate",allContractsByDate);
             model.addAttribute("totaleMontantOfContracts",totaleMontantOfContractsByDates);
+            ////////////////////////////////////////////////////////
+            model.addAttribute("sommeServiePriceSupplementaireOfVisits",sommeServiePriceSupplementaireOfVisits);
+            model.addAttribute("sommeServiceSuplimentaireOfVisitRoom",sommeServiceSuplimentaireOfVisitRoom);
+            model.addAttribute("sommeServiceSupplimentaiePriceOfDisk",sommeServiceSupplimentaiePriceOfDisk);
 
         }
         return "Manager_espace/turnover";
@@ -600,7 +614,7 @@ public class ManagerController {
 
         Map<LocalDate, Double> totaleVisitsNormaleCharts = managerService.totaleVisitsNormaleCharts(dateDebut,dateFin);
         Map<LocalDate, Double> totaleVisitsRoomCharts = managerService.totaleVisitsRoomCharts(dateDebut, dateFin);
-        Map<LocalDate, Double> totaleVisitsDeskCharts = managerServiceImp.totaleVisitOfDesk(dateDebut, dateFin);
+        Map<LocalDate, Double> totaleVisitsDeskCharts = managerService.totaleVisitOfDesk(dateDebut, dateFin);
         Map<LocalDate, Double> totaleSubscriptionsCharts = managerServiceImp.totaleSubscriptions(dateDebut, dateFin);
         Map<LocalDate,Double> totaleContractsCherts = managerService.totaleContractsCherts(dateDebut,dateFin);
         Map<LocalDate, Double> totaleTurnoverForCharts = managerServiceImp.totaleTurnoverForCharts(

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface ContratRepository extends JpaRepository<Contrat, UUID> {
 
-    @Query("select c from Contrat c where c.date>= :dateDebut and c.date<= :dateFin")
+    @Query("select c from Contrat c where c.date>= :dateDebut and c.date<= :dateFin order by c.date desc ")
     List<Contrat> allContractByDate(@Param("dateDebut") LocalDate dateDebut , @Param("dateFin") LocalDate DateFin);
 
     @Query("select coalesce(sum(c.montant_de_location_chiffre),0.0) from Contrat c where c.date>= :dateDebut and c.date<= :dateFin")

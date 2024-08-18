@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface SubscriptionHistoryRepository extends JpaRepository<SubscriptionHistory, UUID> {
 
-    @Query("select sh from SubscriptionHistory sh WHERE sh.startDate>= :start and sh.startDate<= :end")
+    @Query("select sh from SubscriptionHistory sh WHERE sh.startDate>= :start and sh.startDate<= :end order by sh.startDate desc")
     List<SubscriptionHistory> findAllSubscriptionsByDateDebutBetweenStartDayAndEndDay(@Param("start") LocalDate start, @Param("end") LocalDate end);
 
     @Query("select s from SubscriptionHistory s where s.subscriber = :sub and s.subscriptionType= :subType and s.startDate = :sDate and s.endDate = :eDate")
