@@ -22,46 +22,70 @@
 <main>
 
 
-        <h2>Snacks</h2>
-    <h3 th:text="'Total: '+${total}+' MAD'" style="text-align: right"></h3>
-        <table th:if="${!snacks.isEmpty()}">
-            <thead>
-            <tr>
-                <th>Logo</th>
-                <th>Name</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="snack : ${snacks}">
-                <td>
-                    <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.snacksAndBoissons.base64Image}}" alt="QR Code" width="50"/>
-                </td>
-                <td th:text="${snack.snacksAndBoissons.name}"></td>
-                <td th:text="${snack.quantity}"></td>
-                <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
-                <td>
-                    <div class="action-buttons">
-                        <form th:action="@{/reception/delete-snack-for-participant-of-room}" method="post">
-                            <input type="hidden" name="visitId" th:value="${visit.id}" />
-                            <input type="hidden" name="participantId" th:value="${participantId}" />
-                            <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}" />
-                            <button type="submit">Delete Snack</button>
-                        </form>
-                        <form th:action="@{/reception/update-snack-for-participant-of-room-form}" method="post">
-                            <input type="hidden" name="visitId" th:value="${visit.id}" />
-                            <input type="hidden" name="participantId" th:value="${participantId}" />
-                            <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}" />
-                            <button type="submit">Update Snack</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
+    <h2>Snacks</h2>
+    <h3 th:text="'Total: '+${total+participantOfvisitRoom.service_suplementaire_price}+' MAD'" style="text-align: right"></h3>
+    <table th:if="${!snacks.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Logo</th>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="snack : ${snacks}">
+            <td>
+                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.snacksAndBoissons.base64Image}}"
+                     alt="QR Code" width="50"/>
+            </td>
+            <td th:text="${snack.snacksAndBoissons.name}"></td>
+            <td th:text="${snack.quantity}"></td>
+            <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
+            <td>
+                <div class="action-buttons">
+                    <form th:action="@{/reception/delete-snack-for-participant-of-room}" method="post">
+                        <input type="hidden" name="visitId" th:value="${visit.id}"/>
+                        <input type="hidden" name="participantId" th:value="${participantId}"/>
+                        <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}"/>
+                        <button type="submit">Delete Snack</button>
+                    </form>
+                    <form th:action="@{/reception/update-snack-for-participant-of-room-form}" method="post">
+                        <input type="hidden" name="visitId" th:value="${visit.id}"/>
+                        <input type="hidden" name="participantId" th:value="${participantId}"/>
+                        <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}"/>
+                        <button type="submit">Update Snack</button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <section>
+        <h2>Additional service</h2>
+        <div th:if="${participantOfvisitRoom.service_suplementaire==null || participantOfvisitRoom.service_suplementaire_price==0}">
+            <form th:action="@{/reception/add-Additional-service-for-participant-of-visit-room}" method="post">
+                <input type="hidden" name="participantVisitId" th:value="${participantOfvisitRoom.id}">
+                <input type="hidden" name="visitId" th:value="${visit.id}">
+                <button type="submit">add</button>
+            </form>
+        </div>
+        <div th:if="${participantOfvisitRoom.service_suplementaire!=null && participantOfvisitRoom.service_suplementaire_price!=0}">
+            <p th:text="${participantOfvisitRoom.service_suplementaire}"></p><br>
+            <p th:text="'price :  '+${participantOfvisitRoom.service_suplementaire_price}+' MAD'"></p><br>
+            <form th:action="@{/reception/update-Additional-service-for-participant-of-visit-room}" method="post">
+                <input type="hidden" name="participantVisitId" th:value="${participantOfvisitRoom.id}">
+                <input type="hidden" name="visitId" th:value="${visit.id}">
+                <button type="submit">update</button>
+            </form>
+            <form th:action="@{/reception/delete-Additional-service-for-participant-of-visit-room}" method="post">
+                <input type="hidden" name="participantVisitId" th:value="${participantOfvisitRoom.id}">
+                <input type="hidden" name="visitRoomId" th:value="${visit.id}">
+                <button type="submit">delete</button>
+            </form>
+        </div>
+    </section>
 
 </main>
 

@@ -27,4 +27,8 @@ public class ParticipantOfvisitRoom {
     @JoinColumn(name = "participant_id")
     VisitOfRoom visitOfRoom;
 
+    private String service_suplementaire;
+
+    private double service_suplementaire_price =0;
+
 }

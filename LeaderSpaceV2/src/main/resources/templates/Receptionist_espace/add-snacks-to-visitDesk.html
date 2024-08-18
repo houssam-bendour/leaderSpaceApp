@@ -21,12 +21,12 @@
     <section>
         <h2>Choose Snacks</h2>
         <form th:action="@{/reception/save-snacks-to-visitDesk(visitId=${visitDesk_id})}" th:object="${snaks}" method="post">
-            <div th:each="snack : ${snacksAndBoissan}">
+            <div th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
                 <span>
                      <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="QR Code" width="50"/>
                 </span>
                 <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" value="0"/>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}" value="0"/>
             </div>
             <button type="submit">Save Snacks</button>
         </form>

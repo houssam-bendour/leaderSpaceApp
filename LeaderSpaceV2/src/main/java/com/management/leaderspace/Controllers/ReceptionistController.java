@@ -516,6 +516,10 @@ public class ReceptionistController {
     public String showUpdateSnackForm(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
+            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+
+            model.addAttribute("snack", snack);
+
             SnacksAndBoissonsOfVisit snackVisit = snacksAndBoissonsOfVisitRepository.getByVisitIdAndSnackId(visitId, snackId);
 
             model.addAttribute("visitId", visitId);
@@ -535,6 +539,10 @@ public class ReceptionistController {
     public String showUpdateSnackFormRoom(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
+            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+
+            model.addAttribute("snack", snack);
+
             SnacksAndBoissonsOfVisit snackVisit = snacksAndBoissonsOfVisitRepository.getByVisitOfRoomIdAndSnackId(visitId, snackId);
 
             model.addAttribute("visitId", visitId);
@@ -554,6 +562,10 @@ public class ReceptionistController {
     public String showUpdateSnackFormDesk(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
+            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+
+            model.addAttribute("snack", snack);
+
             SnacksAndBoissonsOfVisit snackVisit = snacksAndBoissonsOfVisitRepository.getByVisitOfDeskIdAndSnackId(visitId, snackId);
 
             model.addAttribute("visitId", visitId);
@@ -573,6 +585,10 @@ public class ReceptionistController {
     public String showUpdateSnackForParticipantOfRoomForm(@RequestParam("visitId") UUID visitId,@RequestParam("participantId") UUID participantId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
+            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+
+            model.addAttribute("snack", snack);
+
             SnacksAndBoissonsOfVisit snackVisit = snacksAndBoissonsOfVisitRepository.getByParticipantOfRoomIdAndSnackId(participantId, snackId);
 
             model.addAttribute("visitId", visitId);
@@ -920,6 +936,7 @@ public class ReceptionistController {
         model.addAttribute("snacks", snacksAndBoissonsList);
         model.addAttribute("participantId",participantId);
         model.addAttribute("total",total);
+        model.addAttribute("participantOfvisitRoom",participantOfvisitRoom);
         return "/Receptionist_espace/visit-participant-profile";
 
     }
@@ -1121,6 +1138,53 @@ public class ReceptionistController {
         return "redirect:/reception/visit-subscriber-profile?visitId=" + visit.getId();
     }
 
+    //======================Additional-service-for-participant-of-visit-room=====================
+    @PostMapping("add-Additional-service-for-participant-of-visit-room")
+    String addAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,Model model) {
+        model.addAttribute("participantVisitId",participantVisitId);
+        model.addAttribute("visitId",visitId);
+        return "Receptionist_espace/Additional-service-for-participant-of-visit-room-form";
+    }
+
+    @PostMapping("save-Additional-service-for-participant-of-visit-room")
+    String saveAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+        ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
+        assert participantOfvisitRoom != null;
+        participantOfvisitRoom.setService_suplementaire(service);
+        participantOfvisitRoom.setService_suplementaire_price(price);
+        participantOfvisitRoomRepository.save(participantOfvisitRoom);
+
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantOfvisitRoom.getId();
+    }
+    @PostMapping("update-Additional-service-for-participant-of-visit-room")
+    String updateAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,Model model) {
+        ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
+        model.addAttribute("participantOfvisitRoom", participantOfvisitRoom);
+        model.addAttribute("visitRoomId",visitId);
+        return "Receptionist_espace/update-Additional-service-for-participant-of-visit-room";
+    }
+
+    @PostMapping("save-update-Additional-service-for-participant-of-visit-room")
+    String saveUpdateAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+        ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
+        assert participantOfvisitRoom != null;
+        participantOfvisitRoom.setService_suplementaire(service);
+        participantOfvisitRoom.setService_suplementaire_price(price);
+        participantOfvisitRoomRepository.save(participantOfvisitRoom);
+
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantOfvisitRoom.getId();
+    }
+
+    @PostMapping("delete-Additional-service-for-participant-of-visit-room")
+    String deleteAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId) {
+        ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
+        assert participantOfvisitRoom != null;
+        participantOfvisitRoom.setService_suplementaire(null);
+        participantOfvisitRoom.setService_suplementaire_price(0);
+        participantOfvisitRoomRepository.save(participantOfvisitRoom);
+
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantOfvisitRoom.getId();
+    }
 
 
     //============================CHANGE PASSWORD=================================
