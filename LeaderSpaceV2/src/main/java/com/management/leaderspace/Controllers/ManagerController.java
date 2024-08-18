@@ -8,6 +8,7 @@ import com.management.leaderspace.model.DesignationForm;
 import com.management.leaderspace.model.NumberToWordsService;
 import com.management.leaderspace.model.QrCodeGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -51,6 +52,7 @@ public class ManagerController {
     private final ManagerServiceImp managerServiceImp;
     private final DomiciliationFactureRepository domiciliationFactureRepository;
     PasswordEncoder passwordEncoder;
+    private VisitOfTeamRepository visitOfTeamRepository;
 
     @GetMapping("/add-snack")
     public String showAddSnackForm() {
@@ -528,6 +530,13 @@ public class ManagerController {
         double sommeServiePriceSupplementaireOfVisits;
         double sommeServiceSuplimentaireOfVisitRoom;
         double sommeServiceSupplimentaiePriceOfDisk;
+        //////////////////////////////////////////////
+        List<VisitOfTeam> allVisitsOfTeamByDate = new ArrayList<>();
+        Map<UUID,Double> sommeSnacksAndBoissonsByVisitForTeam = new HashMap<>();
+        double sommeServiceSupplimentairePriceOfTeam;
+        double sommeSnacksAndBoissonsForVisitsTeam;
+
+        Map<UUID,Double> sommeSnacksAndBoissonsByVisitOfTeam = new HashMap<>();
         if (ch_date_debut != null && ch_date_fin != null) {
             if (ch_date_debut.isEmpty() || ch_date_fin.isEmpty()) {
                 return "redirect:/manager/turnover";
@@ -556,6 +565,13 @@ public class ManagerController {
                 sommeServiePriceSupplementaireOfVisits = visitRepository.sommeServiePriceSupplementaireOfVisits(dateDebut,dateFin);
                 sommeServiceSuplimentaireOfVisitRoom= visitOfRoomRepository.sommeServiceSuplimentaireOfVisitRoom(dateDebut,dateFin);
                 sommeServiceSupplimentaiePriceOfDisk = visitOfDeskRepository.sommeServiceSupplimentaiePriceOfDisk(dateDebut,dateFin);
+
+                ///////////////////////////////////////////////////
+                allVisitsOfTeamByDate = visitOfTeamRepository.allVisitOfTeamByDate(dateDebut,dateFin);
+                sommeSnacksAndBoissonsByVisitForTeam = managerService.sommeOfSnacksAndBoissonsByVisitFomTeam(allVisitsOfTeamByDate);
+                sommeServiceSupplimentairePriceOfTeam = visitOfTeamRepository.sommeServiceSupplimentaiePriceForTeams(dateDebut,dateFin);
+                sommeSnacksAndBoissonsForVisitsTeam=managerService.sommeSnacksAndBoissonsForVisitsTeam(sommeSnacksAndBoissonsByVisitOfTeam);
+
 
             }
             model.addAttribute("listAllVisitBetweenStartDayAndEndTime", listAllVisitsBetweenStartDayAndEndTime);
@@ -599,6 +615,12 @@ public class ManagerController {
             model.addAttribute("sommeServiePriceSupplementaireOfVisits",sommeServiePriceSupplementaireOfVisits);
             model.addAttribute("sommeServiceSuplimentaireOfVisitRoom",sommeServiceSuplimentaireOfVisitRoom);
             model.addAttribute("sommeServiceSupplimentaiePriceOfDisk",sommeServiceSupplimentaiePriceOfDisk);
+            //////////////////////////////////////////////////////////
+            model.addAttribute("allVisitsOfTeamByDate",allVisitsOfTeamByDate);
+            model.addAttribute("sommeSnacksAndBoissonsByVisitForTeam",sommeSnacksAndBoissonsByVisitForTeam);
+            model.addAttribute("sommeServiceSupplimentairePriceOfTeam",sommeServiceSupplimentairePriceOfTeam);
+            model.addAttribute("sommeSnacksAndBoissonsForVisitsTeam",sommeSnacksAndBoissonsForVisitsTeam);
+            model.addAttribute("totaleVisitsForTeams",sommeServiceSupplimentairePriceOfTeam+sommeSnacksAndBoissonsForVisitsTeam);
 
         }
         return "Manager_espace/turnover";
@@ -617,8 +639,9 @@ public class ManagerController {
         Map<LocalDate, Double> totaleVisitsDeskCharts = managerService.totaleVisitOfDesk(dateDebut, dateFin);
         Map<LocalDate, Double> totaleSubscriptionsCharts = managerServiceImp.totaleSubscriptions(dateDebut, dateFin);
         Map<LocalDate,Double> totaleContractsCherts = managerService.totaleContractsCherts(dateDebut,dateFin);
-        Map<LocalDate, Double> totaleTurnoverForCharts = managerServiceImp.totaleTurnoverForCharts(
-                new HashMap<>(totaleVisitsNormaleCharts), totaleVisitsRoomCharts, totaleVisitsDeskCharts, totaleSubscriptionsCharts,totaleContractsCherts);
+        Map<LocalDate,Double> totaleVisitsTeamsChartByDates = managerService.totaleVisitsTeamChartByDates(dateDebut,dateFin);
+        Map<LocalDate, Double> totaleTurnoverForCharts = managerService.totaleTurnoverForCharts(
+                new HashMap<>(totaleVisitsNormaleCharts), totaleVisitsRoomCharts, totaleVisitsDeskCharts,totaleVisitsTeamsChartByDates, totaleSubscriptionsCharts,totaleContractsCherts);
 
         List<String> labelsNormale = totaleVisitsNormaleCharts.keySet().stream()
                 .sorted()
@@ -673,6 +696,15 @@ public class ManagerController {
                 .map(date->totaleContractsCherts.get(LocalDate.parse(date)))
                 .collect(Collectors.toList());
 
+        List<String> labelsTeam = totaleVisitsTeamsChartByDates.keySet().stream()
+                .sorted()
+                        .map(LocalDate::toString)
+                                .collect(Collectors.toList());
+
+        List<Double> dataTeam = labelsTeam.stream()
+                .map(date->totaleVisitsTeamsChartByDates.get(LocalDate.parse(date)))
+                        .collect(Collectors.toList());
+
         // Ajouter les labels et les données au modèle
         model.addAttribute("labelsNormale", labelsNormale);
         model.addAttribute("dataNormale", dataNormale);
@@ -686,6 +718,8 @@ public class ManagerController {
         model.addAttribute("dataTurnover", dataTurnover);
         model.addAttribute("labelsContracts", labelsContracts);
         model.addAttribute("dataContracts", dataContracts);
+        model.addAttribute("labelsTeam",labelsTeam);
+        model.addAttribute("dataTeam", dataTeam);
         model.addAttribute("totaleTurnoverCherts",managerService.totaleTurnoverCherts(totaleTurnoverForCharts));
 
         return "Manager_espace/turnover-charts";

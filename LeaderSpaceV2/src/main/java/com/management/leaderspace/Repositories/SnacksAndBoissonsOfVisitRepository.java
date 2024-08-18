@@ -32,4 +32,7 @@ public interface SnacksAndBoissonsOfVisitRepository extends JpaRepository<Snacks
     @Query("select coalesce(sum(sbv.quantity*sbv.selling_price), 0.0) from SnacksAndBoissonsOfVisit sbv where sbv.visitOfDesk.id=:uuid")
     Double getTotalPriceOfSnacksAndBoissonsByVisitOfDesk(@Param("uuid") UUID uuid);
 
+    @Query("select coalesce(sum(sbv.quantity*sbv.selling_price), 0.0) from SnacksAndBoissonsOfVisit sbv where sbv.visitOfTeam.id=:uuid")
+    Double sommePriceOfSnacksAndBoissonsByVisitOfTeam(@Param("uuid") UUID uuid);
+
 }

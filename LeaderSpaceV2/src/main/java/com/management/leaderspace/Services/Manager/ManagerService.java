@@ -78,10 +78,15 @@ public interface ManagerService {
 
     Map<LocalDate,Double> totaleSubscriptions(LocalDate dateDebut, LocalDate dateFin);
 
-    Map<LocalDate,Double> totaleTurnoverForCharts(Map<LocalDate,Double> totaleVisitsNormaleCharts,Map<LocalDate,Double> totaleVisitsRoomCharts,Map<LocalDate,Double> totaleVisitOfDesk, Map<LocalDate,Double> totaleSubscriptions,Map<LocalDate,Double> totaleContractsCherts);
+    Map<LocalDate,Double> totaleTurnoverForCharts(Map<LocalDate,Double> totaleVisitsNormaleCharts,Map<LocalDate,Double> totaleVisitsRoomCharts,Map<LocalDate,Double> totaleVisitOfDesk, Map<LocalDate,Double> totaleVisitsTeamChartByDates, Map<LocalDate,Double> totaleSubscriptions,Map<LocalDate,Double> totaleContractsCherts);
 
     Map<LocalDate,Double> totaleContractsCherts(LocalDate dateDebut, LocalDate dateFin);
 
     Double totaleTurnoverCherts(Map<LocalDate, Double> totaleTurnoverForCharts);
 
+    Map<UUID,Double> sommeOfSnacksAndBoissonsByVisitFomTeam(List<VisitOfTeam> allVisitsOfTeam);
+
+    Double sommeSnacksAndBoissonsForVisitsTeam(Map<UUID,Double> sommeOfSnacksAndBoissonsByVisitFomTeam);
+
+    Map<LocalDate,Double> totaleVisitsTeamChartByDates(LocalDate dateDebut, LocalDate dateFin);
 }

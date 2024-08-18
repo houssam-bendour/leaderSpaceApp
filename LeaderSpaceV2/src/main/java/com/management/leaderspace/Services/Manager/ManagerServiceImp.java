@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.misc.LogManager;
 
 import org.springframework.boot.jdbc.metadata.DataSourcePoolMetadataProvider;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +34,7 @@ public class ManagerServiceImp implements ManagerService {
     private final VisitOfRoomRepository visitOfRoomRepository;
     private final DataSourcePoolMetadataProvider hikariPoolDataSourceMetadataProvider;
     private final VisitOfDeskRepository visitOfDeskRepository;
+    private final VisitOfTeamRepository visitOfTeamRepository;
     ManagerRepository managerRepository;
     DevisRepository devisRepository;
     DesignationRepository designationRepository;
@@ -484,7 +486,7 @@ public class ManagerServiceImp implements ManagerService {
                         for (SnacksAndBoissonsOfVisit snacksAndBoissonsOfVisit : participantOfvisitRoom.getSnacksAndBoissonsOfVisits()){
                             somme+=snacksAndBoissonsOfVisit.getQuantity()*snacksAndBoissonsOfVisit.getSelling_price();
                         }
-                        inerMap.put(participantOfvisitRoom.getId(), somme);
+                        inerMap.put(participantOfvisitRoom.getId(), somme+participantOfvisitRoom.getService_suplementaire_price());
 
                     }
                 }
@@ -581,7 +583,7 @@ public class ManagerServiceImp implements ManagerService {
                 Double somme = 0.0;
                 somme+=visitOfRoom.getService_room_price()+visitOfRoom.getService_suplementaire_price()+ snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByVisitOfRoom(visitOfRoom.getId());
                 for (ParticipantOfvisitRoom participantOfvisitRoom : visitOfRoom.getParticipant()) {
-                    somme+= snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByParticipant(participantOfvisitRoom.getId());
+                    somme+= snacksAndBoissonsOfVisitRepository.getTotalPriceOfSnacksAndBoissonsByParticipant(participantOfvisitRoom.getId())+participantOfvisitRoom.getService_suplementaire_price();
                 }
                 if (totaleVisitsRoomeCharts.containsKey(visitOfRoom.getDay())) {
                     somme+=totaleVisitsRoomeCharts.get(visitOfRoom.getDay());
@@ -627,7 +629,7 @@ public class ManagerServiceImp implements ManagerService {
     }
 
     @Override
-    public Map<LocalDate, Double> totaleTurnoverForCharts(Map<LocalDate, Double> totaleVisitsNormaleCharts, Map<LocalDate, Double> totaleVisitsRoomCharts, Map<LocalDate, Double> totaleVisitOfDesk, Map<LocalDate, Double> totaleSubscriptions, Map<LocalDate, Double> totaleContractsCherts) {
+    public Map<LocalDate, Double> totaleTurnoverForCharts(Map<LocalDate, Double> totaleVisitsNormaleCharts, Map<LocalDate, Double> totaleVisitsRoomCharts, Map<LocalDate, Double> totaleVisitOfDesk, Map<LocalDate,Double> totaleVisitsTeamChartByDates, Map<LocalDate, Double> totaleSubscriptions, Map<LocalDate, Double> totaleContractsCherts) {
 
         for (LocalDate date : totaleVisitsRoomCharts.keySet()) {
             if (totaleVisitsNormaleCharts.containsKey(date)) {
@@ -659,6 +661,13 @@ public class ManagerServiceImp implements ManagerService {
                 totaleVisitsNormaleCharts.put(date,totaleContractsCherts.get(date));
             }
         }
+        for (LocalDate date : totaleVisitsTeamChartByDates.keySet()) {
+            if (totaleVisitsNormaleCharts.containsKey(date)) {
+                totaleVisitsNormaleCharts.put(date, totaleVisitsNormaleCharts.get(date)+totaleVisitsTeamChartByDates.get(date));
+            }else {
+                totaleVisitsNormaleCharts.put(date,totaleVisitsTeamChartByDates.get(date));
+            }
+        }
         return totaleVisitsNormaleCharts;
     }
 
@@ -688,4 +697,41 @@ public class ManagerServiceImp implements ManagerService {
         return somme;
     }
 
+    @Override
+    public Map<UUID, Double> sommeOfSnacksAndBoissonsByVisitFomTeam(List<VisitOfTeam> allVisitsOfTeam) {
+        Map<UUID,Double> sommeMap = null;
+        if (!allVisitsOfTeam.isEmpty()) {
+            sommeMap = new HashMap<>();
+            for (VisitOfTeam visitOfTeam : allVisitsOfTeam) {
+                sommeMap.put(visitOfTeam.getId(),snacksAndBoissonsOfVisitRepository.sommePriceOfSnacksAndBoissonsByVisitOfTeam(visitOfTeam.getId()));
+            }
+        }
+        return sommeMap;
+    }
+
+    @Override
+    public Double sommeSnacksAndBoissonsForVisitsTeam(Map<UUID, Double> sommeOfSnacksAndBoissonsByVisitFomTeam) {
+        double somme = 0.0;
+        for (Double value : sommeOfSnacksAndBoissonsByVisitFomTeam.values()) {
+            somme+=value;
+        }
+        return somme;
+    }
+
+    @Override
+    public Map<LocalDate, Double> totaleVisitsTeamChartByDates(LocalDate dateDebut, LocalDate dateFin) {
+        List<VisitOfTeam> allVisitsTeam= visitOfTeamRepository.allVisitOfTeamByDate(dateDebut,dateFin);
+        Map<LocalDate,Double> totaleVisitsTeamCharts = new HashMap<>();
+        if (!allVisitsTeam.isEmpty()) {
+            for (VisitOfTeam visitOfTeam : allVisitsTeam) {
+                double somme = 0.0;
+                somme += visitOfTeam.getService_suplementaire_price()+snacksAndBoissonsOfVisitRepository.sommePriceOfSnacksAndBoissonsByVisitOfTeam(visitOfTeam.getId());
+                if (totaleVisitsTeamCharts.containsKey(visitOfTeam.getDay())) {
+                    somme+=totaleVisitsTeamCharts.get(visitOfTeam.getDay());
+                }
+                totaleVisitsTeamCharts.put(visitOfTeam.getDay(),somme);
+            }
+        }
+        return totaleVisitsTeamCharts;
+    }
 }

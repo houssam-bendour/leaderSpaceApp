@@ -15,7 +15,7 @@ public interface VisitOfDeskRepository extends JpaRepository<VisitOfDesk, UUID> 
     @Query("select v from VisitOfDesk v where v.day >= :day  order by v.StartTime DESC")
     List<VisitOfDesk> getVisitsTodayOfDesk(@Param("day") LocalDate localDate);
 
-    @Query("select vd from VisitOfDesk vd where vd.day>= :dateDebut and vd.day<= :dateFin")
+    @Query("select vd from VisitOfDesk vd where vd.day>= :dateDebut and vd.day<= :dateFin order by vd.day desc ,vd.StartTime desc ")
     List<VisitOfDesk> visitsOfTodayOfDesk(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
     @Query("select v from VisitOfDesk v order by v.day DESC, v.StartTime DESC")

@@ -68,7 +68,7 @@
             </div>
         </div>
     </div>
-    <div th:if="${!labelsNormale.isEmpty() || !labelsRoom.isEmpty() || !labelsDesk.isEmpty() || !labelsContracts.isEmpty()}">
+    <div th:if="${!labelsNormale.isEmpty() || !labelsRoom.isEmpty() || !labelsDesk.isEmpty() || !labelsContracts.isEmpty() || !labelsTeam.isEmpty()}">
         <div class="separator"></div>
         <div class="card shadow-lg grow" style="height: 450px;">
             <div class="card-body" style="height: 100%;">
@@ -109,6 +109,17 @@
                 </div>
             </div>
         </div>
+
+        <div class="separator"></div>
+        <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsTeam.isEmpty()}">
+            <div class="card-body" style="height: 100%;">
+                <h4>Les visites de bureau</h4>
+                <div style="height: 95%;">
+                    <canvas id="turnoverVisitsTeamChart" style="height: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsSubscriptions.isEmpty()}">
             <div class="card-body" style="height: 100%;">
@@ -269,6 +280,47 @@
                     data: dataDesk,
                     borderColor: 'rgba(255, 206, 86, 1)',
                     backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderWidth: 1,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Chiffre d\'affaires (MAD)'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+<!-- turnoverVisitsTeamChart.js -->
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        const labelsTeam = [[${labelsTeam}]];
+        const dataTeam = [[${dataTeam}]];
+        const ctxDesk = document.getElementById('turnoverVisitsTeamChart').getContext('2d');
+        ctxDesk.canvas.height = 190;
+        new Chart(ctxDesk, {
+            type: 'line',
+            data: {
+                labels: labelsTeam,
+                datasets: [{
+                    label: 'Visites de bureau',
+                    data: dataTeam,
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
                     borderWidth: 1,
                     fill: true,
                     tension: 0.3
