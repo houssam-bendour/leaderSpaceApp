@@ -12,7 +12,7 @@
         <form th:action="@{/}" method="get">
             <button type="submit">Cancel</button>
         </form>
-        <form th:action="@{/reception/add-snacks-to-visitor(visitId=${visit.id})}" method="post">
+        <form th:action="@{/reception/add-snacks-to-visit-of-team(visitId=${visit.id})}" method="post">
             <button type="submit">Add Snacks</button>
         </form>
         <form th:action="@{/reception/checkout(visitId=${visit.id})}" method="post">

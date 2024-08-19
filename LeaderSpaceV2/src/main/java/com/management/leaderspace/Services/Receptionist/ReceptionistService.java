@@ -72,4 +72,6 @@ public interface ReceptionistService {
     String newVisitOfTeamProfile(String result);
 
     VisitOfTeam createVisitForTeam(Utilisateur user);
+
+    void saveSnacksToVisitOfTeam(UUID visitId, SnackForm snackForm);
 }

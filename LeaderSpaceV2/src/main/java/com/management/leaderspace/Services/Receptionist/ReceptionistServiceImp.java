@@ -853,4 +853,62 @@ public class ReceptionistServiceImp implements ReceptionistService {
 
     }
 
+    @Override
+    public void saveSnacksToVisitOfTeam(UUID visitId, SnackForm snackForm) {
+        VisitOfTeam visit = visitOfTeamRepository.findById(visitId).orElseThrow(() -> new IllegalArgumentException("Invalid visit ID"));
+
+        List<SnacksAndBoissonsOfVisit> snacksList = visit.getSnacksAndBoissonsOfVisits();
+
+        snackForm.getSnackQuantities().forEach((snackId, quantity) -> {
+
+            if (quantity == null)
+                quantity = 0;
+
+            if (quantity > 0) {
+
+                SnacksAndBoissons snack = snacksAndBoissonsRepository.findById(snackId).orElseThrow(() -> new IllegalArgumentException("Invalid snack ID"));
+
+                boolean snackExists = false;
+
+                if (!snacksList.isEmpty()) {
+
+                    for (SnacksAndBoissonsOfVisit snackVisit : snacksList) {
+
+                        if (snackVisit.getSnacksAndBoissons().getId().equals(snackId)) {
+
+                            snackVisit.setQuantity(snackVisit.getQuantity() + quantity);
+
+                            snackExists = true;
+
+                            break;
+                        }
+                    }
+
+                }
+                if (!snackExists) {
+
+                    SnacksAndBoissonsOfVisit newSnackVisit = new SnacksAndBoissonsOfVisit();
+
+                    newSnackVisit.setSnacksAndBoissons(snack);
+
+                    newSnackVisit.setVisitOfTeam(visit);
+
+                    newSnackVisit.setQuantity(quantity);
+
+                    newSnackVisit.setSelling_price(snack.getSelling_price());
+
+                    newSnackVisit.setPurchase_price(snack.getPurchase_price());
+
+                    snacksList.add(newSnackVisit);
+                }
+                if (snack.getQuantity()!=null){
+                    snack.setQuantity(snack.getQuantity()-quantity);
+                    snacksAndBoissonsRepository.save(snack);
+                }
+            }
+        });
+
+        visitOfTeamRepository.save(visit);
+    }
+
 }

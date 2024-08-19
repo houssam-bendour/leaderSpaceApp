@@ -1302,4 +1302,39 @@ public class ReceptionistController {
         model.addAttribute("snacks", snacksAndBoissonsList);
         return "Receptionist_espace/visit-of-team-profile";
     }
+
+    @PostMapping("add-snacks-to-visit-of-team")
+    public String visitOfTeamSnacks(@RequestParam("visitId") UUID visitId, Model model) {
+
+        model.addAttribute("snaks", new SnackForm());
+
+        model.addAttribute("visitOfTeam_id", visitId);
+
+        List<SnacksAndBoissons> snacksAndBoissonsList = snacksAndBoissonsRepository.findAll();
+        // Convertir les images en Base64
+        for (SnacksAndBoissons snack : snacksAndBoissonsList) {
+
+            if (snack.getImage() != null) {
+
+                String base64Image = Base64.getEncoder().encodeToString(snack.getImage());
+
+                snack.setBase64Image(base64Image);
+            }
+        }
+
+        model.addAttribute("snacksAndBoissan", snacksAndBoissonsList);
+
+        return "/Receptionist_espace/add-snacks-to-visit-of-team";
+
+    }
+
+    @PostMapping("save-snacks-to-visit-of-team")
+    public String saveSnacksToVisitOfTeam(@RequestParam("visitId") UUID visitId, @ModelAttribute SnackForm snackForm) {
+
+        receptionistService.saveSnacksToVisitOfTeam(visitId,snackForm);
+
+        return "redirect:/reception/visit-of-team-profile?visitId=" + visitId;
+    }
+
+
 }

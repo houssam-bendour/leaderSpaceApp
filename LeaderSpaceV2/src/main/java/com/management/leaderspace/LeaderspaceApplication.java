@@ -65,7 +65,7 @@ public class LeaderspaceApplication {
 //            serviceType.setDuration(1L);
 //            serviceType.setNumber_of_Free_Drinks(0);
 //            serviceTypeRepository.save(serviceType);
-
+//
 //            NotSubscriber notSubscriber = new NotSubscriber();
 //            for (int i=0;i<10;i++) {
 //                notSubscriberRepository.save(notSubscriber);
