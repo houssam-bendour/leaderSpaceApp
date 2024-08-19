@@ -24,6 +24,8 @@ public class SnacksAndBoissons {
 
     private Long quantity;
 
+    private Integer requiredQuantity = null;
+
     private String type;
 
     @Lob

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface ManagerService {
     Manager getProfile();
-    public SnacksAndBoissons saveSnackWithImage(String name, double sellingPrice, double purchasePrice, String type, MultipartFile imageFile , Long quantity) throws IOException ;
+    public SnacksAndBoissons saveSnackWithImage(String name, double sellingPrice, double purchasePrice, Integer saveSnackWithImage, String type, MultipartFile imageFile , Long quantity) throws IOException ;
 
     List<SnacksAndBoissons> getAllSnacks();
     ServiceType getServiceById(UUID uuid);

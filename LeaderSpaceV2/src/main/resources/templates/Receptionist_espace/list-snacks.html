@@ -16,19 +16,19 @@
         </form>
     </div>
     <!-- Search form -->
-    <div class="search-form">
+    <!--<div class="search-form">
         <form th:action="@{/manager/snack-Search}" method="get">
             <input type="text" name="Name" placeholder="Search by name" />
             <button type="submit">Search</button>
         </form>
-    </div>
+    </div>-->
 </header>
 <main>
-    <div class="main-buttons">
+    <!--<div class="main-buttons">
         <form th:action="@{/manager/add-snack}" method="get">
             <button type="submit">add</button>
         </form>
-    </div>
+    </div>-->
     <table th:style="'border-spacing: 0 10px; border-collapse: separate;'">
         <thead>
         <tr>
@@ -39,11 +39,11 @@
             <th>purchase_price</th>
             <th>selling_price</th>
             <th>type</th>
-            <th>Action</th>
+<!--            <th>Action</th>-->
         </tr>
         </thead>
         <tbody>
-        <tr th:each="snack : ${snacks}" th:style="${(snack.quantity!=null && snack.quantity <= snack.requiredQuantity) ? 'background-color: #d45f6a; color: white;' : ''}" th:rowspan="2px">
+        <tr th:each="snack : ${snacks}" th:style="${(snack.quantity!=null && snack.quantity <= snack.requiredQuantity) ? 'background-color: #d45f6a; color: white;' : ''}">
             <td>
                 <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="QR Code" width="50"/>
             </td>
@@ -53,10 +53,10 @@
             <td th:text="${snack.purchase_price}">purchase price</td>
             <td th:text="${snack.selling_price}">selling price</td>
             <td th:text="${snack.type}">type</td>
-            <td>
+            <!--<td>
                 <a class="btn btn-secondary" th:href="@{/manager/new-quantity-snack(snack_id=${snack.id})}">New Quantity</a>
                 <a class="btn btn-secondary" th:href="@{/manager/update-snack(snack_id=${snack.id})}">Update</a>
-            </td>
+            </td>-->
         </tr>
         </tbody>
     </table>

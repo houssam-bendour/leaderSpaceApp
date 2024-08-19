@@ -64,11 +64,12 @@ public class ManagerController {
                            @RequestParam(required = false) Long quantity,
                            @RequestParam double purchasePrice,
                            @RequestParam double sellingPrice,
+                           @RequestParam(required = false) Integer requiredQuantity,
                            @RequestParam String type,
                            @RequestParam MultipartFile imageFile,
                            Model model) {
         try {
-            SnacksAndBoissons snack = managerServiceImp.saveSnackWithImage(name, sellingPrice, purchasePrice, type, imageFile, quantity);
+            SnacksAndBoissons snack = managerServiceImp.saveSnackWithImage(name, sellingPrice, purchasePrice, requiredQuantity, type, imageFile, quantity);
             model.addAttribute("snack", snack);
             model.addAttribute("success", "Snack ajouté avec succès");
         } catch (IOException e) {
@@ -120,6 +121,19 @@ public class ManagerController {
         snacksAndBoissonsHistory.setPurchase_time(currentTime);
 
         snacksAndBoissonsHistoryRepository.save(snacksAndBoissonsHistory);
+        return "redirect:/manager/list-snacks";
+    }
+
+    @GetMapping("update-snack")
+    public String updateSnack(@RequestParam UUID snack_id, Model model) {
+        SnacksAndBoissons snack = snacksAndBoissonsRepository.findById(snack_id).orElse(null);
+        model.addAttribute("snack", snack);
+        return "/Manager_espace/update-snack";
+    }
+
+    @PostMapping("updated-snack")
+    public String updatedSnack(@ModelAttribute SnacksAndBoissons snack, Model model) {
+        snacksAndBoissonsRepository.save(snack);
         return "redirect:/manager/list-snacks";
     }
 
@@ -856,35 +870,6 @@ public class ManagerController {
         return "redirect:/manager/list-subscribers";
     }
 
-    //====================Resubscribe==========================
-    @GetMapping("Resubscribe")
-    String getQrCodeScanner() {
-        return "Manager_espace/Resubscribe";
-    }
-
-    @GetMapping("Resubscribe-of-subscriber")
-    public String newVisit(@RequestParam("result") String result, Model model) {
-        Subscriber subscriber = subscriberRepository.findById(UUID.fromString(result)).orElse(null);
-        model.addAttribute("subscriber", subscriber);
-        List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAll();
-        model.addAttribute("subscriptionTypes", subscriptionTypes);
-        return "Manager_espace/Resubscribe-of-subscriber-form";
-    }
-
-    @PostMapping("save-Resubscribe-of-subscriber")
-    public String saveResubscribeOfSubscriber(@ModelAttribute Subscriber subscriber, @RequestParam("subscriptionType_id") UUID subscriptionType_id, Model model) {
-        managerService.saveResubscribeOfSubscriber(subscriber, subscriptionType_id);
-        return "redirect:/manager/Resubscription-completed-successfully?subscriberId=" + subscriber.getId();
-
-    }
-
-    @GetMapping("Resubscription-completed-successfully")
-    public String ResubscriptionCompletedSuccessfully(@RequestParam("subscriberId") UUID subscriberId, Model model) {
-        Subscriber subscriber1 = subscriberRepository.findById(subscriberId).orElse(null);
-        model.addAttribute("subscriber", subscriber1);
-        return "Manager_espace/Resubscription-completed-successfully";
-
-    }
     //==============================VISIT CRUD============================
 
     @GetMapping("visit")

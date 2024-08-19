@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Snack</title>
+    <link rel="stylesheet" type="text/css" href="/css/manager/add-snacks-form.css">
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <script th:src="@{/js/scripts.js}"></script>
+</head>
+<body>
+<header>
+    <h1 th:text="'Modifier la quantité minimale au snack : ' + ${snack.name}"></h1>
+    <a th:href="@{/manager/updated-snacks}" class="btn btn-secondary">Cancel</a>
+</header>
+
+<main>
+    <form th:action="@{/manager/updated-snack}" th:object="${snack}" method="post" >
+        <input type="hidden" th:field="*{id}" th:value="${snack.id}">
+        <input type="hidden" th:field="*{name}" th:value="${snack.name}">
+        <input type="hidden" th:field="*{selling_price}" th:value="${snack.selling_price}">
+        <input type="hidden" th:field="*{purchase_price}" th:value="${snack.purchase_price}">
+        <input type="hidden" th:field="*{quantity}" th:value="${snack.quantity}">
+        <input type="hidden" th:field="*{type}" th:value="${snack.type}">
+        <input type="hidden" th:field="*{image}" th:value="${snack.image}">
+        <div>
+            <label for="requiredQuantity">Quantité minimum :</label>
+            <input type="number" id="requiredQuantity" name="requiredQuantity">
+        </div>
+        <div>
+            <button type="submit">Modifier</button>
+        </div>
+    </form>
+</main>
+
+<footer>
+    <p>© 2024 Leader Space. Tous droits réservés.</p>
+</footer>
+</body>
+</html>

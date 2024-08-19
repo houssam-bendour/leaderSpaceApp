@@ -2,6 +2,8 @@ package com.management.leaderspace.Controllers;
 
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
+import com.management.leaderspace.Services.Manager.ManagerService;
+import com.management.leaderspace.Services.Manager.ManagerServiceImp;
 import com.management.leaderspace.Services.Receptionist.ReceptionistService;
 import com.management.leaderspace.Services.Receptionist.ReceptionistServiceImp;
 import com.management.leaderspace.model.SnackForm;
@@ -44,6 +46,8 @@ public class ReceptionistController {
     VisitOfDeskRepository visitOfDeskRepository;
 
     ParticipantOfvisitRoomRepository participantOfvisitRoomRepository;
+    ManagerService managerService;
+    ManagerServiceImp  managerServiceImp;
 
     @GetMapping("visit-subscriber")
     public String VisitSubscriber() {
@@ -1214,9 +1218,51 @@ public class ReceptionistController {
         receptionist.setPassword(passwordEncoder.encode(newPassword));
         receptionistRepository.save(receptionist);
         return "Receptionist_espace/password-changed-successfully";
+    }
+
+    //////////////////////////////////////////zt
+
+    @GetMapping("list-snacks")
+    public String snackStocke(Model model) {
+        List<SnacksAndBoissons> snacksAndBoissonsList = managerServiceImp.getAllSnacks();
+        // Convertir les images en Base64
+        for (SnacksAndBoissons snack : snacksAndBoissonsList) {
+            if (snack.getImage() != null) {
+                String base64Image = Base64.getEncoder().encodeToString(snack.getImage());
+                snack.setBase64Image(base64Image);
+            }
+        }
+        model.addAttribute("snacks", snacksAndBoissonsList);
+        return "Receptionist_espace/list-snacks";
+    }
+
+    //====================Resubscribe==========================
+    @GetMapping("Resubscribe")
+    String getQrCodeScanner() {
+        return "Receptionist_espace/Resubscribe";
+    }
+
+    @GetMapping("Resubscribe-of-subscriber")
+    public String newVisit(@RequestParam("result") String result, Model model) {
+        Subscriber subscriber = subscriberRepository.findById(UUID.fromString(result)).orElse(null);
+        model.addAttribute("subscriber", subscriber);
+        List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAll();
+        model.addAttribute("subscriptionTypes", subscriptionTypes);
+        return "Receptionist_espace/Resubscribe-of-subscriber-form";
+    }
+
+    @PostMapping("save-Resubscribe-of-subscriber")
+    public String saveResubscribeOfSubscriber(@ModelAttribute Subscriber subscriber, @RequestParam("subscriptionType_id") UUID subscriptionType_id, Model model) {
+        managerService.saveResubscribeOfSubscriber(subscriber, subscriptionType_id);
+        return "redirect:/reception/Resubscription-completed-successfully?subscriberId=" + subscriber.getId();
 
     }
 
+    @GetMapping("Resubscription-completed-successfully")
+    public String ResubscriptionCompletedSuccessfully(@RequestParam("subscriberId") UUID subscriberId, Model model) {
+        Subscriber subscriber1 = subscriberRepository.findById(subscriberId).orElse(null);
+        model.addAttribute("subscriber", subscriber1);
+        return "Receptionist_espace/Resubscription-completed-successfully";
 
-
+    }
 }

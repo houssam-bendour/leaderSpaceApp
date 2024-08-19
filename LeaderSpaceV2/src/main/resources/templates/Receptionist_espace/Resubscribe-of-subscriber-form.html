@@ -30,7 +30,7 @@
     <label>Phone: </label>
     <span th:text="${subscriber.phone}"></span>
 </div>
-<form th:action="@{/manager/save-Resubscribe-of-subscriber}" method="post" th:object="${subscriber}">
+<form th:action="@{/reception/save-Resubscribe-of-subscriber}" method="post" th:object="${subscriber}">
     <input type="hidden"  th:field="*{id}" th:value="${subscriber.id}">
     <label for="subscriptionType">Subscription Type:</label>
     <select id="subscriptionType" name="subscriptionType_id">

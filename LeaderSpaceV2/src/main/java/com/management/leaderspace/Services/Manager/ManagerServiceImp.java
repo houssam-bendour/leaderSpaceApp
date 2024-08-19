@@ -62,11 +62,12 @@ public class ManagerServiceImp implements ManagerService {
     }
 
     @Override
-    public SnacksAndBoissons saveSnackWithImage(String name, double sellingPrice, double purchasePrice, String type, MultipartFile imageFile, Long quantity) throws IOException {
+    public SnacksAndBoissons saveSnackWithImage(String name, double sellingPrice, double purchasePrice, Integer requiredQuantity, String type, MultipartFile imageFile, Long quantity) throws IOException {
         SnacksAndBoissons snack = new SnacksAndBoissons();
         snack.setName(name);
         snack.setSelling_price(sellingPrice);
         snack.setPurchase_price(purchasePrice);
+        snack.setRequiredQuantity(requiredQuantity);
         snack.setType(type);
         if (!imageFile.isEmpty()) {
             byte[] imageData = imageFile.getBytes();
