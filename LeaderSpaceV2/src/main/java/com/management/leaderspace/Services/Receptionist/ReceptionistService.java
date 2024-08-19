@@ -67,4 +67,9 @@ public interface ReceptionistService {
 
     void updateQuantityStockOfSnackOrBoisson(List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisit);
 
+    String newVisitOfTeam(String result);
+
+    String newVisitOfTeamProfile(String result);
+
+    VisitOfTeam createVisitForTeam(Utilisateur user);
 }

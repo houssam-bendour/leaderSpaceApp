@@ -18,4 +18,6 @@ public interface VisitOfTeamRepository extends JpaRepository<VisitOfTeam, UUID> 
     Double sommeServiceSupplimentaiePriceForTeams(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
 
+    @Query("select v from VisitOfTeam v where v.utilisateur.id = :id and v.day = :day and v.EndTime is null")
+    VisitOfTeam getByDateAndUserAndEndTime(@Param("id") UUID id, @Param("day") LocalDate localDate);
 }

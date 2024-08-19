@@ -48,6 +48,7 @@ public class ReceptionistController {
     ParticipantOfvisitRoomRepository participantOfvisitRoomRepository;
     ManagerService managerService;
     ManagerServiceImp  managerServiceImp;
+    VisitOfTeamRepository visitOfTeamRepository;
 
     @GetMapping("visit-subscriber")
     public String VisitSubscriber() {
@@ -1264,5 +1265,41 @@ public class ReceptionistController {
         model.addAttribute("subscriber", subscriber1);
         return "Receptionist_espace/Resubscription-completed-successfully";
 
+    }
+    //====================visit of team=============================
+    @GetMapping("visit-of-team")
+    String VisitOfTeam() {
+        return "Receptionist_espace/visit-of-team";
+    }
+
+    @GetMapping("new-visit-of-team")
+    public String newVisitOfTeam(@RequestParam("result") String result) {
+        return receptionistService.newVisitOfTeam(result);
+    }
+
+    @GetMapping("new-visit-of-team-profile")
+    public String newVisitOfTeamProfile(@RequestParam("userId") String result) {
+        return receptionistService.newVisitOfTeamProfile(result);
+    }
+
+    @GetMapping("visit-of-team-profile")
+    public String visitOfTeamProfile(@RequestParam("visitId") UUID visitId ,Model model) {
+        VisitOfTeam visitOfTeam= visitOfTeamRepository.findById(visitId).orElse(null);
+        assert visitOfTeam != null;
+        model.addAttribute("visit", visitOfTeam);
+        List<SnacksAndBoissonsOfVisit> snacksAndBoissonsList = visitOfTeam.getSnacksAndBoissonsOfVisits();
+        // Convertir les images en Base64
+
+        for (SnacksAndBoissonsOfVisit snack : snacksAndBoissonsList) {
+
+            if (snack.getSnacksAndBoissons().getImage() != null) {
+
+                String base64Image = Base64.getEncoder().encodeToString(snack.getSnacksAndBoissons().getImage());
+
+                snack.getSnacksAndBoissons().setBase64Image(base64Image);
+            }
+        }
+        model.addAttribute("snacks", snacksAndBoissonsList);
+        return "Receptionist_espace/visit-of-team-profile";
     }
 }

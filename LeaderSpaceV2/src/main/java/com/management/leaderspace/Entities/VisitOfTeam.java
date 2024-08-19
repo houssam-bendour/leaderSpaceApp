@@ -18,6 +18,9 @@ public class VisitOfTeam {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @ManyToOne
+    @JoinColumn(name = "utilisateur_id")
+    private Utilisateur utilisateur;
 
     @Temporal(TemporalType.DATE)
     private LocalDate day;

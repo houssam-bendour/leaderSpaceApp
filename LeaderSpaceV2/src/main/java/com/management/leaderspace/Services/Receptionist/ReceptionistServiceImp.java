@@ -32,6 +32,8 @@ public class ReceptionistServiceImp implements ReceptionistService {
     SnacksAndBoissonsRepository snacksAndBoissonsRepository;
     SubscriptionHistoryRepository subscriptionHistoryRepository;
     ParticipantOfvisitRoomRepository participantOfvisitRoomRepository;
+    UtilisateurRepository utilisateurRepository;
+    VisitOfTeamRepository visitOfTeamRepository;
 
     @Override
     public Receptionist getProfile() {
@@ -792,5 +794,63 @@ public class ReceptionistServiceImp implements ReceptionistService {
         }
     }
 
+    @Override
+    public String newVisitOfTeam(String result) {
+        Utilisateur user = utilisateurRepository.findById(UUID.fromString(result)).orElse(null);
+        if(user==null)
+            return "redirect:/reception/visit-of-team";
+        if(user.getDiscriminatorValue().equals("SUBSCRIBER") || user.getDiscriminatorValue().equals("BUSINESS")){
+            return "redirect:/reception/visit-of-team";
+        }else{
+            return "redirect:/reception/new-visit-of-team-profile?userId=" + user.getId().toString();
+        }
+    }
+
+    @Override
+    public String newVisitOfTeamProfile(String result) {
+        try {
+            Utilisateur user = utilisateurRepository.findById(UUID.fromString(result)).orElse(null);
+
+            ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+
+            ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+            LocalDate localDate = moroccoDateTime.toLocalDate();
+
+            VisitOfTeam visitOfTeam = visitOfTeamRepository.getByDateAndUserAndEndTime(user.getId(), localDate);
+
+            if (visitOfTeam != null)
+                return "redirect:/reception/visit-of-team-profile?visitId=" + visitOfTeam.getId();
+
+            VisitOfTeam newVisitOfTeam = createVisitForTeam(user);
+
+            return "redirect:/reception/visit-of-team-profile?visitId=" + newVisitOfTeam.getId();
+        } catch (Exception e) {
+
+            return "error";
+        }
+    }
+    @Override
+    public VisitOfTeam createVisitForTeam(Utilisateur user) {
+
+        VisitOfTeam newVisit = new VisitOfTeam();
+
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalDate localDate = moroccoDateTime.toLocalDate();
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        newVisit.setDay(localDate);
+
+        newVisit.setStartTime(localTime);
+
+        newVisit.setUtilisateur(user);
+
+        return visitOfTeamRepository.save(newVisit);
+
+    }
 
 }
