@@ -53,6 +53,7 @@ public class ManagerController {
     private final DomiciliationFactureRepository domiciliationFactureRepository;
     PasswordEncoder passwordEncoder;
     private VisitOfTeamRepository visitOfTeamRepository;
+    private CaisseRepository caisseRepository;
 
     @GetMapping("/add-snack")
     public String showAddSnackForm() {
@@ -1030,6 +1031,13 @@ public class ManagerController {
         if(contrat.getLangue().equals("fr"))
             return "Manager_espace/new-contrat-fr-pdf";
         return "Manager_espace/new-contrat-ar-pdf";
+    }
+
+    @GetMapping("caisse")
+    String getCaisse(Model model){
+        List<Caisse> caisse = caisseRepository.findAll();
+        model.addAttribute("caisse", caisse);
+        return "Manager_espace/caisse";
     }
 
 }

@@ -68,7 +68,7 @@ public class HomeController {
 
     @GetMapping("/Business-Home")
     public String homeBusiness(Model model) {
-        Business business= businessService.getProfile();
+        Business business = businessService.getProfile();
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(business.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", business);

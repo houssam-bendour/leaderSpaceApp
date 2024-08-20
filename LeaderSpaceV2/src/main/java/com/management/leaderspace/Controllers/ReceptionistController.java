@@ -50,6 +50,7 @@ public class ReceptionistController {
     ManagerService managerService;
     ManagerServiceImp  managerServiceImp;
     VisitOfTeamRepository visitOfTeamRepository;
+    CaisseRepository caisseRepository;
 
     @GetMapping("visit-subscriber")
     public String VisitSubscriber() {
@@ -676,6 +677,8 @@ public class ReceptionistController {
 
         ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
 
+        Caisse caisse = new Caisse();
+
         ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
 
         LocalTime localTime = moroccoDateTime.toLocalTime();
@@ -801,6 +804,16 @@ public class ReceptionistController {
 
         model.addAttribute("msg", msg);
 
+        caisse.setDate(moroccoDateTime.toLocalDate());
+
+        caisse.setTime(localTime);
+
+        caisse.setSomme(total);
+
+        caisse.setTotale_caisse(total+10);
+
+        caisseRepository.save(caisse);
+
         return "/Receptionist_espace/visitor-checkout";
     }
 
@@ -808,6 +821,8 @@ public class ReceptionistController {
     public String checkoutNotSubscriber(@RequestParam("visitId") UUID visitId, Model model) {
 
         Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new IllegalArgumentException("Invalid visit Id"));
+
+        Caisse caisse = new Caisse();
 
         ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
 
@@ -830,6 +845,8 @@ public class ReceptionistController {
         sortedSnacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
 
         double total = 0;
+
+        System.out.println("total1 ====="+total);
 
         double priceOfVisit;
 
@@ -863,6 +880,7 @@ public class ReceptionistController {
                 if (hours <6) {
 
                         s.setQuantity(s.getQuantity() - 1);
+
 
                         total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
@@ -910,12 +928,24 @@ public class ReceptionistController {
         }
         visit.setService_price(priceOfVisit);
 
-
+        Caisse cs = caisseRepository.findTopByOrderByDateTimeDesc().getFirst();
+        System.out.println("last caisse : "+cs);
         model.addAttribute("visit", visitRepository.save(visit));
-
+        System.out.println("total ==="+total);
+        System.out.println("priceofvisit ==="+priceOfVisit);
         model.addAttribute("total", total+priceOfVisit);
 
         model.addAttribute("msg", msg);
+
+        caisse.setDate(moroccoDateTime.toLocalDate());
+
+        caisse.setTime(localTime);
+
+        caisse.setSomme(total+priceOfVisit);
+
+        caisse.setTotale_caisse(total+priceOfVisit+cs.getTotale_caisse());
+
+        caisseRepository.save(caisse);
 
         return "/Receptionist_espace/not-subscriber-checkout";
     }
@@ -1350,6 +1380,7 @@ public class ReceptionistController {
 
         return "redirect:/reception/visit-of-team-profile?visitId=" + visitId;
     }
+
 
 
     @PostMapping("visit-of-team-checkout")
