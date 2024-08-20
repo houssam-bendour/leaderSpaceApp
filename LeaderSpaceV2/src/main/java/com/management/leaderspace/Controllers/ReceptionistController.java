@@ -113,7 +113,14 @@ public class ReceptionistController {
     }
     @GetMapping("visit-of-room")
     public String saveVisitOfRoom(@RequestParam("visitId") UUID visitId, Model model) {
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
 
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+        LocalDate localDate=moroccoDateTime.toLocalDate();
+        model.addAttribute("time",localTime);
+        model.addAttribute("day",localDate);
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         assert visitOfRoom != null;
         List<SnacksAndBoissonsOfVisit> snacks=visitOfRoom.getSnacksAndBoissonsOfVisitRoom();
@@ -137,7 +144,14 @@ public class ReceptionistController {
 
     @GetMapping("visit-of-desk")
     public String saveVisitOfDesk(@RequestParam("visitId") UUID visitId, Model model) {
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
 
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+        LocalDate localDate=moroccoDateTime.toLocalDate();
+        model.addAttribute("time",localTime);
+        model.addAttribute("day",localDate);
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
         List<SnacksAndBoissonsOfVisit> snacks=visitOfDesk.getSnacksAndBoissonsOfVisits();
@@ -1337,4 +1351,127 @@ public class ReceptionistController {
     }
 
 
+    @PostMapping("visit-of-team-checkout")
+    public String VisitOfTeamCheckout(@RequestParam("visitId") UUID visitId, Model model) {
+
+        VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
+        assert visitOfTeam != null;
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        visitOfTeam.setEndTime(localTime);
+
+        List<SnacksAndBoissonsOfVisit> snacks=visitOfTeam.getSnacksAndBoissonsOfVisits();
+        snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getPurchase_price(), s1.getSnacksAndBoissons().getPurchase_price()));
+        double total=0;
+        Map<UUID, String> msg = new HashMap<>();
+        for (SnacksAndBoissonsOfVisit snack:snacks) {
+            if (snack.getSnacksAndBoissons().getImage() != null) {
+
+                String base64Image = Base64.getEncoder().encodeToString(snack.getSnacksAndBoissons().getImage());
+
+                snack.getSnacksAndBoissons().setBase64Image(base64Image);
+            }
+            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getPurchase_price() <= 4 && !visitOfTeam.isFreeBoissons() ) {
+                snack.setQuantity(snack.getQuantity() - 1);
+                total += snack.getQuantity() * snack.getPurchase_price();
+                visitOfTeam.setFreeBoissons(true);
+
+                msg.put(snack.getId(), "(1 free)");
+            }
+            total += snack.getQuantity() * snack.getPurchase_price();
+        }
+        visitOfTeamRepository.save(visitOfTeam);
+        model.addAttribute("msg",msg);
+        model.addAttribute("total", total);
+        model.addAttribute("visit", visitOfTeam);
+        return "Receptionist_espace/visit-of-team-checkout";
+
+    }
+    //======================Additional-service-of-visit-team=====================
+    @PostMapping("add-Additional-service-of-visit-team")
+    String addAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,Model model) {
+        model.addAttribute("visitTeamId",visitId);
+        return "Receptionist_espace/Additional-service-of-visit-team-form";
+    }
+
+    @PostMapping("save-Additional-service-of-visit-team")
+    String saveAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+        VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
+        assert visitOfTeam != null;
+        visitOfTeam.setService_suplementaire(service);
+        visitOfTeam.setService_suplementaire_price(price);
+        visitOfTeamRepository.save(visitOfTeam);
+
+        return "redirect:/reception/visit-of-team-profile?visitId=" + visitOfTeam.getId();
+    }
+    @PostMapping("update-Additional-service-of-visit-team")
+    String updateAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,Model model) {
+        VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
+        model.addAttribute("visit", visitOfTeam);
+        model.addAttribute("visitTeamId",visitId);
+        return "Receptionist_espace/update-Additional-service-of-visit-team-form";
+    }
+
+    @PostMapping("save-update-Additional-service-of-visit-team")
+    String saveUpdateAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+        VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
+        assert visitOfTeam != null;
+        visitOfTeam.setService_suplementaire(service);
+        visitOfTeam.setService_suplementaire_price(price);
+        visitOfTeamRepository.save(visitOfTeam);
+
+        return "redirect:/reception/visit-of-team-profile?visitId=" + visitOfTeam.getId();
+    }
+
+    @PostMapping("delete-Additional-service-of-visit-team")
+    String deleteAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId) {
+        VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
+        assert visitOfTeam != null;
+        visitOfTeam.setService_suplementaire(null);
+        visitOfTeam.setService_suplementaire_price(0);
+        visitOfTeamRepository.save(visitOfTeam);
+
+        return "redirect:/reception/visit-of-team-profile?visitId=" + visitOfTeam.getId();
+    }
+
+    @PostMapping("delete-snack-for-vist-team")
+    public String deleteSnackForVisitTeam(@RequestParam("visitTeamId") UUID visitId, @RequestParam("snackId") UUID snackId) {
+
+        receptionistService.deleteSnackForVisitTeam(visitId , snackId);
+        return "redirect:/reception/visit-of-team-profile?visitId=" + visitId;
+    }
+
+    @PostMapping("/update-snack-form-for-visit-team")
+    public String showUpdateSnackFormForVisitTeam(@RequestParam("visitTeamId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
+
+        try {
+            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+
+            model.addAttribute("snack", snack);
+
+            SnacksAndBoissonsOfVisit snackVisit = snacksAndBoissonsOfVisitRepository.getByVisitOfTeamIdAndSnackId(visitId, snackId);
+
+            model.addAttribute("visitId", visitId);
+
+            model.addAttribute("snackAndBoisson", snackVisit.getSnacksAndBoissons());
+
+            model.addAttribute("quantity", snackVisit.getQuantity());
+
+            return "/Receptionist_espace/update-snack-form-for-Team";
+        } catch (Exception e) {
+
+            return e.getMessage();
+        }
+    }
+    @PostMapping("/update-snack-for-visit-of-team")
+    public String updateSnackForTeam(@RequestParam UUID visitId, @RequestParam UUID snackId, @RequestParam int quantity) {
+
+        receptionistService.updateSnackQuantityForTeam(visitId, snackId, quantity);
+
+        return "redirect:/reception/visit-of-team-profile?visitId=" + visitId;
+    }
 }

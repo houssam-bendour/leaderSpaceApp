@@ -74,4 +74,8 @@ public interface ReceptionistService {
     VisitOfTeam createVisitForTeam(Utilisateur user);
 
     void saveSnacksToVisitOfTeam(UUID visitId, SnackForm snackForm);
+
+    void deleteSnackForVisitTeam(UUID visitId, UUID snackId);
+
+    void updateSnackQuantityForTeam(UUID visitId, UUID snackId, int quantity);
 }

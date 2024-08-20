@@ -911,4 +911,45 @@ public class ReceptionistServiceImp implements ReceptionistService {
         visitOfTeamRepository.save(visit);
     }
 
+    @Override
+    public void deleteSnackForVisitTeam(UUID visitId, UUID snackId) {
+        VisitOfTeam visit = visitOfTeamRepository.findById(visitId).orElseThrow(() -> new IllegalArgumentException("Invalid visit ID"));
+
+        List<SnacksAndBoissonsOfVisit> snacksList = visit.getSnacksAndBoissonsOfVisits();
+
+        SnacksAndBoissonsOfVisit snackVisit = snacksList.stream()
+                .filter(sv -> sv.getSnacksAndBoissons().getId().equals(snackId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Snack not found in visit"));
+
+        snacksList.remove(snackVisit);
+
+        visitOfTeamRepository.save(visit);
+    }
+
+    @Override
+    public void updateSnackQuantityForTeam(UUID visitId, UUID snackId, int quantity) {
+        VisitOfTeam visit = visitOfTeamRepository.findById(visitId).orElseThrow(() -> new RuntimeException("Visit not found"));
+
+        Optional<SnacksAndBoissonsOfVisit> optionalSnacksAndBoissonsOfVisit = visit.getSnacksAndBoissonsOfVisits()
+                .stream()
+                .filter(snack -> snack.getSnacksAndBoissons().getId().equals(snackId))
+                .findFirst();
+
+        if (optionalSnacksAndBoissonsOfVisit.isPresent()) {
+            SnacksAndBoissonsOfVisit snacksAndBoissonsOfVisit = optionalSnacksAndBoissonsOfVisit.get();
+            SnacksAndBoissons snacksAndBoissons = snacksAndBoissonsOfVisit.getSnacksAndBoissons();
+            if (snacksAndBoissons.getQuantity()!=null){
+                int q1 =  quantity-snacksAndBoissonsOfVisit.getQuantity();
+                snacksAndBoissons.setQuantity(snacksAndBoissons.getQuantity()-q1);
+                snacksAndBoissonsRepository.save(snacksAndBoissons);
+            }
+            snacksAndBoissonsOfVisit.setQuantity(quantity);
+            // Save the updated entity
+            snacksAndBoissonsOfVisitRepository.save(snacksAndBoissonsOfVisit);
+        } else {
+            throw new RuntimeException("Snack not found for the given visit");
+        }
+    }
+
 }
