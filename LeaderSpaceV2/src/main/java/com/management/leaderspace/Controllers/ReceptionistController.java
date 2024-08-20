@@ -26,6 +26,7 @@ public class ReceptionistController {
 
     private final ReceptionistServiceImp receptionistServiceImp;
     private final ReceptionistRepository receptionistRepository;
+    private final UtilisateurRepository utilisateurRepository;
     PasswordEncoder passwordEncoder;
 
     ReceptionistService receptionistService;
@@ -134,7 +135,7 @@ public class ReceptionistController {
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            total+=snack.getQuantity()*snack.getPurchase_price();
+            total+=snack.getQuantity()*snack.getSelling_price();
         }
         model.addAttribute("total", total);
         model.addAttribute("visitOfRoom", visitOfRoom);
@@ -172,7 +173,7 @@ public class ReceptionistController {
 //
 //                msg.put(snack.getId(), "(1 free)");
 //            }
-            total += snack.getQuantity() * snack.getPurchase_price();
+            total += snack.getQuantity() * snack.getSelling_price();
         }
 //        model.addAttribute("msg",msg);
         model.addAttribute("total", total);
@@ -187,7 +188,7 @@ public class ReceptionistController {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
         List<SnacksAndBoissonsOfVisit> snacks=visitOfDesk.getSnacksAndBoissonsOfVisits();
-        snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getPurchase_price(), s1.getSnacksAndBoissons().getPurchase_price()));
+        snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
         double total=visitOfDesk.getService_desk_price();
         Map<UUID, String> msg = new HashMap<>();
         for (SnacksAndBoissonsOfVisit snack:snacks) {
@@ -197,14 +198,14 @@ public class ReceptionistController {
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getPurchase_price() <= 4 && !visitOfDesk.isFreeBoissons() ) {
+            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getSelling_price() <= 4 && !visitOfDesk.isFreeBoissons() ) {
                 snack.setQuantity(snack.getQuantity() - 1);
-                total += snack.getQuantity() * snack.getPurchase_price();
+                total += snack.getQuantity() * snack.getSelling_price();
                 visitOfDesk.setFreeBoissons(true);
 
                 msg.put(snack.getId(), "(1 free)");
             }
-            total += snack.getQuantity() * snack.getPurchase_price();
+            total += snack.getQuantity() * snack.getSelling_price();
         }
         model.addAttribute("msg",msg);
         model.addAttribute("total", total);
@@ -691,7 +692,7 @@ public class ReceptionistController {
 
         receptionistServiceImp.updateQuantityStockOfSnackOrBoisson(sortedSnacks);
 
-        sortedSnacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getPurchase_price(), s1.getSnacksAndBoissons().getPurchase_price()));
+        sortedSnacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
 
         double total = 0;
 
@@ -700,7 +701,7 @@ public class ReceptionistController {
         Map<UUID, String> msg = new HashMap<>();
         for (SnacksAndBoissonsOfVisit s : sortedSnacks) {
 
-            if (s.getSnacksAndBoissons().getType().equals("Boisson") && s.getSnacksAndBoissons().getPurchase_price() <= 4 && s.getVisit().getSubscriber().getSubscription_type().getNumber_of_Free_Drinks_of_day() > numberOfFreeBoissons) {
+            if (s.getSnacksAndBoissons().getType().equals("Boisson") && s.getSnacksAndBoissons().getSelling_price() <= 4 && s.getVisit().getSubscriber().getSubscription_type().getNumber_of_Free_Drinks_of_day() > numberOfFreeBoissons) {
 
                 if (s.getVisit().getSubscriber().getSubscription_type().getHour_of_day() > hours) {
 
@@ -708,7 +709,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 2);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons += 2;
 
@@ -718,7 +719,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 1);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons++;
 
@@ -731,7 +732,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 2);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons += 2;
 
@@ -741,7 +742,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 1);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons++;
 
@@ -752,7 +753,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 2);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons += 2;
 
@@ -762,7 +763,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 1);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons++;
 
@@ -771,7 +772,7 @@ public class ReceptionistController {
                 }
             } else {
 
-                total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
             }
 
         }
@@ -826,7 +827,7 @@ public class ReceptionistController {
 
         receptionistServiceImp.updateQuantityStockOfSnackOrBoisson(sortedSnacks);
 
-        sortedSnacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getPurchase_price(), s1.getSnacksAndBoissons().getPurchase_price()));
+        sortedSnacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
 
         double total = 0;
 
@@ -857,13 +858,13 @@ public class ReceptionistController {
 
         for (SnacksAndBoissonsOfVisit s : sortedSnacks) {
 
-            if (s.getSnacksAndBoissons().getType().equals("Boisson") && numberOfFreeBoissons>0) {
+            if (s.getSnacksAndBoissons().getType().equals("Boisson") && s.getSnacksAndBoissons().getSelling_price()<=4 && numberOfFreeBoissons>0) {
 
                 if (hours <6) {
 
                         s.setQuantity(s.getQuantity() - 1);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons -= 1;
 
@@ -873,7 +874,7 @@ public class ReceptionistController {
 
                     s.setQuantity(s.getQuantity() - 1);
 
-                    total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                    total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                     numberOfFreeBoissons -= 1;
 
@@ -884,7 +885,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 2);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons += 2;
 
@@ -894,7 +895,7 @@ public class ReceptionistController {
 
                         s.setQuantity(s.getQuantity() - 1);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons++;
 
@@ -903,7 +904,7 @@ public class ReceptionistController {
                 }
             } else {
 
-                total += s.getQuantity() * s.getSnacksAndBoissons().getPurchase_price();
+                total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
             }
 
         }
@@ -950,7 +951,7 @@ public class ReceptionistController {
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            total+=snack.getSnacksAndBoissons().getPurchase_price()*snack.getQuantity();
+            total+=snack.getSnacksAndBoissons().getSelling_price()*snack.getQuantity();
         }
         model.addAttribute("snacks", snacksAndBoissonsList);
         model.addAttribute("participantId",participantId);
@@ -1365,7 +1366,7 @@ public class ReceptionistController {
         visitOfTeam.setEndTime(localTime);
 
         List<SnacksAndBoissonsOfVisit> snacks=visitOfTeam.getSnacksAndBoissonsOfVisits();
-        snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getPurchase_price(), s1.getSnacksAndBoissons().getPurchase_price()));
+        snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
         double total=0;
         Map<UUID, String> msg = new HashMap<>();
         for (SnacksAndBoissonsOfVisit snack:snacks) {
@@ -1375,14 +1376,14 @@ public class ReceptionistController {
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getPurchase_price() <= 4 && !visitOfTeam.isFreeBoissons() ) {
+            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getSelling_price() <= 4 && !visitOfTeam.isFreeBoissons() ) {
                 snack.setQuantity(snack.getQuantity() - 1);
-                total += snack.getQuantity() * snack.getPurchase_price();
+                total += snack.getQuantity() * snack.getSelling_price();
                 visitOfTeam.setFreeBoissons(true);
 
                 msg.put(snack.getId(), "(1 free)");
             }
-            total += snack.getQuantity() * snack.getPurchase_price();
+            total += snack.getQuantity() * snack.getSelling_price();
         }
         visitOfTeamRepository.save(visitOfTeam);
         model.addAttribute("msg",msg);
@@ -1474,4 +1475,14 @@ public class ReceptionistController {
 
         return "redirect:/reception/visit-of-team-profile?visitId=" + visitId;
     }
+
+    @PostMapping("/badge")
+    public String showBadge(@RequestParam("userId") UUID userId ,@RequestParam("qrCodeBase64") String qrCodeBase64,Model model) {
+
+        Utilisateur user= utilisateurRepository.findById(userId).get();
+        model.addAttribute("user", user);
+        model.addAttribute("qrCodeBase64", qrCodeBase64);
+        return "Receptionist_espace/myBadge";
+    }
+
 }

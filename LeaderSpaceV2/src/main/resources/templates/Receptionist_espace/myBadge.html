@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patterned Card</title>
+  <style>
+    /* Styles CSS précédents */
+    :root {
+      --card-width: 13em;
+      --card-height: 19em;
+      --border-radius: 0.5em;
+      --shadow: 2px 2px 17px #000;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #333;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    .card {
+      width: var(--card-width);
+      height: var(--card-height);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1em;
+      color: #000;
+      font-family: Arial, sans-serif;
+      background-size: cover;
+      background-image:
+              repeating-linear-gradient(45deg, transparent 0, transparent 32px, rgba(255, 255, 255, 0.7) 32px, rgba(255, 255, 255, 0.7) 44px, transparent 44px, transparent 56px, rgba(255, 255, 255, 0.7) 56px, rgba(255, 255, 255, 0.7) 68px, transparent 0),
+              repeating-linear-gradient(-45deg, transparent 0, transparent 32px, rgba(255, 255, 255, 0.7) 32px, rgba(255, 255, 255, 0.7) 44px, transparent 44px, transparent 56px, rgba(255, 255, 255, 0.7) 56px, rgba(255, 255, 255, 0.7) 68px, transparent 0),
+              linear-gradient(to bottom left, #FC354C, #0ABFBC);
+    }
+
+    .card .logo {
+      width: 4em;
+      height: 4em;
+      margin-bottom: 1em;
+    }
+
+    .card .member-picture {
+      width: 4em;
+      height: 14em;
+      border-radius: 50%;
+      border: 0.2em solid #000;
+      margin-bottom: 1em;
+      object-fit: cover;
+    }
+
+    .card .name {
+      font-size: 1em;
+      font-weight: bold;
+      margin-bottom: 1em;
+    }
+
+    .card .qr-code {
+      width: 5em;
+      height: 20em;
+      border: 0.2em solid #000;
+      margin-bottom: 1em;
+      object-fit: cover;
+    }
+
+    .card .qr-code img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .download-button {
+      margin-bottom: 1em;
+      padding: 0.5em 1em;
+      font-size: 1em;
+      border: none;
+      border-radius: 0.3em;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+<button class="download-button" onclick="downloadPDF()">Download as PDF</button>
+<div class="card" id="card">
+  <img src="data:image/png;base64,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" alt="Company Logo" class="logo" />
+  <img src="https://avatars.githubusercontent.com/u/114355387?v=4&size=64" alt="Member Picture" class="member-picture" />
+  <div class="name" th:text="${user.first_name}+' '+${user.first_name}"></div>
+  <div class="qr-code">
+    <img th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" alt="QR Code" />
+  </div>
+</div>
+
+<script>
+  function downloadPDF() {
+    const card = document.getElementById('card');
+    html2pdf().from(card).save();
+  }
+</script>
+</body>
+
+</html>

@@ -48,13 +48,13 @@
             <tbody>
             <tr th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
                 <td th:text="${snack.snacksAndBoissons.name}"></td>
-                <td th:text="${snack.snacksAndBoissons.purchase_price}"></td>
+                <td th:text="${snack.snacksAndBoissons.selling_price}"></td>
                 <td>
                     <span th:text="${snack.quantity == 0 ? '' : snack.quantity}"></span>
                     <span th:text="${msg.containsKey(snack.id) ? ' ' + msg.get(snack.id) : ''}"></span>
                 </td>
 
-                <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
+                <td th:text="${snack.snacksAndBoissons.selling_price} * ${snack.quantity}"></td>
             </tr>
             </tbody>
             <tfoot>

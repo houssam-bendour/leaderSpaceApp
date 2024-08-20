@@ -101,7 +101,7 @@
                 </td>
                 <td th:text="${snack.snacksAndBoissons.name}"></td>
                 <td th:text="${snack.quantity}"></td>
-                <td th:text="${snack.snacksAndBoissons.purchase_price} * ${snack.quantity}"></td>
+                <td th:text="${snack.snacksAndBoissons.selling_price} * ${snack.quantity}"></td>
                 <td th:if="${visitOfDesk.day.isEqual(day)
             and (visitOfDesk.startTime.isBefore(time)
                  or visitOfDesk.startTime.equals(time))
