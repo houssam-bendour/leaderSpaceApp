@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>List of Visits</title>
     <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+
 </head>
 <body>
 <header>
@@ -98,6 +100,7 @@
             <th>Start time</th>
             <th>End time</th>
             <th>Snacks</th>
+            <th>Aciton</th>
         </tr>
         </thead>
         <tbody>
@@ -112,6 +115,7 @@
                     <li th:text="${snack.snacksAndBoissons.name}"></li>
                 </ul>
             </td>
+            <td><a th:if="${nowInMorocco.toLocalDate().isBefore(visit.day)||(nowInMorocco.toLocalDate().isEqual(visit.day)&&nowInMorocco.toLocalTime().isBefore(visit.startTime))}" class="btn btn-secondary" th:href="@{/reception/delete-reservation-of-desk(reservation_id=${visit.id})}">delete</a></td>
         </tr>
         </tbody>
     </table>

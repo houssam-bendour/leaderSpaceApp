@@ -892,6 +892,11 @@ public class ManagerController {
 
         model.addAttribute("visitOfDesks", visitOfDesks);
 
+        ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+        model.addAttribute("nowInMorocco", nowInMorocco);
+
+        System.out.println("nowInMorocco========"+nowInMorocco);
+
         return "/Manager_espace/visit";
 
     }
@@ -1038,6 +1043,12 @@ public class ManagerController {
         List<Caisse> caisse = caisseRepository.findAll();
         model.addAttribute("caisse", caisse);
         return "Manager_espace/caisse";
+    }
+
+    @GetMapping("delete-reservation-of-desk")
+    public String deleteReservationOfDesk(@RequestParam UUID reservation_id){
+        visitOfDeskRepository.deleteById(reservation_id);
+        return "redirect:/manager/visit";
     }
 
 }

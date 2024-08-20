@@ -305,6 +305,11 @@ public class ReceptionistController {
 
         model.addAttribute("visitOfDesks", visitOfDesks);
 
+        ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+        model.addAttribute("nowInMorocco", nowInMorocco);
+        System.out.println("nowInMorocco========"+nowInMorocco);
+
+
         return "/Receptionist_espace/visit-today";
 
     }
@@ -829,7 +834,7 @@ public class ReceptionistController {
         ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
 
         LocalTime localTime = moroccoDateTime.toLocalTime();
-
+        //LocalDate localDate = moroccoDateTime.toLocalDate();
         visit.setEndTime(localTime);
 
         Duration duration = Duration.between(visit.getStartTime(), localTime);
@@ -1524,4 +1529,9 @@ public class ReceptionistController {
         return "Receptionist_espace/myBadge";
     }
 
+    @GetMapping("delete-reservation-of-desk")
+    public String deleteReservationOfDesk(@RequestParam UUID reservation_id){
+        visitOfDeskRepository.deleteById(reservation_id);
+        return "redirect:/reception/visit-today";
+    }
 }
