@@ -450,6 +450,23 @@ public class ManagerController {
         contrat.setDomiciliationFacture(domiciliationFacture);
         contratRepository.save(contrat);
         model.addAttribute("contrat", contrat);
+
+        Caisse caisse = new Caisse();
+
+        caisse.setDate(moroccoDateTime.toLocalDate());
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        caisse.setTime(localTime);
+
+        double total = contrat.getMontant_de_location_chiffre() * contrat.getDuree_par_moi_chifre();
+
+        caisse.setSomme(total);
+        CaisseService caisseService = new CaisseService(caisseRepository);
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
+
+        caisseRepository.save(caisse);
+
         return "Manager_espace/new-contrat-fr-pdf";
     }
 
@@ -487,6 +504,23 @@ public class ManagerController {
         contrat.setDomiciliationFacture(domiciliationFacture);
         contratRepository.save(contrat);
         model.addAttribute("contrat", contrat);
+
+        Caisse caisse = new Caisse();
+
+        caisse.setDate(moroccoDateTime.toLocalDate());
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        caisse.setTime(localTime);
+
+        double total = contrat.getMontant_de_location_chiffre() * contrat.getDuree_par_moi_chifre();
+
+        caisse.setSomme(total);
+        CaisseService caisseService = new CaisseService(caisseRepository);
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
+
+        caisseRepository.save(caisse);
+
         return "Manager_espace/new-contrat-ar-pdf";
     }
 

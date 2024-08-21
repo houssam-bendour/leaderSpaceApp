@@ -2,6 +2,7 @@ package com.management.leaderspace.Services.Manager;
 
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
+import com.management.leaderspace.model.CaisseService;
 import com.management.leaderspace.model.DesignationForm;
 import lombok.AllArgsConstructor;
 
@@ -48,6 +49,7 @@ public class ManagerServiceImp implements ManagerService {
     PasswordEncoder passwordEncoder;
     SubscriberRepository subscriberRepository;
     ContratRepository contratRepository;
+    CaisseRepository caisseRepository;
 
     @Override
     public Manager getProfile() {
@@ -359,6 +361,27 @@ public class ManagerServiceImp implements ManagerService {
         subscriptionHistory.setQuantity(subscriberToUpdate.getQuantity());
         subscriptionHistory.setPrice(subscriberToUpdate.getPrice_actuel_d_abonnemet());
         subscriptionHistoryRepository.save(subscriptionHistory);
+
+        Caisse caisse = new Caisse();
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        caisse.setDate(moroccoDateTime.toLocalDate());
+
+        caisse.setTime(localTime);
+
+        assert subscriptionType != null;
+        double pricePerUnit = subscriptionType.getPrice();
+        double total = subscriber.getQuantity() * pricePerUnit;
+
+        caisse.setSomme(total);
+
+        CaisseService caisseService = new CaisseService(caisseRepository);
+
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
+
+        caisseRepository.save(caisse);
+
     }
 
     @Override

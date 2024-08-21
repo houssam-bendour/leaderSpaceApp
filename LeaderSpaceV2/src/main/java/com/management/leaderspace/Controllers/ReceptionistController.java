@@ -977,15 +977,7 @@ public class ReceptionistController {
         }
         visit.setService_price(priceOfVisit);
 
-       /* List<Caisse> cs = caisseRepository.findTopByOrderByDateTimeDesc();
-        Caisse csFirst=null;
-        if (!cs.isEmpty()){
-            csFirst  = cs.getFirst();
-        }*/
-       // System.out.println("last caisse : "+cs);
         model.addAttribute("visit", visitRepository.save(visit));
-       // System.out.println("total ==="+total);
-        // System.out.println("priceofvisit ==="+priceOfVisit);
         model.addAttribute("total", total+priceOfVisit);
 
         model.addAttribute("msg", msg);
@@ -995,12 +987,6 @@ public class ReceptionistController {
         caisse.setTime(localTime);
 
         caisse.setSomme(total+priceOfVisit);
-
-       /* if (csFirst != null) {
-            caisse.setTotale_caisse(total+priceOfVisit+csFirst.getTotale_caisse());
-        }else {
-            caisse.setTotale_caisse(total+priceOfVisit);
-        }*/
 
         CaisseService caisseService = new CaisseService(caisseRepository);
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, priceOfVisit));
