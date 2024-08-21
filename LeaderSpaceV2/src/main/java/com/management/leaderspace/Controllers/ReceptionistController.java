@@ -6,6 +6,7 @@ import com.management.leaderspace.Services.Manager.ManagerService;
 import com.management.leaderspace.Services.Manager.ManagerServiceImp;
 import com.management.leaderspace.Services.Receptionist.ReceptionistService;
 import com.management.leaderspace.Services.Receptionist.ReceptionistServiceImp;
+import com.management.leaderspace.model.CaisseService;
 import com.management.leaderspace.model.SnackForm;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -380,6 +381,26 @@ public class ReceptionistController {
                                  @RequestParam("password") String password) {
 
         receptionistService.saveSubscriber(subscriptionTypeId,quantity,cin,firstName,lastName,email, phone,password);
+
+        CaisseService caisseService = new CaisseService(caisseRepository);
+        Caisse caisse = new Caisse();
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findById(subscriptionTypeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid subscription type ID: " + subscriptionTypeId));
+
+        double pricePerUnit = subscriptionType.getPrice();
+        double total = quantity * pricePerUnit;
+
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        caisse.setDate(moroccoDateTime.toLocalDate());
+        caisse.setTime(localTime);
+        caisse.setSomme(0.0);
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
+
+        caisseRepository.save(caisse);
 
         return "redirect:/reception/get-subscribers";
     }
@@ -815,9 +836,15 @@ public class ReceptionistController {
 
         caisse.setSomme(total);
 
-        caisse.setTotale_caisse(total+10);
+        CaisseService caisseService = new CaisseService(caisseRepository);
+
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
 
         caisseRepository.save(caisse);
+
+        //caisse.setTotale_caisse(total+10);
+
+        //caisseRepository.save(caisse);
 
         return "/Receptionist_espace/visitor-checkout";
     }
@@ -933,15 +960,15 @@ public class ReceptionistController {
         }
         visit.setService_price(priceOfVisit);
 
-        List<Caisse> cs = caisseRepository.findTopByOrderByDateTimeDesc();
+       /* List<Caisse> cs = caisseRepository.findTopByOrderByDateTimeDesc();
         Caisse csFirst=null;
         if (!cs.isEmpty()){
             csFirst  = cs.getFirst();
-        }
-        System.out.println("last caisse : "+cs);
+        }*/
+       // System.out.println("last caisse : "+cs);
         model.addAttribute("visit", visitRepository.save(visit));
-        System.out.println("total ==="+total);
-        System.out.println("priceofvisit ==="+priceOfVisit);
+       // System.out.println("total ==="+total);
+        // System.out.println("priceofvisit ==="+priceOfVisit);
         model.addAttribute("total", total+priceOfVisit);
 
         model.addAttribute("msg", msg);
@@ -952,13 +979,17 @@ public class ReceptionistController {
 
         caisse.setSomme(total+priceOfVisit);
 
-        if (csFirst != null) {
+       /* if (csFirst != null) {
             caisse.setTotale_caisse(total+priceOfVisit+csFirst.getTotale_caisse());
         }else {
             caisse.setTotale_caisse(total+priceOfVisit);
-        }
+        }*/
+
+        CaisseService caisseService = new CaisseService(caisseRepository);
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, priceOfVisit));
 
         caisseRepository.save(caisse);
+
 
         return "/Receptionist_espace/not-subscriber-checkout";
     }

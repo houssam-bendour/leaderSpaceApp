@@ -4,6 +4,7 @@ import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
 import com.management.leaderspace.Services.Manager.ManagerService;
 import com.management.leaderspace.Services.Manager.ManagerServiceImp;
+import com.management.leaderspace.model.CaisseService;
 import com.management.leaderspace.model.DesignationForm;
 import com.management.leaderspace.model.NumberToWordsService;
 import com.management.leaderspace.model.QrCodeGenerator;
@@ -1041,6 +1042,7 @@ public class ManagerController {
     @GetMapping("caisse")
     String getCaisse(Model model){
         List<Caisse> caisse = caisseRepository.findAll();
+        caisse.sort(Comparator.comparing(Caisse::getTime).reversed());
         model.addAttribute("caisse", caisse);
         return "Manager_espace/caisse";
     }
