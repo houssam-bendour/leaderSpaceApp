@@ -552,7 +552,6 @@ public class ManagerController {
         double sommeServiceSupplimentairePriceOfTeam;
         double sommeSnacksAndBoissonsForVisitsTeam;
 
-        Map<UUID,Double> sommeSnacksAndBoissonsByVisitOfTeam = new HashMap<>();
         if (ch_date_debut != null && ch_date_fin != null) {
             if (ch_date_debut.isEmpty() || ch_date_fin.isEmpty()) {
                 return "redirect:/manager/turnover";
@@ -586,7 +585,7 @@ public class ManagerController {
                 allVisitsOfTeamByDate = visitOfTeamRepository.allVisitOfTeamByDate(dateDebut,dateFin);
                 sommeSnacksAndBoissonsByVisitForTeam = managerService.sommeOfSnacksAndBoissonsByVisitFomTeam(allVisitsOfTeamByDate);
                 sommeServiceSupplimentairePriceOfTeam = visitOfTeamRepository.sommeServiceSupplimentaiePriceForTeams(dateDebut,dateFin);
-                sommeSnacksAndBoissonsForVisitsTeam=managerService.sommeSnacksAndBoissonsForVisitsTeam(sommeSnacksAndBoissonsByVisitOfTeam);
+                sommeSnacksAndBoissonsForVisitsTeam=managerService.sommeSnacksAndBoissonsForVisitsTeam(sommeSnacksAndBoissonsByVisitForTeam);
 
 
             }
@@ -1070,6 +1069,9 @@ public class ManagerController {
         return "redirect:/manager/visit";
     }
 
+    @GetMapping("delete-visit-of-room")
+    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id){
+        visitOfRoomRepository.deleteById(visit_room_id);
+        return "redirect:/manager/visit";
+    }
 }
-
-

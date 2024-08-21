@@ -1582,4 +1582,9 @@ public class ReceptionistController {
         visitOfDeskRepository.deleteById(reservation_id);
         return "redirect:/reception/visit-today";
     }
+    @GetMapping("delete-visit-of-room")
+    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id){
+        visitOfRoomRepository.deleteById(visit_room_id);
+        return "redirect:/reception/visit-today";
+    }
 }
