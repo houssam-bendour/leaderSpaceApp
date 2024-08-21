@@ -397,7 +397,7 @@ public class ReceptionistController {
 
         caisse.setDate(moroccoDateTime.toLocalDate());
         caisse.setTime(localTime);
-        caisse.setSomme(0.0);
+        caisse.setSomme(total);
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
 
         caisseRepository.save(caisse);

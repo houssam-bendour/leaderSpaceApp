@@ -845,6 +845,26 @@ public class ManagerController {
     @PostMapping("save-subscriber")
     public String saveSubscriber(@ModelAttribute Subscriber subscriber, @RequestParam("subscriptionType_id") UUID subscriptionType_id) {
         managerService.saveSubscriber(subscriber, subscriptionType_id);
+        CaisseService caisseService = new CaisseService(caisseRepository);
+        Caisse caisse = new Caisse();
+        SubscriptionType subscriptionType = subscriptionTypeRepository.findById(subscriptionType_id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid subscription type ID: " + subscriptionType_id));
+
+        double pricePerUnit = subscriptionType.getPrice();
+        long quantity = subscriber.getQuantity();
+        double total = quantity * pricePerUnit;
+
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        caisse.setDate(moroccoDateTime.toLocalDate());
+        caisse.setTime(localTime);
+        caisse.setSomme(total);
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
+
+        caisseRepository.save(caisse);
         return "redirect:/manager/list-subscribers";
     }
 
@@ -1041,8 +1061,8 @@ public class ManagerController {
 
     @GetMapping("caisse")
     String getCaisse(Model model){
-        List<Caisse> caisse = caisseRepository.findAll();
-        caisse.sort(Comparator.comparing(Caisse::getTime).reversed());
+        List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
+        //caisse.sort(Comparator.comparing(Caisse::getTime).reversed());
         model.addAttribute("caisse", caisse);
         return "Manager_espace/caisse";
     }
