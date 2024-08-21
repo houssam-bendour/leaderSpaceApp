@@ -12,6 +12,63 @@
     <form th:action="@{/logout}" method="post">
         <button type="submit">Logout</button>
     </form>
+    <form method="get" th:action="@{/admin/list-admins}">
+        <button type="submit">admins</button>
+    </form>
+    <form method="get" th:action="@{/admin/list-managers}">
+        <button type="submit">managers</button>
+    </form>
+    <form th:action="@{/reception/visit-of-team}" method="get">
+        <button type="submit">team management</button>
+    </form>
+    <form th:action="@{/reception/visit-subscriber}" method="get">
+        <button type="submit">Visit for subscriber</button>
+    </form>
+    <form th:action="@{/reception/visit-room}" method="get">
+        <button type="submit">Visit for conference room</button>
+    </form>
+    <form th:action="@{/reception/visit-desk}" method="get">
+        <button type="submit">Visit for Desk</button>
+    </form>
+    <form th:action="@{/manager/visit}" method="get">
+        <button type="submit">Visit</button>
+    </form>
+    <form th:action="@{/manager/list-snacks}" method="get">
+        <button type="submit">snacks</button>
+    </form>
+    <form th:action="@{/manager/list-NotSubscribers}" method="get">
+        <button type="submit">NotSubscribers QR Code</button>
+    </form>
+    <form method="get" th:action="@{/manager/turnover}">
+        <button type="submit">turnover</button>
+    </form>
+    <form method="get" th:action="@{/manager/list-services}">
+        <button type="submit">Services</button>
+    </form>
+    <form method="get" th:action="@{/manager/list-subscriptions}">
+        <button type="submit">Subscriptions</button>
+    </form>
+    <form method="get" th:action="@{/manager/list-subscribers}">
+        <button type="submit">Subscribers</button>
+    </form>
+    <form method="get" th:action="@{/reception/Resubscribe}">
+        <button type="submit">Resubscribe</button>
+    </form>
+    <form method="get" th:action="@{/manager/list-receptionist}">
+        <button type="submit">Receptionist</button>
+    </form>
+    <form method="get" th:action="@{/manager/list-devis}">
+        <button type="submit">devis</button>
+    </form>
+    <form method="get" th:action="@{/manager/list-facture}">
+        <button type="submit">facture</button>
+    </form>
+    <form method="get" th:action="@{/manager/list-contrat}">
+        <button type="submit">contrat</button>
+    </form>
+    <form method="get" th:action="@{/manager/caisse}">
+        <button type="submit">Caisse</button>
+    </form>
 </header>
 
 <main>
@@ -46,10 +103,6 @@
             <span th:text="${profile.CNSS_number}"></span>
         </div>
         <div>
-            <label>Deleted: </label>
-            <span th:text="${profile.is_deleted ? 'Yes' : 'No'}"></span>
-        </div>
-        <div>
             <button id="qrCodeBtn">QR code</button>
         </div>
 
@@ -66,8 +119,6 @@
     </section>
 </main>
 
-<footer>
-    © 2024 leader space. All Rights Reserved.
-</footer>
+
 </body>
 </html>
