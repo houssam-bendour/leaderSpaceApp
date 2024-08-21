@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<main id="Table-Subscribers" style="display: block;">
+<main id="" style="display: block;">
   <h2>Caisse</h2>
 
   <table border="1">
@@ -26,6 +26,12 @@
       <td th:text="${cs.somme}">Somme</td>
       <td th:text="${cs.totale_caisse}">Totale</td>
     </tr>
+    <div class="transfer-form">
+      <form th:action="@{/manager/transfer}" method="post">
+        <input type="number" name="sum" placeholder="Enter sum to transfer" />
+        <button type="submit">Transfer</button>
+      </form>
+    </div>
     </tbody>
   </table>
 </main>

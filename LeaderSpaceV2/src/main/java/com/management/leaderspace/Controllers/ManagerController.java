@@ -55,6 +55,7 @@ public class ManagerController {
     PasswordEncoder passwordEncoder;
     private VisitOfTeamRepository visitOfTeamRepository;
     private CaisseRepository caisseRepository;
+    private BankRepository bankRepository;
 
     @GetMapping("/add-snack")
     public String showAddSnackForm() {
@@ -1092,9 +1093,61 @@ public class ManagerController {
     @GetMapping("caisse")
     String getCaisse(Model model){
         List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
-        //caisse.sort(Comparator.comparing(Caisse::getTime).reversed());
         model.addAttribute("caisse", caisse);
         return "Manager_espace/caisse";
+    }
+
+    @GetMapping("bank")
+    String getBank(Model model){
+        List<Bank> bank = bankRepository.findTopByOrderByDateTimeDesc();
+        model.addAttribute("bank", bank);
+        return "Manager_espace/bank";
+    }
+
+    @PostMapping("/transfer")
+    public String transferSumToBank(@RequestParam("sum") double sum) {
+        Caisse c = caisseRepository.findTopByOrderByDateTimeDesc().getFirst();
+        if (c == null) {
+            return "redirect:/error?message=no_caisse_found";
+        }
+        double total_caisse = c.getTotale_caisse();
+        if (sum <= 0 || total_caisse < sum) {
+            return "redirect:/error?message=invalid_transaction";
+        }
+
+        double total_caisse_restant = total_caisse - sum;
+
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        Caisse new_caisse = new Caisse();
+        new_caisse.setDate(moroccoDateTime.toLocalDate());
+        new_caisse.setTime(localTime);
+        new_caisse.setSomme(-sum);
+        new_caisse.setTotale_caisse(total_caisse_restant);
+
+        List<Bank> b = bankRepository.findTopByOrderByDateTimeDesc();
+        Bank bk = new Bank();
+        if (b.isEmpty()) {
+
+            bk.setTotale_bank(sum);
+            bk.setSomme(sum);
+            bk.setTime(localTime);
+            bk.setDate(moroccoDateTime.toLocalDate());
+        }
+        else{
+            double previous_bank_total = b.getFirst().getTotale_bank();
+            bk.setTotale_bank(previous_bank_total + sum);
+            bk.setSomme(sum);
+            bk.setTime(localTime);
+            bk.setDate(moroccoDateTime.toLocalDate());
+        }
+
+        caisseRepository.save(new_caisse);
+        bankRepository.save(bk);
+
+        return "redirect:/manager/caisse";
     }
 
     @GetMapping("delete-reservation-of-desk")

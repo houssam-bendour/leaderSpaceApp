@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank</title>
+</head>
+<body>
+
+<main id="" style="display: block;">
+  <h2>Bank</h2>
+
+  <table border="1">
+
+    <thead>
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Somme</th>
+      <th>Totale</th>
+      <th>Motif</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="bk : ${bank}">
+      <td th:text="${bk.date}">Date</td>
+      <td th:text="${bk.time}">Time</td>
+      <td th:text="${bk.somme}">Somme</td>
+      <td th:text="${bk.totale_bank}">Totale</td>
+      <td th:text="${bk.motif}">Motif</td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+
+</body>
+</html>
