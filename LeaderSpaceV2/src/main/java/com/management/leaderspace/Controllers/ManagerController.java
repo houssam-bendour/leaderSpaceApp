@@ -871,18 +871,15 @@ public class ManagerController {
     @PostMapping("update-subscriber")
     String updateSubscriber(@RequestParam("subscriberId") UUID subscriberId, Model model) {
         Subscriber subscriber = subscriberRepository.findById(subscriberId).orElse(null);
-        SubscriptionHistory subscriptionHistory = subscriptionHistoryRepository.getBySubscriber(subscriber.getSubscription_type(), subscriber, subscriber.getDate_debut(), subscriber.getDate_fin());
         List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAll();
         model.addAttribute("subscriptionTypes", subscriptionTypes);
         model.addAttribute("subscriber", subscriber);
-        model.addAttribute("subscriptionHistoryId", subscriptionHistory.getId());
         return "Manager_espace/update-subscriber-form";
     }
 
     @PostMapping("save-update-subscriber")
-    public String saveUpdateSubscriber(@RequestParam("subscriptionHistoryId") UUID subscriptionHistoryId, @ModelAttribute Subscriber subscriber, @RequestParam("subscriptionType_id") UUID subscriptionType_id) {
-        SubscriptionHistory subscriptionHistory = subscriptionHistoryRepository.findById(subscriptionHistoryId).orElse(null);
-        managerService.saveUpdateSubscriber(subscriber, subscriptionHistory, subscriptionType_id);
+    public String saveUpdateSubscriber( @ModelAttribute Subscriber subscriber) {
+        managerService.saveUpdateSubscriber(subscriber);
         return "redirect:/manager/list-subscribers";
     }
 

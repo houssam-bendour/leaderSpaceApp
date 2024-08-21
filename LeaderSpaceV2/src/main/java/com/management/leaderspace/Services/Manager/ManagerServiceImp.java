@@ -312,40 +312,16 @@ public class ManagerServiceImp implements ManagerService {
     }
 
     @Override
-    public void saveUpdateSubscriber(Subscriber subscriber, SubscriptionHistory subscriptionHistory,UUID subscriptionType_id) {
+    public void saveUpdateSubscriber(Subscriber subscriber) {
         Subscriber subscriberToUpdate = subscriberRepository.findById(subscriber.getId()).orElse(null);
 
         assert subscriberToUpdate != null;
-        LocalDate localDate = subscriberToUpdate.getDate_debut();
-
-        SubscriptionType subscriptionType = subscriptionTypeRepository.findById(subscriptionType_id).orElse(null);
-        subscriberToUpdate.setSubscription_type(subscriptionType);
-        subscriberToUpdate.setQuantity(subscriber.getQuantity());
         subscriberToUpdate.setCIN(subscriber.getCIN());
         subscriberToUpdate.setFirst_name(subscriber.getFirst_name());
         subscriberToUpdate.setLast_name(subscriber.getLast_name());
         subscriberToUpdate.setPhone(subscriber.getPhone());
-        LocalDate endDate = localDate.plusMonths(subscriberToUpdate.getSubscription_type().getFlexibility_duration()*subscriberToUpdate.getQuantity());
-
-
-        subscriberToUpdate.setDate_fin(endDate);
-
-
-        subscriberToUpdate.setNumber_of_visits(subscriberToUpdate.getSubscription_type().getDuration()*subscriberToUpdate.getQuantity());
-
-
-        //subscriber.setPassword(passwordEncoder.encode(subscriber.getPassword()));
-
-        subscriberToUpdate.setPrice_actuel_d_abonnemet(subscriberToUpdate.getSubscription_type().getPrice()*subscriberToUpdate.getQuantity());
-
-
+        subscriberToUpdate.setEmail(subscriber.getEmail());
         subscriberRepository.save(subscriberToUpdate);
-        subscriptionHistory.setSubscriber(subscriberToUpdate);
-        subscriptionHistory.setEndDate(endDate);
-        subscriptionHistory.setSubscriptionType(subscriberToUpdate.getSubscription_type());
-        subscriptionHistory.setQuantity(subscriberToUpdate.getQuantity());
-        subscriptionHistory.setPrice(subscriberToUpdate.getPrice_actuel_d_abonnemet());
-        subscriptionHistoryRepository.save(subscriptionHistory);
     }
 
     @Override

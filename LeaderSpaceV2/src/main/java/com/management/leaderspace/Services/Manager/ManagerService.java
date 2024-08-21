@@ -50,7 +50,7 @@ public interface ManagerService {
 
     void saveSubscriber(Subscriber subscriber, UUID subscriptionType_id);
 
-    void saveUpdateSubscriber(Subscriber subscriber, SubscriptionHistory subscriptionHistory,UUID subscriptionType_id);
+    void saveUpdateSubscriber(Subscriber subscriber);
 
     void saveResubscribeOfSubscriber(Subscriber subscriber, UUID subscriptionTypeId);
 
