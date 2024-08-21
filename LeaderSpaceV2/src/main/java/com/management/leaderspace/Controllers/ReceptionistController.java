@@ -49,7 +49,7 @@ public class ReceptionistController {
 
     ParticipantOfvisitRoomRepository participantOfvisitRoomRepository;
     ManagerService managerService;
-    ManagerServiceImp  managerServiceImp;
+    ManagerServiceImp managerServiceImp;
     VisitOfTeamRepository visitOfTeamRepository;
     CaisseRepository caisseRepository;
 
@@ -74,8 +74,10 @@ public class ReceptionistController {
 //    }
 
     @GetMapping("visit-room")
-    public String VisitRoom(@RequestParam(name = "message", required = false) String message ,Model model) {
-        if (message== null){message="";}
+    public String VisitRoom(@RequestParam(name = "message", required = false) String message, Model model) {
+        if (message == null) {
+            message = "";
+        }
         model.addAttribute("message", message);
         model.addAttribute("newVisitRoom", new VisitOfRoom());
         return "/Receptionist_espace/visit-of-room";
@@ -83,8 +85,10 @@ public class ReceptionistController {
     }
 
     @GetMapping("visit-desk")
-    public String VisitDesk(@RequestParam(name = "message", required = false) String message ,Model model) {
-        if (message== null){message="";}
+    public String VisitDesk(@RequestParam(name = "message", required = false) String message, Model model) {
+        if (message == null) {
+            message = "";
+        }
         model.addAttribute("message", message);
         model.addAttribute("newVisitDesk", new VisitOfDesk());
         return "/Receptionist_espace/visit-of-desk";
@@ -93,18 +97,19 @@ public class ReceptionistController {
 
     @PostMapping("save-visit-of-room")
     public String saveVisitOfRoom(@ModelAttribute VisitOfRoom visitOfRoom) {
-        List<VisitOfRoom> exisitVisit=visitOfRoomRepository.getVisitByDayAndStartTime(visitOfRoom.getDay(),visitOfRoom.getStartTime(),visitOfRoom.getEndTime());
-        if (exisitVisit.isEmpty()){
+        List<VisitOfRoom> exisitVisit = visitOfRoomRepository.getVisitByDayAndStartTime(visitOfRoom.getDay(), visitOfRoom.getStartTime(), visitOfRoom.getEndTime());
+        if (exisitVisit.isEmpty()) {
             VisitOfRoom visitOfRoomSaved = visitOfRoomRepository.save(visitOfRoom);
 
             return "redirect:/reception/visit-of-room?visitId=" + visitOfRoomSaved.getId();
         }
         return "redirect:/reception/visit-room?message=Il y a une autre reservation en ce moment !";
     }
+
     @PostMapping("save-visit-of-desk")
     public String saveVisitOfDesk(@ModelAttribute VisitOfDesk visitOfDesk) {
-        List<VisitOfDesk> exisitVisit=visitOfDeskRepository.getVisitByDayAndStartTime(visitOfDesk.getDay(),visitOfDesk.getStartTime(),visitOfDesk.getEndTime());
-        if (exisitVisit.isEmpty()){
+        List<VisitOfDesk> exisitVisit = visitOfDeskRepository.getVisitByDayAndStartTime(visitOfDesk.getDay(), visitOfDesk.getStartTime(), visitOfDesk.getEndTime());
+        if (exisitVisit.isEmpty()) {
             VisitOfDesk visitOfDeskSaved = visitOfDeskRepository.save(visitOfDesk);
 
             return "redirect:/reception/visit-of-desk?visitId=" + visitOfDeskSaved.getId();
@@ -112,8 +117,8 @@ public class ReceptionistController {
         return "redirect:/reception/visit-desk?message=Il y a une autre reservation en ce moment !";
 
 
-
     }
+
     @GetMapping("visit-of-room")
     public String saveVisitOfRoom(@RequestParam("visitId") UUID visitId, Model model) {
         ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
@@ -121,23 +126,23 @@ public class ReceptionistController {
         ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
 
         LocalTime localTime = moroccoDateTime.toLocalTime();
-        LocalDate localDate=moroccoDateTime.toLocalDate();
-        model.addAttribute("time",localTime);
-        model.addAttribute("day",localDate);
+        LocalDate localDate = moroccoDateTime.toLocalDate();
+        model.addAttribute("time", localTime);
+        model.addAttribute("day", localDate);
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         assert visitOfRoom != null;
-        List<SnacksAndBoissonsOfVisit> snacks=visitOfRoom.getSnacksAndBoissonsOfVisitRoom();
+        List<SnacksAndBoissonsOfVisit> snacks = visitOfRoom.getSnacksAndBoissonsOfVisitRoom();
 
-        double total=visitOfRoom.getService_room_price();
+        double total = visitOfRoom.getService_room_price();
 
-        for (SnacksAndBoissonsOfVisit snack:snacks) {
+        for (SnacksAndBoissonsOfVisit snack : snacks) {
             if (snack.getSnacksAndBoissons().getImage() != null) {
 
                 String base64Image = Base64.getEncoder().encodeToString(snack.getSnacksAndBoissons().getImage());
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            total+=snack.getQuantity()*snack.getSelling_price();
+            total += snack.getQuantity() * snack.getSelling_price();
         }
         model.addAttribute("total", total);
         model.addAttribute("visitOfRoom", visitOfRoom);
@@ -152,16 +157,16 @@ public class ReceptionistController {
         ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
 
         LocalTime localTime = moroccoDateTime.toLocalTime();
-        LocalDate localDate=moroccoDateTime.toLocalDate();
-        model.addAttribute("time",localTime);
-        model.addAttribute("day",localDate);
+        LocalDate localDate = moroccoDateTime.toLocalDate();
+        model.addAttribute("time", localTime);
+        model.addAttribute("day", localDate);
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
-        List<SnacksAndBoissonsOfVisit> snacks=visitOfDesk.getSnacksAndBoissonsOfVisits();
+        List<SnacksAndBoissonsOfVisit> snacks = visitOfDesk.getSnacksAndBoissonsOfVisits();
         //snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getPurchase_price(), s1.getSnacksAndBoissons().getPurchase_price()));
-        double total=visitOfDesk.getService_desk_price();
+        double total = visitOfDesk.getService_desk_price();
 //        Map<UUID, String> msg = new HashMap<>();
-        for (SnacksAndBoissonsOfVisit snack:snacks) {
+        for (SnacksAndBoissonsOfVisit snack : snacks) {
             if (snack.getSnacksAndBoissons().getImage() != null) {
 
                 String base64Image = Base64.getEncoder().encodeToString(snack.getSnacksAndBoissons().getImage());
@@ -189,28 +194,28 @@ public class ReceptionistController {
 
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
-        List<SnacksAndBoissonsOfVisit> snacks=visitOfDesk.getSnacksAndBoissonsOfVisits();
+        List<SnacksAndBoissonsOfVisit> snacks = visitOfDesk.getSnacksAndBoissonsOfVisits();
         snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
-        double total=visitOfDesk.getService_desk_price();
+        double total = visitOfDesk.getService_desk_price();
         Map<UUID, String> msg = new HashMap<>();
-        for (SnacksAndBoissonsOfVisit snack:snacks) {
+        for (SnacksAndBoissonsOfVisit snack : snacks) {
             if (snack.getSnacksAndBoissons().getImage() != null) {
 
                 String base64Image = Base64.getEncoder().encodeToString(snack.getSnacksAndBoissons().getImage());
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getSelling_price() <= 4 && !visitOfDesk.isFreeBoissons() ) {
+            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getSelling_price() <= 4 && !visitOfDesk.isFreeBoissons()) {
                 snack.setQuantity(snack.getQuantity() - 1);
                 total += snack.getQuantity() * snack.getSelling_price();
                 visitOfDesk.setFreeBoissons(true);
 
                 msg.put(snack.getId(), "(1 free)");
-            }else
+            } else
                 total += snack.getQuantity() * snack.getSelling_price();
         }
-        total+=visitOfDesk.getService_suplementaire_price();
-        model.addAttribute("msg",msg);
+        total += visitOfDesk.getService_suplementaire_price();
+        model.addAttribute("msg", msg);
         model.addAttribute("total", total);
         model.addAttribute("visit", visitOfDesk);
 
@@ -291,7 +296,7 @@ public class ReceptionistController {
     @PostMapping("save-snacks-to-visitRoom")
     public String saveSnacksToVisitRoom(@RequestParam("visitId") UUID visitId, @ModelAttribute SnackForm snackForm) {
 
-        receptionistService.saveSnacksToVisitRoom(visitId,snackForm);
+        receptionistService.saveSnacksToVisitRoom(visitId, snackForm);
 
         return "redirect:/reception/visit-of-room?visitId=" + visitId;
     }
@@ -299,7 +304,7 @@ public class ReceptionistController {
     @PostMapping("save-snacks-to-visitDesk")
     public String saveSnacksToVisitDesk(@RequestParam("visitId") UUID visitId, @ModelAttribute SnackForm snackForm) {
 
-        receptionistService.saveSnacksToVisitDesk(visitId,snackForm);
+        receptionistService.saveSnacksToVisitDesk(visitId, snackForm);
 
         return "redirect:/reception/visit-of-desk?visitId=" + visitId;
     }
@@ -325,7 +330,7 @@ public class ReceptionistController {
 
         ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
         model.addAttribute("nowInMorocco", nowInMorocco);
-        System.out.println("nowInMorocco========"+nowInMorocco);
+        System.out.println("nowInMorocco========" + nowInMorocco);
 
 
         return "/Receptionist_espace/visit-today";
@@ -397,7 +402,7 @@ public class ReceptionistController {
                                  @RequestParam("quantity") int quantity,
                                  @RequestParam("password") String password) {
 
-        receptionistService.saveSubscriber(subscriptionTypeId,quantity,cin,firstName,lastName,email, phone,password);
+        receptionistService.saveSubscriber(subscriptionTypeId, quantity, cin, firstName, lastName, email, phone, password);
 
         CaisseService caisseService = new CaisseService(caisseRepository);
         Caisse caisse = new Caisse();
@@ -428,12 +433,12 @@ public class ReceptionistController {
     }
 
     @GetMapping("new-visit-subscriber")
-    public String newVisitSubscriber(@RequestParam("userId") String result){
+    public String newVisitSubscriber(@RequestParam("userId") String result) {
         return receptionistService.newVisitSubscriber(result);
     }
 
     @GetMapping("new-visit-not-subscriber")
-    public String newVisitNotSubscriber(@RequestParam("userId") String result){
+    public String newVisitNotSubscriber(@RequestParam("userId") String result) {
         return receptionistService.newVisitNotSubscriber(result);
     }
 
@@ -502,14 +507,15 @@ public class ReceptionistController {
         return "/Receptionist_espace/add-snacks-to-visitor";
 
     }
+
     @PostMapping("add-snacks-to-participant-of-visit-room")
-    public String participantSnacks(@RequestParam("visitId") UUID visitId,@RequestParam("participantId") UUID participantId, Model model) {
+    public String participantSnacks(@RequestParam("visitId") UUID visitId, @RequestParam("participantId") UUID participantId, Model model) {
 
         model.addAttribute("snaks", new SnackForm());
 
         model.addAttribute("visit_id", visitId);
 
-        model.addAttribute("participantId",participantId);
+        model.addAttribute("participantId", participantId);
 
         List<SnacksAndBoissons> snacksAndBoissonsList = snacksAndBoissonsRepository.findAll();
         // Convertir les images en Base64
@@ -528,27 +534,28 @@ public class ReceptionistController {
         return "/Receptionist_espace/add-snacks-to-participant-of-visit-room";
 
     }
+
     @PostMapping("save-snacks-to-visitor")
     public String saveSnacksToVisitor(@RequestParam("visitId") UUID visitId, @ModelAttribute SnackForm snackForm) {
 
-        receptionistService.saveSnacksToVisitor(visitId,snackForm);
+        receptionistService.saveSnacksToVisitor(visitId, snackForm);
 
         return "redirect:/reception/visit-subscriber-profile?visitId=" + visitId;
     }
 
     @PostMapping("save-snacks-to-participant-of-visit-room")
-    public String saveSnacksToParticipant(@RequestParam("visitId") UUID visitId,@RequestParam("participantId") UUID participantId, @ModelAttribute SnackForm snackForm) {
+    public String saveSnacksToParticipant(@RequestParam("visitId") UUID visitId, @RequestParam("participantId") UUID participantId, @ModelAttribute SnackForm snackForm) {
 
-        receptionistService.saveSnacksToParticipant(participantId,snackForm);
+        receptionistService.saveSnacksToParticipant(participantId, snackForm);
 
-        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantId;
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId + "&participantId=" + participantId;
     }
 
 
     @PostMapping("delete-snack")
     public String deleteSnack(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId) {
 
-        receptionistService.deleteSnack(visitId , snackId);
+        receptionistService.deleteSnack(visitId, snackId);
 
         return "redirect:/reception/visit-subscriber-profile?visitId=" + visitId;
     }
@@ -556,31 +563,32 @@ public class ReceptionistController {
     @PostMapping("delete-snack-for-room")
     public String deleteSnackForRoom(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId) {
 
-        receptionistService.deleteSnackForRoom(visitId , snackId);
+        receptionistService.deleteSnackForRoom(visitId, snackId);
 
         return "redirect:/reception/visit-of-room?visitId=" + visitId;
     }
+
     @PostMapping("delete-snack-for-desk")
     public String deleteSnackForDesk(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId) {
 
-        receptionistService.deleteSnackForDesk(visitId , snackId);
+        receptionistService.deleteSnackForDesk(visitId, snackId);
 
         return "redirect:/reception/visit-of-desk?visitId=" + visitId;
     }
 
     @PostMapping("delete-snack-for-participant-of-room")
-    public String deleteSnackForParticipantOfRoom(@RequestParam("visitId") UUID visitId,@RequestParam("participantId") UUID participantId, @RequestParam("snackId") UUID snackId) {
+    public String deleteSnackForParticipantOfRoom(@RequestParam("visitId") UUID visitId, @RequestParam("participantId") UUID participantId, @RequestParam("snackId") UUID snackId) {
 
-        receptionistService.deleteSnackForParticipantOfRoom(participantId , snackId);
+        receptionistService.deleteSnackForParticipantOfRoom(participantId, snackId);
 
-        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantId;
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId + "&participantId=" + participantId;
     }
 
     @PostMapping("/update-snack-form")
     public String showUpdateSnackForm(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
-            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+            SnacksAndBoissons snack = snacksAndBoissonsRepository.findById(snackId).get();
 
             model.addAttribute("snack", snack);
 
@@ -603,7 +611,7 @@ public class ReceptionistController {
     public String showUpdateSnackFormRoom(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
-            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+            SnacksAndBoissons snack = snacksAndBoissonsRepository.findById(snackId).get();
 
             model.addAttribute("snack", snack);
 
@@ -626,7 +634,7 @@ public class ReceptionistController {
     public String showUpdateSnackFormDesk(@RequestParam("visitId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
-            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+            SnacksAndBoissons snack = snacksAndBoissonsRepository.findById(snackId).get();
 
             model.addAttribute("snack", snack);
 
@@ -646,10 +654,10 @@ public class ReceptionistController {
     }
 
     @PostMapping("/update-snack-for-participant-of-room-form")
-    public String showUpdateSnackForParticipantOfRoomForm(@RequestParam("visitId") UUID visitId,@RequestParam("participantId") UUID participantId, @RequestParam("snackId") UUID snackId, Model model) {
+    public String showUpdateSnackForParticipantOfRoomForm(@RequestParam("visitId") UUID visitId, @RequestParam("participantId") UUID participantId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
-            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+            SnacksAndBoissons snack = snacksAndBoissonsRepository.findById(snackId).get();
 
             model.addAttribute("snack", snack);
 
@@ -696,23 +704,24 @@ public class ReceptionistController {
     }
 
     @PostMapping("/update-snack-for-participant-of-room")
-    public String updateSnackForParticipantOfRoom(@RequestParam UUID visitId, @RequestParam UUID snackId,@RequestParam("participantId") UUID participantId, @RequestParam int quantity) {
+    public String updateSnackForParticipantOfRoom(@RequestParam UUID visitId, @RequestParam UUID snackId, @RequestParam("participantId") UUID participantId, @RequestParam int quantity) {
 
         receptionistService.updateSnackQuantityForParticipantOfRoom(participantId, snackId, quantity);
 
-        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantId;
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId + "&participantId=" + participantId;
     }
 
     @PostMapping("checkout")
-    public String checkout(@RequestParam("visitId") UUID visitId){
+    public String checkout(@RequestParam("visitId") UUID visitId) {
 
         Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new IllegalArgumentException("Invalid visit ID"));
 
-        if(visit.getSubscriber()!=null)
+        if (visit.getSubscriber() != null)
             return "redirect:/reception/subscriber-checkout?visitId=" + visitId;
         else
             return "redirect:/reception/not-subscriber-checkout?visitId=" + visitId;
     }
+
     @GetMapping("subscriber-checkout")
     public String checkoutSubscriber(@RequestParam("visitId") UUID visitId, Model model) {
 
@@ -725,6 +734,8 @@ public class ReceptionistController {
         ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
 
         LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        LocalDate localDate = moroccoDateTime.toLocalDate();
 
         visit.setEndTime(localTime);
 
@@ -744,7 +755,18 @@ public class ReceptionistController {
 
         int numberOfFreeBoissons = 0;
 
+        List<Visit> visits = visitRepository.getVisitsTodayOfSubscriberAndDate(visit.getSubscriber().getId(), localDate);
+
+        int oldNumberOfFreeBoissons = 0;
+
+        for (Visit v : visits) {
+
+            oldNumberOfFreeBoissons += v.getFreeDrinksNumber();
+
+        }
+
         Map<UUID, String> msg = new HashMap<>();
+
         for (SnacksAndBoissonsOfVisit s : sortedSnacks) {
 
             if (s.getSnacksAndBoissons().getType().equals("Boisson") && s.getSnacksAndBoissons().getSelling_price() <= 4 && s.getVisit().getSubscriber().getSubscription_type().getNumber_of_Free_Drinks_of_day() > numberOfFreeBoissons) {
@@ -753,54 +775,108 @@ public class ReceptionistController {
 
                     if (s.getQuantity() >= 2 && s.getVisit().getSubscriber().getSubscription_type().getNumber_of_Free_Drinks_of_day() == 2) {
 
-                        s.setQuantity(s.getQuantity() - 2);
+                        if (oldNumberOfFreeBoissons == 0) {
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
+                            s.setQuantity(s.getQuantity() - 2);
 
-                        numberOfFreeBoissons += 2;
+                            numberOfFreeBoissons += 2;
 
-                        msg.put(s.getId(), "(2 free)");
+                            msg.put(s.getId(), "(2 free)");
+
+                            visit.setFreeDrinksNumber(2);
+
+                        } else if (oldNumberOfFreeBoissons == 1) {
+
+                            s.setQuantity(s.getQuantity() - 1);
+
+                            numberOfFreeBoissons += 1;
+
+                            msg.put(s.getId(), "(1 free)");
+
+                            visit.setFreeDrinksNumber(2);
+                        }
 
                     } else {
 
-                        s.setQuantity(s.getQuantity() - 1);
+                        if (s.getVisit().getSubscriber().getSubscription_type().getNumber_of_Free_Drinks_of_day() == 2) {
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
+                            if (oldNumberOfFreeBoissons < 2) {
 
-                        numberOfFreeBoissons++;
+                                s.setQuantity(s.getQuantity() - 1);
 
-                        msg.put(s.getId(), "(1 free)");
+                                numberOfFreeBoissons += 1;
+
+                                msg.put(s.getId(), "(1 free)");
+
+                                visit.setFreeDrinksNumber(oldNumberOfFreeBoissons + 1);
+
+                            }
+
+                        } else {
+
+                            s.setQuantity(s.getQuantity() - 1);
+
+                            numberOfFreeBoissons++;
+
+                            msg.put(s.getId(), "(1 free)");
+                        }
 
                     }
+
                 } else if (s.getVisit().getSubscriber().getSubscription_type().getHour_of_day() == hours && minutes <= 10) {
 
                     if (s.getQuantity() >= 2 && s.getVisit().getSubscriber().getSubscription_type().getNumber_of_Free_Drinks_of_day() == 2) {
 
-                        s.setQuantity(s.getQuantity() - 2);
+                        if (oldNumberOfFreeBoissons == 0) {
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
+                            s.setQuantity(s.getQuantity() - 2);
 
-                        numberOfFreeBoissons += 2;
+                            numberOfFreeBoissons += 2;
 
-                        msg.put(s.getId(), "(2 free)");
+                            msg.put(s.getId(), "(2 free)");
+
+                            visit.setFreeDrinksNumber(2);
+
+                        } else if (oldNumberOfFreeBoissons == 1) {
+
+                            s.setQuantity(s.getQuantity() - 1);
+
+                            numberOfFreeBoissons += 1;
+
+                            msg.put(s.getId(), "(1 free)");
+
+                            visit.setFreeDrinksNumber(2);
+                        }
 
                     } else {
 
-                        s.setQuantity(s.getQuantity() - 1);
+                        if (s.getVisit().getSubscriber().getSubscription_type().getNumber_of_Free_Drinks_of_day() == 2) {
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
+                            if (oldNumberOfFreeBoissons < 2) {
 
-                        numberOfFreeBoissons++;
+                                s.setQuantity(s.getQuantity() - 1);
 
-                        msg.put(s.getId(), "(1 free)");
+                                numberOfFreeBoissons += 1;
+
+                                msg.put(s.getId(), "(1 free)");
+
+                                visit.setFreeDrinksNumber(oldNumberOfFreeBoissons + 1);
+                            }
+                        } else {
+
+                            s.setQuantity(s.getQuantity() - 1);
+
+                            numberOfFreeBoissons++;
+
+                            msg.put(s.getId(), "(1 free)");
+                        }
                     }
                 } else {
+
                     if (s.getQuantity() >= 2) {
 
                         s.setQuantity(s.getQuantity() - 2);
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
-
                         numberOfFreeBoissons += 2;
 
                         msg.put(s.getId(), "(2 free)");
@@ -808,17 +884,12 @@ public class ReceptionistController {
                     } else {
 
                         s.setQuantity(s.getQuantity() - 1);
-
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
                         numberOfFreeBoissons++;
 
                         msg.put(s.getId(), "(1 free)");
                     }
                 }
-            } else {
-
-                total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
             }
 
         }
@@ -834,12 +905,20 @@ public class ReceptionistController {
 
             secondVisit.setDay(visit.getDay());
 
-            secondVisit.setSnacksAndBoissonsOfVisits(visit.getSnacksAndBoissonsOfVisits());
+            secondVisit.setSnacksAndBoissonsOfVisits(new ArrayList<SnacksAndBoissonsOfVisit>());
 
             visitRepository.save(secondVisit);
+
+            visit.getSubscriber().setNumber_of_visits(visit.getSubscriber().getNumber_of_visits() - 1);
         }
 
-        total+=visit.getService_suplementaire_price();
+        for (SnacksAndBoissonsOfVisit s : sortedSnacks) {
+
+            total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
+
+        }
+
+        total += visit.getService_suplementaire_price();
 
         model.addAttribute("visit", visitRepository.save(visit));
 
@@ -858,10 +937,6 @@ public class ReceptionistController {
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
 
         caisseRepository.save(caisse);
-
-        //caisse.setTotale_caisse(total+10);
-
-        //caisseRepository.save(caisse);
 
         return "/Receptionist_espace/visitor-checkout";
     }
@@ -895,49 +970,49 @@ public class ReceptionistController {
 
         double total = 0;
 
-        System.out.println("total1 ====="+total);
+        System.out.println("total1 =====" + total);
 
         double priceOfVisit;
 
         int numberOfFreeBoissons;
 
-        if(hours <6) {
+        if (hours < 6) {
 
             numberOfFreeBoissons = 1;
 
-            priceOfVisit= 15;
+            priceOfVisit = 15;
 
-        }else if (hours == 6 && minutes <= 10) {
+        } else if (hours == 6 && minutes <= 10) {
 
             numberOfFreeBoissons = 1;
 
-            priceOfVisit= 15;
+            priceOfVisit = 15;
 
-        }else{
+        } else {
 
             numberOfFreeBoissons = 2;
 
-            priceOfVisit= 24;
+            priceOfVisit = 24;
 
         }
         Map<UUID, String> msg = new HashMap<>();
 
         for (SnacksAndBoissonsOfVisit s : sortedSnacks) {
 
-            if (s.getSnacksAndBoissons().getType().equals("Boisson") && s.getSnacksAndBoissons().getSelling_price()<=4 && numberOfFreeBoissons>0) {
+            if (s.getSnacksAndBoissons().getType().equals("Boisson") && s.getSnacksAndBoissons().getSelling_price() <= 4 && numberOfFreeBoissons > 0) {
 
-                if (hours <6) {
+                if (hours < 6) {
 
-                        s.setQuantity(s.getQuantity() - 1);
+                    s.setQuantity(s.getQuantity() - 1);
 
 
-                        total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
+                    total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
-                        numberOfFreeBoissons -= 1;
+                    numberOfFreeBoissons -= 1;
 
-                        msg.put(s.getId(), "(1 free)");
+                    msg.put(s.getId(), "(1 free)");
 
-                } else if (6== hours && minutes <= 10) {
+                } else if (6 == hours && minutes <= 10) {
 
                     s.setQuantity(s.getQuantity() - 1);
 
@@ -977,8 +1052,21 @@ public class ReceptionistController {
         }
         visit.setService_price(priceOfVisit);
 
+
         model.addAttribute("visit", visitRepository.save(visit));
         model.addAttribute("total", total+priceOfVisit);
+
+       /* List<Caisse> cs = caisseRepository.findTopByOrderByDateTimeDesc();
+        Caisse csFirst=null;
+        if (!cs.isEmpty()){
+            csFirst  = cs.getFirst();
+        }*/
+        // System.out.println("last caisse : "+cs);
+        model.addAttribute("visit", visitRepository.save(visit));
+        // System.out.println("total ==="+total);
+        // System.out.println("priceofvisit ==="+priceOfVisit);
+        model.addAttribute("total", total + priceOfVisit);
+
 
         model.addAttribute("msg", msg);
 
@@ -986,7 +1074,7 @@ public class ReceptionistController {
 
         caisse.setTime(localTime);
 
-        caisse.setSomme(total+priceOfVisit);
+        caisse.setSomme(total + priceOfVisit);
 
         CaisseService caisseService = new CaisseService(caisseRepository);
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, priceOfVisit));
@@ -998,16 +1086,17 @@ public class ReceptionistController {
     }
 
     @GetMapping("new-participant")
-    public String newParticipant(@RequestParam("result") String result,@RequestParam("visitId") String visitId) {
-        return receptionistService.newParticipant(result,visitId);
+    public String newParticipant(@RequestParam("result") String result, @RequestParam("visitId") String visitId) {
+        return receptionistService.newParticipant(result, visitId);
     }
+
     @GetMapping("new-visit-participant")
-    public String newVisitParticipant(@RequestParam("userId") String result, @RequestParam("visitId") String visitId){
-        return receptionistService.newVisitParticipant(result,visitId);
+    public String newVisitParticipant(@RequestParam("userId") String result, @RequestParam("visitId") String visitId) {
+        return receptionistService.newVisitParticipant(result, visitId);
     }
 
     @GetMapping("visit-participant-profile")
-    public String VisitParticipantProfile(@RequestParam("visitId") String visitId,@RequestParam("participantId") String participantId, Model model) {
+    public String VisitParticipantProfile(@RequestParam("visitId") String visitId, @RequestParam("participantId") String participantId, Model model) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(UUID.fromString(visitId)).orElse(null);
 
         ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(UUID.fromString(participantId)).orElse(null);
@@ -1019,7 +1108,7 @@ public class ReceptionistController {
 
         List<SnacksAndBoissonsOfVisit> snacksAndBoissonsList = participantOfvisitRoom.getSnacksAndBoissonsOfVisits();
         // Convertir les images en Base64
-        double total=0;
+        double total = 0;
         for (SnacksAndBoissonsOfVisit snack : snacksAndBoissonsList) {
 
             if (snack.getSnacksAndBoissons().getImage() != null) {
@@ -1028,23 +1117,25 @@ public class ReceptionistController {
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            total+=snack.getSnacksAndBoissons().getSelling_price()*snack.getQuantity();
+            total += snack.getSnacksAndBoissons().getSelling_price() * snack.getQuantity();
         }
         model.addAttribute("snacks", snacksAndBoissonsList);
-        model.addAttribute("participantId",participantId);
-        model.addAttribute("total",total);
-        model.addAttribute("participantOfvisitRoom",participantOfvisitRoom);
+        model.addAttribute("participantId", participantId);
+        model.addAttribute("total", total);
+        model.addAttribute("participantOfvisitRoom", participantOfvisitRoom);
         return "/Receptionist_espace/visit-participant-profile";
 
     }
+
     @PostMapping("update-checkout-time-of-visit-room")
-    String updateCheckoutTimeOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,Model model){
+    String updateCheckoutTimeOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, Model model) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visitOfRoom);
         return "/Receptionist_espace/update-checkout-time-of-visit-room";
     }
+
     @PostMapping("save-update-checkout-time-of-visit-room")
-    String saveUpdateCheckoutTimeOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("newTime") LocalTime localTime,Model model){
+    String saveUpdateCheckoutTimeOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, @RequestParam("newTime") LocalTime localTime, Model model) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         assert visitOfRoom != null;
         visitOfRoom.setEndTime(localTime);
@@ -1053,13 +1144,14 @@ public class ReceptionistController {
     }
 
     @PostMapping("update-checkout-time-of-visit-desk")
-    String updateCheckoutTimeOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,Model model){
+    String updateCheckoutTimeOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, Model model) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visitOfDesk);
         return "/Receptionist_espace/update-checkout-time-of-visit-desk";
     }
+
     @PostMapping("save-update-checkout-time-of-visit-desk")
-    String saveUpdateCheckoutTimeOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,@RequestParam("newTime") LocalTime localTime,Model model){
+    String saveUpdateCheckoutTimeOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, @RequestParam("newTime") LocalTime localTime, Model model) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
         visitOfDesk.setEndTime(localTime);
@@ -1068,44 +1160,46 @@ public class ReceptionistController {
     }
 
     @PostMapping("update-price-of-visit-room")
-    String updatePriceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,Model model){
+    String updatePriceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, Model model) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visitOfRoom);
         return "/Receptionist_espace/update-price-of-visit-roomm";
     }
 
     @PostMapping("update-price-of-visit-desk")
-    String updatePriceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,Model model){
+    String updatePriceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, Model model) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visitOfDesk);
         return "/Receptionist_espace/update-price-of-visit-desk";
     }
 
     @PostMapping("save-update-price-of-visit-room")
-    String saveUpdatePriceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("newPrice") double newPrice,Model model) {
+    String saveUpdatePriceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, @RequestParam("newPrice") double newPrice, Model model) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         assert visitOfRoom != null;
         visitOfRoom.setService_room_price(newPrice);
         visitOfRoomRepository.save(visitOfRoom);
         return "redirect:/reception/visit-of-room?visitId=" + visitOfRoom.getId();
     }
+
     @PostMapping("save-update-price-of-visit-desk")
-    String saveUpdatePriceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,@RequestParam("newPrice") double newPrice,Model model) {
+    String saveUpdatePriceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, @RequestParam("newPrice") double newPrice, Model model) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
         visitOfDesk.setService_desk_price(newPrice);
         visitOfDeskRepository.save(visitOfDesk);
         return "redirect:/reception/visit-of-desk?visitId=" + visitOfDesk.getId();
     }
-//======================Additional-service-of-visit-desk=====================
+
+    //======================Additional-service-of-visit-desk=====================
     @PostMapping("add-Additional-service-of-visit-desk")
-    String addAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,Model model) {
-        model.addAttribute("visitDeskId",visitId);
+    String addAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, Model model) {
+        model.addAttribute("visitDeskId", visitId);
         return "Receptionist_espace/Additional-service-of-visit-desk-form";
     }
 
     @PostMapping("save-Additional-service-of-visit-desk")
-    String saveAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
         visitOfDesk.setService_suplementaire(service);
@@ -1114,16 +1208,17 @@ public class ReceptionistController {
 
         return "redirect:/reception/visit-of-desk?visitId=" + visitOfDesk.getId();
     }
+
     @PostMapping("update-Additional-service-of-visit-desk")
-    String updateAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,Model model) {
+    String updateAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, Model model) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visitOfDesk);
-        model.addAttribute("visitDeskId",visitId);
+        model.addAttribute("visitDeskId", visitId);
         return "Receptionist_espace/update-Additional-service-of-visit-desk-form";
     }
 
     @PostMapping("save-update-Additional-service-of-visit-desk")
-    String saveUpdateAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveUpdateAdditionalServiceOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
         visitOfDesk.setService_suplementaire(service);
@@ -1146,13 +1241,13 @@ public class ReceptionistController {
 
     //======================Additional-service-of-visit-room=====================
     @PostMapping("add-Additional-service-of-visit-room")
-    String addAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,Model model) {
-        model.addAttribute("visitRoomId",visitId);
+    String addAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, Model model) {
+        model.addAttribute("visitRoomId", visitId);
         return "Receptionist_espace/Additional-service-of-visit-room-form";
     }
 
     @PostMapping("save-Additional-service-of-visit-room")
-    String saveAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         assert visitOfRoom != null;
         visitOfRoom.setService_suplementaire(service);
@@ -1161,16 +1256,17 @@ public class ReceptionistController {
 
         return "redirect:/reception/visit-of-room?visitId=" + visitOfRoom.getId();
     }
+
     @PostMapping("update-Additional-service-of-visit-room")
-    String updateAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,Model model) {
+    String updateAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, Model model) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visitOfRoom);
-        model.addAttribute("visitRoomId",visitId);
+        model.addAttribute("visitRoomId", visitId);
         return "Receptionist_espace/update-Additional-service-of-visit-room-form";
     }
 
     @PostMapping("save-update-Additional-service-of-visit-room")
-    String saveUpdateAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveUpdateAdditionalServiceOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
         assert visitOfRoom != null;
         visitOfRoom.setService_suplementaire(service);
@@ -1193,13 +1289,13 @@ public class ReceptionistController {
 
     //======================Additional-service-of-visit-normal=====================
     @PostMapping("add-Additional-service-of-visit")
-    String addAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,Model model) {
-        model.addAttribute("visitId",visitId);
+    String addAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId, Model model) {
+        model.addAttribute("visitId", visitId);
         return "Receptionist_espace/Additional-service-of-visit-form";
     }
 
     @PostMapping("save-Additional-service-of-visit")
-    String saveAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         Visit visit = visitRepository.findById(visitId).orElse(null);
         assert visit != null;
         visit.setService_suplementaire(service);
@@ -1207,16 +1303,17 @@ public class ReceptionistController {
         visitRepository.save(visit);
         return "redirect:/reception/visit-subscriber-profile?visitId=" + visit.getId();
     }
+
     @PostMapping("update-Additional-service-of-visit")
-    String updateAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,Model model) {
+    String updateAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId, Model model) {
         Visit visit = visitRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visit);
-        model.addAttribute("visitId",visitId);
+        model.addAttribute("visitId", visitId);
         return "Receptionist_espace/update-Additional-service-of-visit-form";
     }
 
     @PostMapping("save-update-Additional-service-of-visit")
-    String saveUpdateAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveUpdateAdditionalServiceOfVisit(@RequestParam("visitId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         Visit visit = visitRepository.findById(visitId).orElse(null);
         assert visit != null;
         visit.setService_suplementaire(service);
@@ -1237,64 +1334,68 @@ public class ReceptionistController {
 
     //======================Additional-service-for-participant-of-visit-room=====================
     @PostMapping("add-Additional-service-for-participant-of-visit-room")
-    String addAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,Model model) {
-        model.addAttribute("participantVisitId",participantVisitId);
-        model.addAttribute("visitId",visitId);
+    String addAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId, @RequestParam("participantVisitId") UUID participantVisitId, Model model) {
+        model.addAttribute("participantVisitId", participantVisitId);
+        model.addAttribute("visitId", visitId);
         return "Receptionist_espace/Additional-service-for-participant-of-visit-room-form";
     }
 
     @PostMapping("save-Additional-service-for-participant-of-visit-room")
-    String saveAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId, @RequestParam("participantVisitId") UUID participantVisitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
         assert participantOfvisitRoom != null;
         participantOfvisitRoom.setService_suplementaire(service);
         participantOfvisitRoom.setService_suplementaire_price(price);
         participantOfvisitRoomRepository.save(participantOfvisitRoom);
 
-        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantOfvisitRoom.getId();
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId + "&participantId=" + participantOfvisitRoom.getId();
     }
+
     @PostMapping("update-Additional-service-for-participant-of-visit-room")
-    String updateAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,Model model) {
+    String updateAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitId") UUID visitId, @RequestParam("participantVisitId") UUID participantVisitId, Model model) {
         ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
         model.addAttribute("participantOfvisitRoom", participantOfvisitRoom);
-        model.addAttribute("visitRoomId",visitId);
+        model.addAttribute("visitRoomId", visitId);
         return "Receptionist_espace/update-Additional-service-for-participant-of-visit-room";
     }
 
     @PostMapping("save-update-Additional-service-for-participant-of-visit-room")
-    String saveUpdateAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveUpdateAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, @RequestParam("participantVisitId") UUID participantVisitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
         assert participantOfvisitRoom != null;
         participantOfvisitRoom.setService_suplementaire(service);
         participantOfvisitRoom.setService_suplementaire_price(price);
         participantOfvisitRoomRepository.save(participantOfvisitRoom);
 
-        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantOfvisitRoom.getId();
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId + "&participantId=" + participantOfvisitRoom.getId();
     }
 
     @PostMapping("delete-Additional-service-for-participant-of-visit-room")
-    String deleteAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitRoomId") UUID visitId,@RequestParam("participantVisitId") UUID participantVisitId) {
+    String deleteAdditionalServiceForParticipantOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, @RequestParam("participantVisitId") UUID participantVisitId) {
         ParticipantOfvisitRoom participantOfvisitRoom = participantOfvisitRoomRepository.findById(participantVisitId).orElse(null);
         assert participantOfvisitRoom != null;
         participantOfvisitRoom.setService_suplementaire(null);
         participantOfvisitRoom.setService_suplementaire_price(0);
         participantOfvisitRoomRepository.save(participantOfvisitRoom);
 
-        return "redirect:/reception/visit-participant-profile?visitId=" + visitId+"&participantId="+participantOfvisitRoom.getId();
+        return "redirect:/reception/visit-participant-profile?visitId=" + visitId + "&participantId=" + participantOfvisitRoom.getId();
     }
 
 
     //============================CHANGE PASSWORD=================================
 
     @GetMapping("update-password")
-    String UpdatePassword(@RequestParam(name = "message", required = false) String message ,Model model) {
-        if (message == null) {message="";}
+    String UpdatePassword(@RequestParam(name = "message", required = false) String message, Model model) {
+        if (message == null) {
+            message = "";
+        }
         model.addAttribute("message", message);
         return "Receptionist_espace/update-password-form";
     }
+
     @PostMapping("new-password")
-    String newPassword(@RequestParam("password") String oldPassword ,Model model) {
-        Receptionist receptionist=receptionistService.getProfile();
+    String newPassword(@RequestParam("password") String oldPassword, Model model) {
+        Receptionist receptionist = receptionistService.getProfile();
         if (passwordEncoder.matches(oldPassword, receptionist.getPassword())) {
             // Si le mot de passe est correct, on peut changer le mot de passe
             return "Receptionist_espace/new-password-form";
@@ -1306,8 +1407,8 @@ public class ReceptionistController {
     }
 
     @PostMapping("save-new-password")
-    String SaveNewPassword(@RequestParam("newPassword") String newPassword ,Model model) {
-        Receptionist receptionist=receptionistService.getProfile();
+    String SaveNewPassword(@RequestParam("newPassword") String newPassword, Model model) {
+        Receptionist receptionist = receptionistService.getProfile();
         receptionist.setPassword(passwordEncoder.encode(newPassword));
         receptionistRepository.save(receptionist);
         return "Receptionist_espace/password-changed-successfully";
@@ -1358,6 +1459,7 @@ public class ReceptionistController {
         return "Receptionist_espace/Resubscription-completed-successfully";
 
     }
+
     //====================visit of team=============================
     @GetMapping("visit-of-team")
     String VisitOfTeam() {
@@ -1375,8 +1477,8 @@ public class ReceptionistController {
     }
 
     @GetMapping("visit-of-team-profile")
-    public String visitOfTeamProfile(@RequestParam("visitId") UUID visitId ,Model model) {
-        VisitOfTeam visitOfTeam= visitOfTeamRepository.findById(visitId).orElse(null);
+    public String visitOfTeamProfile(@RequestParam("visitId") UUID visitId, Model model) {
+        VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
         assert visitOfTeam != null;
         model.addAttribute("visit", visitOfTeam);
         List<SnacksAndBoissonsOfVisit> snacksAndBoissonsList = visitOfTeam.getSnacksAndBoissonsOfVisits();
@@ -1423,11 +1525,10 @@ public class ReceptionistController {
     @PostMapping("save-snacks-to-visit-of-team")
     public String saveSnacksToVisitOfTeam(@RequestParam("visitId") UUID visitId, @ModelAttribute SnackForm snackForm) {
 
-        receptionistService.saveSnacksToVisitOfTeam(visitId,snackForm);
+        receptionistService.saveSnacksToVisitOfTeam(visitId, snackForm);
 
         return "redirect:/reception/visit-of-team-profile?visitId=" + visitId;
     }
-
 
 
     @PostMapping("visit-of-team-checkout")
@@ -1443,18 +1544,18 @@ public class ReceptionistController {
 
         visitOfTeam.setEndTime(localTime);
 
-        List<SnacksAndBoissonsOfVisit> snacks=visitOfTeam.getSnacksAndBoissonsOfVisits();
+        List<SnacksAndBoissonsOfVisit> snacks = visitOfTeam.getSnacksAndBoissonsOfVisits();
         snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
-        double total=0;
+        double total = 0;
         Map<UUID, String> msg = new HashMap<>();
-        for (SnacksAndBoissonsOfVisit snack:snacks) {
+        for (SnacksAndBoissonsOfVisit snack : snacks) {
             if (snack.getSnacksAndBoissons().getImage() != null) {
 
                 String base64Image = Base64.getEncoder().encodeToString(snack.getSnacksAndBoissons().getImage());
 
                 snack.getSnacksAndBoissons().setBase64Image(base64Image);
             }
-            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getSelling_price() <= 4 && !visitOfTeam.isFreeBoissons() ) {
+            if (snack.getSnacksAndBoissons().getType().equals("Boisson") && snack.getSnacksAndBoissons().getSelling_price() <= 4 && !visitOfTeam.isFreeBoissons()) {
                 snack.setQuantity(snack.getQuantity() - 1);
                 total += snack.getQuantity() * snack.getSelling_price();
                 visitOfTeam.setFreeBoissons(true);
@@ -1464,21 +1565,22 @@ public class ReceptionistController {
             total += snack.getQuantity() * snack.getSelling_price();
         }
         visitOfTeamRepository.save(visitOfTeam);
-        model.addAttribute("msg",msg);
+        model.addAttribute("msg", msg);
         model.addAttribute("total", total);
         model.addAttribute("visit", visitOfTeam);
         return "Receptionist_espace/visit-of-team-checkout";
 
     }
+
     //======================Additional-service-of-visit-team=====================
     @PostMapping("add-Additional-service-of-visit-team")
-    String addAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,Model model) {
-        model.addAttribute("visitTeamId",visitId);
+    String addAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId, Model model) {
+        model.addAttribute("visitTeamId", visitId);
         return "Receptionist_espace/Additional-service-of-visit-team-form";
     }
 
     @PostMapping("save-Additional-service-of-visit-team")
-    String saveAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
         assert visitOfTeam != null;
         visitOfTeam.setService_suplementaire(service);
@@ -1487,16 +1589,17 @@ public class ReceptionistController {
 
         return "redirect:/reception/visit-of-team-profile?visitId=" + visitOfTeam.getId();
     }
+
     @PostMapping("update-Additional-service-of-visit-team")
-    String updateAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,Model model) {
+    String updateAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId, Model model) {
         VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
         model.addAttribute("visit", visitOfTeam);
-        model.addAttribute("visitTeamId",visitId);
+        model.addAttribute("visitTeamId", visitId);
         return "Receptionist_espace/update-Additional-service-of-visit-team-form";
     }
 
     @PostMapping("save-update-Additional-service-of-visit-team")
-    String saveUpdateAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId,@RequestParam("price") double price,@RequestParam("service") String service) {
+    String saveUpdateAdditionalServiceOfVisitTeam(@RequestParam("visitTeamId") UUID visitId, @RequestParam("price") double price, @RequestParam("service") String service) {
         VisitOfTeam visitOfTeam = visitOfTeamRepository.findById(visitId).orElse(null);
         assert visitOfTeam != null;
         visitOfTeam.setService_suplementaire(service);
@@ -1520,7 +1623,7 @@ public class ReceptionistController {
     @PostMapping("delete-snack-for-vist-team")
     public String deleteSnackForVisitTeam(@RequestParam("visitTeamId") UUID visitId, @RequestParam("snackId") UUID snackId) {
 
-        receptionistService.deleteSnackForVisitTeam(visitId , snackId);
+        receptionistService.deleteSnackForVisitTeam(visitId, snackId);
         return "redirect:/reception/visit-of-team-profile?visitId=" + visitId;
     }
 
@@ -1528,7 +1631,7 @@ public class ReceptionistController {
     public String showUpdateSnackFormForVisitTeam(@RequestParam("visitTeamId") UUID visitId, @RequestParam("snackId") UUID snackId, Model model) {
 
         try {
-            SnacksAndBoissons snack= snacksAndBoissonsRepository.findById(snackId).get();
+            SnacksAndBoissons snack = snacksAndBoissonsRepository.findById(snackId).get();
 
             model.addAttribute("snack", snack);
 
@@ -1546,6 +1649,7 @@ public class ReceptionistController {
             return e.getMessage();
         }
     }
+
     @PostMapping("/update-snack-for-visit-of-team")
     public String updateSnackForTeam(@RequestParam UUID visitId, @RequestParam UUID snackId, @RequestParam int quantity) {
 
@@ -1555,21 +1659,22 @@ public class ReceptionistController {
     }
 
     @PostMapping("/badge")
-    public String showBadge(@RequestParam("userId") UUID userId ,@RequestParam("qrCodeBase64") String qrCodeBase64,Model model) {
+    public String showBadge(@RequestParam("userId") UUID userId, @RequestParam("qrCodeBase64") String qrCodeBase64, Model model) {
 
-        Utilisateur user= utilisateurRepository.findById(userId).get();
+        Utilisateur user = utilisateurRepository.findById(userId).get();
         model.addAttribute("user", user);
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         return "Receptionist_espace/myBadge";
     }
 
     @GetMapping("delete-reservation-of-desk")
-    public String deleteReservationOfDesk(@RequestParam UUID reservation_id){
+    public String deleteReservationOfDesk(@RequestParam UUID reservation_id) {
         visitOfDeskRepository.deleteById(reservation_id);
         return "redirect:/reception/visit-today";
     }
+
     @GetMapping("delete-visit-of-room")
-    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id){
+    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id) {
         visitOfRoomRepository.deleteById(visit_room_id);
         return "redirect:/reception/visit-today";
     }

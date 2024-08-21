@@ -42,5 +42,8 @@ public interface VisitRepository extends JpaRepository<Visit, UUID> {
 
     @Query("select coalesce(sum(v.service_suplementaire_price),0.0) from Visit v where v.day>= :dateDebut and v.day<= :dateFin")
     Double sommeServiePriceSupplementaireOfVisits(@Param("dateDebut") LocalDate dateDebut,@Param("dateFin") LocalDate dateFin);
+
+
+
 }
 

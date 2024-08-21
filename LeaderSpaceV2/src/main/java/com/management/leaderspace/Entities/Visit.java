@@ -32,6 +32,7 @@ public class Visit {
 
     private double service_suplementaire_price =0;
 
+    private int freeDrinksNumber=0;
     @ManyToOne
     @JoinColumn(name = "subscriber_id")
     private Subscriber subscriber;
