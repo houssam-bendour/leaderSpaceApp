@@ -1,5 +1,6 @@
 package com.management.leaderspace.Controllers;
 
+import com.google.zxing.qrcode.decoder.Mode;
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
 import com.management.leaderspace.Services.Manager.ManagerService;
@@ -237,8 +238,6 @@ public class ReceptionistController {
         return "Receptionist_espace/visit-of-desk-checkout";
 
     }
-
-
     @PostMapping("add-snacks-to-visitRoom")
     public String visitRoomSnacks(@RequestParam("visitId") UUID visitId, Model model) {
 
@@ -1677,5 +1676,52 @@ public class ReceptionistController {
     public String deleteVisitOfRoom(@RequestParam UUID visit_room_id) {
         visitOfRoomRepository.deleteById(visit_room_id);
         return "redirect:/reception/visit-today";
+    }
+    @PostMapping("check-out-of-visit-room")
+    public String checkOutOfVisitRoom(@RequestParam UUID visit_id, Model model){
+
+        ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+        LocalDate currentDate = nowInMorocco.toLocalDate();
+        LocalTime currentTime = nowInMorocco.toLocalTime();
+
+        VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visit_id).orElse(null);
+        double totale = 0.0;
+        assert visitOfRoom != null;
+        totale+=visitOfRoom.getService_room_price()+visitOfRoom.getService_suplementaire_price();
+        List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisitsOfRoom = visitOfRoom.getSnacksAndBoissonsOfVisitRoom();
+        double totaleSnackAndBoissonsForVisitRoom = receptionistService.totalePriceOfSnackAndBoissons(snacksAndBoissonsOfVisitsOfRoom);
+        List<ParticipantOfvisitRoom> participantsOfVisitRoom = visitOfRoom.getParticipant();
+        double totalePriceOfSnackAndBoissonsForAllParticipantsOfVisitRoom = 0.0;
+        Map<UUID,Double> mapOfParticipantAndTotalePaided = new HashMap<>();
+        for (ParticipantOfvisitRoom participantOfvisitRoom : participantsOfVisitRoom) {
+            double totalePriceSnacksAndBoissonsAndServiceSuplimentaire = receptionistService.totalePriceOfSnackAndBoissons(participantOfvisitRoom.getSnacksAndBoissonsOfVisits())+participantOfvisitRoom.getService_suplementaire_price();
+            mapOfParticipantAndTotalePaided.put(participantOfvisitRoom.getId(),totalePriceSnacksAndBoissonsAndServiceSuplimentaire);
+            totalePriceOfSnackAndBoissonsForAllParticipantsOfVisitRoom+=totalePriceSnacksAndBoissonsAndServiceSuplimentaire;
+        }
+        totale+=totaleSnackAndBoissonsForVisitRoom+totalePriceOfSnackAndBoissonsForAllParticipantsOfVisitRoom;
+        model.addAttribute("visit",visitOfRoom);
+        model.addAttribute("listSnacksAndBoissonsOfVisitRoom",snacksAndBoissonsOfVisitsOfRoom);
+        model.addAttribute("totaleSnackAndBoissonsForVisitRoom",totaleSnackAndBoissonsForVisitRoom);
+        model.addAttribute("totalePriceOfSnacksAndBoissonsForAllParticipantsOfVisitRoom",totalePriceOfSnackAndBoissonsForAllParticipantsOfVisitRoom);
+        model.addAttribute("mapOfParticipantAndTotalePaided",mapOfParticipantAndTotalePaided);
+        model.addAttribute("totale",totale);
+
+        ///////////////////////////////////zt
+
+
+        Caisse caisse = new Caisse();
+        caisse.setDate(currentDate);
+
+        caisse.setTime(currentTime);
+
+        caisse.setSomme(totale);
+
+        CaisseService caisseService = new CaisseService(caisseRepository);
+
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(totale, 0));
+
+        caisseRepository.save(caisse);
+
+        return "/Receptionist_espace/visit-of-room-checkout";
     }
 }

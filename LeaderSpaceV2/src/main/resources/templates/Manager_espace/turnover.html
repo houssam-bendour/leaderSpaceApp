@@ -98,8 +98,8 @@
                                 <tbody>
                                 <tr th:each="visit : ${listAllVisitBetweenStartDayAndEndTime}">
                                     <td th:text="${visit.day}"></td>
-                                    <td th:text="${visit.startTime}"></td>
-                                    <td th:text="${visit.endTime}"></td>
+                                    <td th:text="${#temporals.format(visit.startTime,'HH:mm')}"></td>
+                                    <td th:text="${#temporals.format(visit.endTime,'HH:mm')}"></td>
                                     <td th:text="${visit.subscriber != null ? 'Inscrit' : 'Non inscrit'}"></td>
                                     <!--                                <td th:text="${visit.serviceType.name}"></td>-->
                                     <!--                                <td th:text="${visit.serviceType.duration}"></td>-->
@@ -295,8 +295,8 @@
                                 <tbody>
                                 <tr th:each="visiTeam : ${allVisitsOfTeamByDate}">
                                     <td th:text="${visiTeam.day}"></td>
-                                    <td th:text="${visiTeam.startTime}"></td>
-                                    <td th:text="${visiTeam.endTime}"></td>
+                                    <td th:text="${#temporals.format(visiTeam.startTime,'HH:mm')}"></td>
+                                    <td th:text="${#temporals.format(visiTeam.endTime,'HH:mm')}"></td>
                                     <td th:text="${visiTeam.service_suplementaire_price}"></td>
                                     <td>
                                         <ul th:if="${!visiTeam.snacksAndBoissonsOfVisits.isEmpty()}">

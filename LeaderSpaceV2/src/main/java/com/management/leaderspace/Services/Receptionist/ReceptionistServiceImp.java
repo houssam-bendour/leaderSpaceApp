@@ -105,6 +105,14 @@ public class ReceptionistServiceImp implements ReceptionistService {
 
         if (optionalSnacksAndBoissonsOfVisit.isPresent()) {
             SnacksAndBoissonsOfVisit snacksAndBoissonsOfVisit = optionalSnacksAndBoissonsOfVisit.get();
+            ////////////////////zt
+            SnacksAndBoissons snacksAndBoissons = snacksAndBoissonsOfVisit.getSnacksAndBoissons();
+            if (snacksAndBoissons.getQuantity()!=null){
+                int q1 =  quantity-snacksAndBoissonsOfVisit.getQuantity();
+                snacksAndBoissons.setQuantity(snacksAndBoissons.getQuantity()-q1);
+                snacksAndBoissonsRepository.save(snacksAndBoissons);
+            }
+            //////////////zt
             // Update the quantity
             snacksAndBoissonsOfVisit.setQuantity(quantity);
             // Save the updated entity
@@ -447,6 +455,10 @@ public class ReceptionistServiceImp implements ReceptionistService {
 
                     snacksList.add(newSnackVisit);
                 }
+                if (snack.getQuantity()!=null){
+                    snack.setQuantity(snack.getQuantity()-quantity);
+                    snacksAndBoissonsRepository.save(snack);
+                }
             }
         });
 
@@ -525,6 +537,12 @@ public class ReceptionistServiceImp implements ReceptionistService {
                 .filter(sv -> sv.getSnacksAndBoissons().getId().equals(snackId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Snack not found in visit"));
+
+        SnacksAndBoissons snacksAndBoissons = snackVisit.getSnacksAndBoissons();
+        if (snacksAndBoissons.getQuantity()!=null){
+            snacksAndBoissons.setQuantity(snacksAndBoissons.getQuantity()+snackVisit.getQuantity());
+            snacksAndBoissonsRepository.save(snacksAndBoissons);
+        }
 
         snacksList.remove(snackVisit);
 
@@ -776,7 +794,6 @@ public class ReceptionistServiceImp implements ReceptionistService {
                 snacksAndBoissonsRepository.save(snacksAndBoissons);
             }
             snacksAndBoissonsOfVisit.setQuantity(quantity);
-            snacksAndBoissonsOfVisit.setQuantity(quantity);
             // Save the updated entity
             snacksAndBoissonsOfVisitRepository.save(snacksAndBoissonsOfVisit);
         } else {
@@ -921,6 +938,11 @@ public class ReceptionistServiceImp implements ReceptionistService {
                 .filter(sv -> sv.getSnacksAndBoissons().getId().equals(snackId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Snack not found in visit"));
+        SnacksAndBoissons snacksAndBoissons = snackVisit.getSnacksAndBoissons();
+        if (snacksAndBoissons.getQuantity()!=null){
+            snacksAndBoissons.setQuantity(snacksAndBoissons.getQuantity()+snackVisit.getQuantity());
+            snacksAndBoissonsRepository.save(snacksAndBoissons);
+        }
 
         snacksList.remove(snackVisit);
 
@@ -950,6 +972,15 @@ public class ReceptionistServiceImp implements ReceptionistService {
         } else {
             throw new RuntimeException("Snack not found for the given visit");
         }
+    }
+
+    @Override
+    public double totalePriceOfSnackAndBoissons(List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisit) {
+        double somme=0.0;
+        for (SnacksAndBoissonsOfVisit snackOrBoisson : snacksAndBoissonsOfVisit){
+            somme +=snackOrBoisson.getSelling_price()*snackOrBoisson.getQuantity();
+        }
+        return somme;
     }
 
 }

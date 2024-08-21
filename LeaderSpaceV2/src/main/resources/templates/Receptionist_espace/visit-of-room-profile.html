@@ -28,6 +28,12 @@
               th:action="@{/reception/snacks-to-participantRoom(visitId=${visitOfRoom.id})}" method="post">
             <button type="submit">Add Snacks to participant</button>
         </form>
+        <form th:if="${visitOfRoom.day.isEqual(day)
+            and (visitOfRoom.startTime.isBefore(time)
+                 or visitOfRoom.startTime.equals(time))}"
+              th:action="@{/reception/check-out-of-visit-room(visit_id=${visitOfRoom.id})}" method="post">
+            <button type="submit">Check out</button>
+        </form>
     </div>
 </header>
 <main>

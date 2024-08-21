@@ -78,4 +78,6 @@ public interface ReceptionistService {
     void deleteSnackForVisitTeam(UUID visitId, UUID snackId);
 
     void updateSnackQuantityForTeam(UUID visitId, UUID snackId, int quantity);
+
+    double totalePriceOfSnackAndBoissons(List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisit);
 }
