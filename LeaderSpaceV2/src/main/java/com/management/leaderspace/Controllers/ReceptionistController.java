@@ -206,12 +206,29 @@ public class ReceptionistController {
                 visitOfDesk.setFreeBoissons(true);
 
                 msg.put(snack.getId(), "(1 free)");
-            }
-            total += snack.getQuantity() * snack.getSelling_price();
+            }else
+                total += snack.getQuantity() * snack.getSelling_price();
         }
+        total+=visitOfDesk.getService_suplementaire_price();
         model.addAttribute("msg",msg);
         model.addAttribute("total", total);
         model.addAttribute("visit", visitOfDesk);
+
+        Caisse caisse = new Caisse();
+
+        CaisseService caisseService = new CaisseService(caisseRepository);
+
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        caisse.setDate(moroccoDateTime.toLocalDate());
+        caisse.setTime(localTime);
+        caisse.setSomme(total);
+        caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
+
+        caisseRepository.save(caisse);
         return "Receptionist_espace/visit-of-desk-checkout";
 
     }
