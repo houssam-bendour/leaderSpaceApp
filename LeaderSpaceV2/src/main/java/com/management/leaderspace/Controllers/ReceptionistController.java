@@ -195,6 +195,8 @@ public class ReceptionistController {
 
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
         assert visitOfDesk != null;
+        visitOfDesk.setCheckout(true);
+        visitOfDeskRepository.save(visitOfDesk);
         List<SnacksAndBoissonsOfVisit> snacks = visitOfDesk.getSnacksAndBoissonsOfVisits();
         snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
         double total = visitOfDesk.getService_desk_price();
@@ -1685,8 +1687,13 @@ public class ReceptionistController {
         LocalTime currentTime = nowInMorocco.toLocalTime();
 
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visit_id).orElse(null);
+
         double totale = 0.0;
         assert visitOfRoom != null;
+        
+        visitOfRoom.setCheckout(true);
+        visitOfRoomRepository.save(visitOfRoom);
+
         totale+=visitOfRoom.getService_room_price()+visitOfRoom.getService_suplementaire_price();
         List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisitsOfRoom = visitOfRoom.getSnacksAndBoissonsOfVisitRoom();
         double totaleSnackAndBoissonsForVisitRoom = receptionistService.totalePriceOfSnackAndBoissons(snacksAndBoissonsOfVisitsOfRoom);

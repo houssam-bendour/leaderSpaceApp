@@ -16,7 +16,7 @@
             and (visitOfDesk.startTime.isBefore(time)
                  or visitOfDesk.startTime.equals(time))
             and (visitOfDesk.endTime.isAfter(time)
-                 or visitOfDesk.endTime.equals(time))}"
+                 or visitOfDesk.endTime.equals(time)) and visitOfDesk.checkout==false}"
               th:action="@{/reception/add-snacks-to-visitDesk(visitId=${visitOfDesk.id})}" method="post">
             <button type="submit">Add Snacks</button>
         </form>
@@ -24,7 +24,7 @@
             and (visitOfDesk.startTime.isBefore(time)
                  or visitOfDesk.startTime.equals(time))
             and (visitOfDesk.endTime.isAfter(time)
-                 or visitOfDesk.endTime.equals(time))}"
+                 or visitOfDesk.endTime.equals(time)) and visitOfDesk.checkout==false}"
               th:action="@{/reception/visit-of-desk-checkout(visitId=${visitOfDesk.id})}" method="post">
             <button type="submit">Checkout</button>
         </form>
@@ -89,7 +89,7 @@
             and (visitOfDesk.startTime.isBefore(time)
                  or visitOfDesk.startTime.equals(time))
             and (visitOfDesk.endTime.isAfter(time)
-                 or visitOfDesk.endTime.equals(time))}">Action
+                 or visitOfDesk.endTime.equals(time)) and visitOfDesk.checkout==false}">Action
                 </th>
             </tr>
             </thead>
@@ -106,7 +106,7 @@
             and (visitOfDesk.startTime.isBefore(time)
                  or visitOfDesk.startTime.equals(time))
             and (visitOfDesk.endTime.isAfter(time)
-                 or visitOfDesk.endTime.equals(time))}">
+                 or visitOfDesk.endTime.equals(time)) and visitOfDesk.checkout==false}">
                     <div class="action-buttons">
                         <form th:action="@{/reception/delete-snack-for-desk}" method="post">
                             <input type="hidden" name="visitId" th:value="${visitOfDesk.id}"/>
@@ -126,7 +126,7 @@
     </section>
     <section>
         <h2>Additional service</h2>
-        <div th:if="${(visitOfDesk.service_suplementaire==null || visitOfDesk.service_suplementaire_price==0)&&(visitOfDesk.day.isEqual(day) and visitOfDesk.startTime.isBefore(time) and visitOfDesk.endTime.isAfter(time))}">
+        <div th:if="${(visitOfDesk.service_suplementaire==null || visitOfDesk.service_suplementaire_price==0)&&(visitOfDesk.day.isEqual(day) and visitOfDesk.startTime.isBefore(time) and visitOfDesk.endTime.isAfter(time)) and visitOfDesk.checkout==false}">
             <form th:action="@{/reception/add-Additional-service-of-visit-desk}" method="post">
                 <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
                 <button type="submit">add</button>
@@ -139,7 +139,7 @@
             and (visitOfDesk.startTime.isBefore(time)
                  or visitOfDesk.startTime.equals(time))
             and (visitOfDesk.endTime.isAfter(time)
-                 or visitOfDesk.endTime.equals(time))}"
+                 or visitOfDesk.endTime.equals(time)) and visitOfDesk.checkout==false}"
                   th:action="@{/reception/update-Additional-service-of-visit-desk}" method="post">
                 <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
                 <button type="submit">update</button>
@@ -148,7 +148,7 @@
             and (visitOfDesk.startTime.isBefore(time)
                  or visitOfDesk.startTime.equals(time))
             and (visitOfDesk.endTime.isAfter(time)
-                 or visitOfDesk.endTime.equals(time))}"
+                 or visitOfDesk.endTime.equals(time)) and visitOfDesk.checkout==false}"
                   th:action="@{/reception/delete-Additional-service-of-visit-desk}" method="post">
                 <input type="hidden" name="visitDeskId" th:value="${visitOfDesk.id}">
                 <button type="submit">delete</button>

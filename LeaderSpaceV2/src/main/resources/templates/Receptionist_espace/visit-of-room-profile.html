@@ -16,7 +16,7 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and (visitOfRoom.endTime.isAfter(time)
-                 or visitOfRoom.endTime.equals(time))}"
+                 or visitOfRoom.endTime.equals(time)) and visitOfRoom.checkout==false}"
               th:action="@{/reception/add-snacks-to-visitRoom(visitId=${visitOfRoom.id})}" method="post">
             <button type="submit">Add Snacks</button>
         </form>
@@ -24,13 +24,15 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and (visitOfRoom.endTime.isAfter(time)
-                 or visitOfRoom.endTime.equals(time))}"
+                 or visitOfRoom.endTime.equals(time)) and visitOfRoom.checkout==false}"
               th:action="@{/reception/snacks-to-participantRoom(visitId=${visitOfRoom.id})}" method="post">
             <button type="submit">Add Snacks to participant</button>
         </form>
         <form th:if="${visitOfRoom.day.isEqual(day)
             and (visitOfRoom.startTime.isBefore(time)
-                 or visitOfRoom.startTime.equals(time))}"
+                 or visitOfRoom.startTime.equals(time))
+            and (visitOfRoom.endTime.isAfter(time)
+                 or visitOfRoom.endTime.equals(time)) and visitOfRoom.checkout==false}"
               th:action="@{/reception/check-out-of-visit-room(visit_id=${visitOfRoom.id})}" method="post">
             <button type="submit">Check out</button>
         </form>
@@ -95,7 +97,7 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and (visitOfRoom.endTime.isAfter(time)
-                 or visitOfRoom.endTime.equals(time))}">Action
+                 or visitOfRoom.endTime.equals(time)) and visitOfRoom.checkout==false}">Action
                 </th>
             </tr>
             </thead>
@@ -112,7 +114,7 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and (visitOfRoom.endTime.isAfter(time)
-                 or visitOfRoom.endTime.equals(time))}">
+                 or visitOfRoom.endTime.equals(time)) and visitOfRoom.checkout==false}">
                     <div class="action-buttons">
                         <form th:action="@{/reception/delete-snack-for-room}" method="post">
                             <input type="hidden" name="visitId" th:value="${visitOfRoom.id}"/>
@@ -137,7 +139,7 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and (visitOfRoom.endTime.isAfter(time)
-                 or visitOfRoom.endTime.equals(time)))}">
+                 or visitOfRoom.endTime.equals(time)))and visitOfRoom.checkout==false}">
             <form th:action="@{/reception/add-Additional-service-of-visit-room}" method="post">
                 <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
                 <button type="submit">add</button>
@@ -150,7 +152,7 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and (visitOfRoom.endTime.isAfter(time)
-                 or visitOfRoom.endTime.equals(time))}"
+                 or visitOfRoom.endTime.equals(time)) and visitOfRoom.checkout==false}"
                   th:action="@{/reception/update-Additional-service-of-visit-room}" method="post">
                 <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
                 <button type="submit">update</button>
@@ -159,7 +161,7 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and (visitOfRoom.endTime.isAfter(time)
-                 or visitOfRoom.endTime.equals(time))}"
+                 or visitOfRoom.endTime.equals(time))and visitOfRoom.checkout==false}"
                   th:action="@{/reception/delete-Additional-service-of-visit-room}" method="post">
                 <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
                 <button type="submit">delete</button>

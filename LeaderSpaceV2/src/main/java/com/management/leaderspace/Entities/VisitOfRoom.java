@@ -33,6 +33,8 @@ public class VisitOfRoom {
 
     private double service_suplementaire_price =0;
 
+    private boolean checkout=false;
+
     @OneToMany(mappedBy = "visitOfRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ParticipantOfvisitRoom> participant;
 
