@@ -621,9 +621,11 @@ public class ManagerController {
                 sommeSnacksAndBoissonsByVisitForTeam = managerService.sommeOfSnacksAndBoissonsByVisitFomTeam(allVisitsOfTeamByDate);
                 sommeServiceSupplimentairePriceOfTeam = visitOfTeamRepository.sommeServiceSupplimentaiePriceForTeams(dateDebut,dateFin);
                 sommeSnacksAndBoissonsForVisitsTeam=managerService.sommeSnacksAndBoissonsForVisitsTeam(sommeSnacksAndBoissonsByVisitForTeam);
-
-
             }
+            ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+
+            model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+
             model.addAttribute("listAllVisitBetweenStartDayAndEndTime", listAllVisitsBetweenStartDayAndEndTime);
 
             model.addAttribute("mapTotalPriceOfSnacksAndBoissonsByVisit", mapTotalPriceOfSnacksAndBoissonsByVisit);
@@ -671,7 +673,6 @@ public class ManagerController {
             model.addAttribute("sommeServiceSupplimentairePriceOfTeam",sommeServiceSupplimentairePriceOfTeam);
             model.addAttribute("sommeSnacksAndBoissonsForVisitsTeam",sommeSnacksAndBoissonsForVisitsTeam);
             model.addAttribute("totaleVisitsForTeams",sommeServiceSupplimentairePriceOfTeam+sommeSnacksAndBoissonsForVisitsTeam);
-
         }
         return "Manager_espace/turnover";
     }
@@ -693,69 +694,69 @@ public class ManagerController {
         Map<LocalDate, Double> totaleTurnoverForCharts = managerService.totaleTurnoverForCharts(
                 new HashMap<>(totaleVisitsNormaleCharts), totaleVisitsRoomCharts, totaleVisitsDeskCharts,totaleVisitsTeamsChartByDates, totaleSubscriptionsCharts,totaleContractsCherts);
 
-        List<String> labelsNormale = totaleVisitsNormaleCharts.keySet().stream()
-                .sorted()
-                .map(LocalDate::toString)
-                .collect(Collectors.toList());
-        List<Double> dataNormale = labelsNormale.stream()
-                .map(date -> totaleVisitsNormaleCharts.get(LocalDate.parse(date)))
-                .collect(Collectors.toList());
+        // Générer toutes les dates entre dateDebut et dateFin
+        List<LocalDate> allDates = dateDebut.datesUntil(dateFin.plusDays(1))
+                .toList();
 
-        // Créer les labels et les données pour les visites de la salle
-        List<String> labelsRoom = totaleVisitsRoomCharts.keySet().stream()
-                .sorted()
-                .map(LocalDate::toString)
-                .collect(Collectors.toList());
-        List<Double> dataRoom = labelsRoom.stream()
-                .map(date->totaleVisitsRoomCharts.get(LocalDate.parse(date)))
-                .collect(Collectors.toList());
-
-        // Créer les labels et les données pour les visites de bureau
-        List<String> labelsDesk = totaleVisitsDeskCharts.keySet().stream()
-                .sorted()
-                .map(LocalDate::toString)
-                .collect(Collectors.toList());
-        List<Double> dataDesk = labelsDesk.stream()
-                .map(date->totaleVisitsDeskCharts.get(LocalDate.parse(date)))
-                .collect(Collectors.toList());
-
-        // Créer les labels et les données pour les abonnements
-        List<String> labelsSubscriptions = totaleSubscriptionsCharts.keySet().stream()
-                .sorted()
-                .map(LocalDate::toString)
-                .collect(Collectors.toList());
-        List<Double> dataSubscriptions = labelsSubscriptions.stream()
-                .map(date->totaleSubscriptionsCharts.get(LocalDate.parse(date)))
-                .collect(Collectors.toList());
-
-        // Créer les labels et les données pour le chiffre d'affaires total
-        List<String> labelsTurnover = totaleTurnoverForCharts.keySet().stream()
-                .sorted()
-                .map(LocalDate::toString)
-                .collect(Collectors.toList());
-        List<Double> dataTurnover = labelsTurnover.stream()
-                .map(date->totaleTurnoverForCharts.get(LocalDate.parse(date)))
-                .collect(Collectors.toList());
-
-        List<String> labelsContracts = totaleContractsCherts.keySet().stream()
-                .sorted()
+// Créer les labels et les données pour les visites normales
+        List<String> labelsNormale = allDates.stream()
                 .map(LocalDate::toString)
                 .collect(Collectors.toList());
 
-        List<Double> dataContracts = labelsContracts.stream()
-                .map(date->totaleContractsCherts.get(LocalDate.parse(date)))
+        List<Double> dataNormale = allDates.stream()
+                .map(date -> totaleVisitsNormaleCharts.getOrDefault(date, 0.0))
                 .collect(Collectors.toList());
 
-        List<String> labelsTeam = totaleVisitsTeamsChartByDates.keySet().stream()
-                .sorted()
-                        .map(LocalDate::toString)
-                                .collect(Collectors.toList());
+// Répétez le même processus pour les autres types de données
+        List<String> labelsRoom = allDates.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
 
-        List<Double> dataTeam = labelsTeam.stream()
-                .map(date->totaleVisitsTeamsChartByDates.get(LocalDate.parse(date)))
-                        .collect(Collectors.toList());
+        List<Double> dataRoom = allDates.stream()
+                .map(date -> totaleVisitsRoomCharts.getOrDefault(date, 0.0))
+                .collect(Collectors.toList());
 
-        // Ajouter les labels et les données au modèle
+        List<String> labelsDesk = allDates.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+
+        List<Double> dataDesk = allDates.stream()
+                .map(date -> totaleVisitsDeskCharts.getOrDefault(date, 0.0))
+                .collect(Collectors.toList());
+
+        List<String> labelsSubscriptions = allDates.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+
+        List<Double> dataSubscriptions = allDates.stream()
+                .map(date -> totaleSubscriptionsCharts.getOrDefault(date, 0.0))
+                .collect(Collectors.toList());
+
+        List<String> labelsTurnover = allDates.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+
+        List<Double> dataTurnover = allDates.stream()
+                .map(date -> totaleTurnoverForCharts.getOrDefault(date, 0.0))
+                .collect(Collectors.toList());
+
+        List<String> labelsContracts = allDates.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+
+        List<Double> dataContracts = allDates.stream()
+                .map(date -> totaleContractsCherts.getOrDefault(date, 0.0))
+                .collect(Collectors.toList());
+
+        List<String> labelsTeam = allDates.stream()
+                .map(LocalDate::toString)
+                .collect(Collectors.toList());
+
+        List<Double> dataTeam = allDates.stream()
+                .map(date -> totaleVisitsTeamsChartByDates.getOrDefault(date, 0.0))
+                .collect(Collectors.toList());
+
+// Ajouter les labels et les données au modèle
         model.addAttribute("labelsNormale", labelsNormale);
         model.addAttribute("dataNormale", dataNormale);
         model.addAttribute("labelsRoom", labelsRoom);
@@ -768,11 +769,11 @@ public class ManagerController {
         model.addAttribute("dataTurnover", dataTurnover);
         model.addAttribute("labelsContracts", labelsContracts);
         model.addAttribute("dataContracts", dataContracts);
-        model.addAttribute("labelsTeam",labelsTeam);
+        model.addAttribute("labelsTeam", labelsTeam);
         model.addAttribute("dataTeam", dataTeam);
         model.addAttribute("totaleTurnoverCherts",managerService.totaleTurnoverCherts(totaleTurnoverForCharts));
-
         return "Manager_espace/turnover-charts";
+
     }
 
     /*
@@ -947,7 +948,6 @@ public class ManagerController {
         ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
         model.addAttribute("nowInMorocco", nowInMorocco);
 
-        System.out.println("nowInMorocco========"+nowInMorocco);
 
         return "/Manager_espace/visit";
 
@@ -1224,7 +1224,5 @@ public class ManagerController {
 //        model.addAttribute("filteredCaisse", caisseRepository.filterCaisseByDate(startDate, endDate)); // Ajout au modèle
 //        return "Manager_espace/caisse"; // Retourner la vue sans redirection
 //    }
-
-
 
 }

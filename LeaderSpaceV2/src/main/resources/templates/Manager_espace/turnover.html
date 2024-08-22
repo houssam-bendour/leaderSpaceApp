@@ -33,8 +33,17 @@
         function validateDates() {
             var dateDebut = new Date(document.getElementsByName('date_debut')[0].value);
             var dateFin = new Date(document.getElementsByName('date_fin')[0].value);
+            var dateFinObj = new Date(dateFin);
+            const dateInMorocco = "[[${dateInMorocco}]]";
+            var dateInMoroccoObj = new Date(dateInMorocco);
             if (dateDebut > dateFin) {
                 alert("La date de début doit être antérieure à la date de fin.");
+                window.location.replace("/manager/turnover");
+                return false;
+            }
+            if (dateFinObj>dateInMoroccoObj){
+                alert("la date n'est pas disponible.");
+                window.location.replace("/manager/turnover");
                 return false;
             }
             return true;
