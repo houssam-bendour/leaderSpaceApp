@@ -25,4 +25,7 @@ public interface VisitOfRoomRepository extends JpaRepository<VisitOfRoom, UUID> 
 
     @Query("select coalesce(sum(vr.service_suplementaire_price),0.0) from VisitOfRoom vr where vr.day>= :dateDebut and vr.day<= :dateFin")
     Double sommeServiceSuplimentaireOfVisitRoom(@Param("dateDebut")LocalDate dateDebut, @Param("dateFin")LocalDate dateFin);
+
+    @Query("select vr.StartTime from VisitOfRoom vr where vr.day= :reservationDate and vr.StartTime > :reservationTime order by vr.StartTime desc ")
+    List<LocalTime> maximumTimeAvailabale(@Param("reservationDate") LocalDate reservationDate, @Param("reservationTime") LocalTime reservationTime);
 }

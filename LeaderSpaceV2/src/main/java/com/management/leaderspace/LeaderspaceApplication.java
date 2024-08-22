@@ -41,15 +41,15 @@ public class LeaderspaceApplication {
                           FactureRepository factureRepository) {
         return args -> {
 
-//            Admin receptionist = new Admin();
-//            receptionist.setEmail("admin@admin.com");
-//            receptionist.setPassword(passwordEncoder.encode("1234"));
-//            receptionist.setCIN("Z144421");
-//            receptionist.setFirst_name("admin");
-//            receptionist.setLast_name("admin");
-//            receptionist.setPhone("0712345678");
-//            receptionist.setCNSS_number("111111");
-//            adminRepository.save(receptionist);
+            /*Admin receptionist = new Admin();
+            receptionist.setEmail("admin@admin.com");
+            receptionist.setPassword(passwordEncoder.encode("1234"));
+            receptionist.setCIN("Z144421");
+            receptionist.setFirst_name("admin");
+            receptionist.setLast_name("admin");
+            receptionist.setPhone("0712345678");
+            receptionist.setCNSS_number("111111");
+            adminRepository.save(receptionist);*/
 
 //            ServiceType serviceType = new ServiceType();
 //            serviceType.setName("Demi-Journée");

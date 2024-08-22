@@ -4,6 +4,8 @@ import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.model.SnackForm;
 
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -80,4 +82,8 @@ public interface ReceptionistService {
     void updateSnackQuantityForTeam(UUID visitId, UUID snackId, int quantity);
 
     double totalePriceOfSnackAndBoissons(List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisit);
+
+    LocalTime maximumTimeAvailabale(LocalDate reservationDate,LocalTime reservationTime);
+
+    LocalTime maximumTimeAvailabaleDesk(LocalDate reservationDate,LocalTime reservationTime);
 }

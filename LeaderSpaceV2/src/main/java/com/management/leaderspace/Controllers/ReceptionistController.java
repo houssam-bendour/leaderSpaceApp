@@ -134,7 +134,7 @@ public class ReceptionistController {
         assert visitOfRoom != null;
         List<SnacksAndBoissonsOfVisit> snacks = visitOfRoom.getSnacksAndBoissonsOfVisitRoom();
 
-        double total = visitOfRoom.getService_room_price();
+        double total = visitOfRoom.getService_room_price()+visitOfRoom.getService_suplementaire_price();
 
         for (SnacksAndBoissonsOfVisit snack : snacks) {
             if (snack.getSnacksAndBoissons().getImage() != null) {
@@ -165,7 +165,7 @@ public class ReceptionistController {
         assert visitOfDesk != null;
         List<SnacksAndBoissonsOfVisit> snacks = visitOfDesk.getSnacksAndBoissonsOfVisits();
         //snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getPurchase_price(), s1.getSnacksAndBoissons().getPurchase_price()));
-        double total = visitOfDesk.getService_desk_price();
+        double total = visitOfDesk.getService_desk_price()+visitOfDesk.getService_suplementaire_price();
 //        Map<UUID, String> msg = new HashMap<>();
         for (SnacksAndBoissonsOfVisit snack : snacks) {
             if (snack.getSnacksAndBoissons().getImage() != null) {
@@ -235,6 +235,9 @@ public class ReceptionistController {
         caisse.setTime(localTime);
         caisse.setSomme(total);
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
+
+        visitOfDesk.setEndTime(localTime);
+        visitOfDeskRepository.save(visitOfDesk);
 
         caisseRepository.save(caisse);
         return "Receptionist_espace/visit-of-desk-checkout";
@@ -1131,6 +1134,9 @@ public class ReceptionistController {
     @PostMapping("update-checkout-time-of-visit-room")
     String updateCheckoutTimeOfVisitRoom(@RequestParam("visitRoomId") UUID visitId, Model model) {
         VisitOfRoom visitOfRoom = visitOfRoomRepository.findById(visitId).orElse(null);
+        assert visitOfRoom != null;
+        LocalTime maximumeTimeAvailabale = receptionistService.maximumTimeAvailabale(visitOfRoom.getDay(),visitOfRoom.getStartTime());
+        model.addAttribute("maximumeTimeAvailabale",maximumeTimeAvailabale);
         model.addAttribute("visit", visitOfRoom);
         return "/Receptionist_espace/update-checkout-time-of-visit-room";
     }
@@ -1147,6 +1153,9 @@ public class ReceptionistController {
     @PostMapping("update-checkout-time-of-visit-desk")
     String updateCheckoutTimeOfVisitDesk(@RequestParam("visitDeskId") UUID visitId, Model model) {
         VisitOfDesk visitOfDesk = visitOfDeskRepository.findById(visitId).orElse(null);
+        assert visitOfDesk != null;
+        LocalTime maximumeTimeAvailabale = receptionistService.maximumTimeAvailabaleDesk(visitOfDesk.getDay(),visitOfDesk.getStartTime());
+        model.addAttribute("maximumeTimeAvailabale",maximumeTimeAvailabale);
         model.addAttribute("visit", visitOfDesk);
         return "/Receptionist_espace/update-checkout-time-of-visit-desk";
     }
@@ -1726,6 +1735,10 @@ public class ReceptionistController {
         CaisseService caisseService = new CaisseService(caisseRepository);
 
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(totale, 0));
+
+        visitOfRoom.setEndTime(currentTime);
+
+        visitOfRoomRepository.save(visitOfRoom);
 
         caisseRepository.save(caisse);
 

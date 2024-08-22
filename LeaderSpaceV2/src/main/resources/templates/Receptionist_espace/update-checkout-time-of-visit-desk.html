@@ -35,17 +35,35 @@
             text-align: center;
         }
     </style>
+    <script>
+        function validateTime() {
+            const newTime = document.getElementById("newCheckoutTime").value;
+            const maxTimeElement = [[${maximumeTimeAvailabale != null ? 'true' : 'false'}]];
+            console.log("maxmumeTimeAvailabale == ", maxTimeElement);
+            if (maxTimeElement) {
+                const maxTime = "[[${#temporals.format(maximumeTimeAvailabale,'HH:mm')}]]"; // Inséré en tant que chaîne
+                console.log("maxTime === ", maxTime);
+                console.log("newTime === ",newTime);
+                if (newTime >= maxTime) {
+                    alert("The new checkout time must be earlier than the maximum available time.");
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
 <div class="form-container">
-    <form th:action="@{/reception/save-update-checkout-time-of-visit-desk}"  method="post">
+    <form th:action="@{/reception/save-update-checkout-time-of-visit-desk}" method="post" onsubmit="return validateTime()">
         <input type="hidden" name="visitDeskId" th:value="${visit.id}"/>
         <div>
             <label for="newCheckoutTime">New Checkout Time:</label>
-            <input type="time" id="newCheckoutTime" name="newTime" th:value="${visit.endTime}" required />
+            <label th:if="${maximumeTimeAvailabale != null}" th:text="'Maximum time available: ' + ${#temporals.format(maximumeTimeAvailabale,'HH:mm:ss')}"></label>
+            <input type="time" id="newCheckoutTime" name="newTime" th:value="${#temporals.format(visit.endTime,'HH:mm')}" required />
         </div>
         <div class="form-actions">
-            <button type="submit">confirmer</button>
+            <button type="submit">Confirmer</button>
         </div>
     </form>
 </div>

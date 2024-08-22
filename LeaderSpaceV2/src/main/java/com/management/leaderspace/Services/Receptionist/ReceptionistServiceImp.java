@@ -983,4 +983,18 @@ public class ReceptionistServiceImp implements ReceptionistService {
         return somme;
     }
 
+    @Override
+    public LocalTime maximumTimeAvailabale(LocalDate reservationDate, LocalTime reservationTime) {
+        List<LocalTime> listReservationsStartTime = visitOfRoomRepository.maximumTimeAvailabale(reservationDate,reservationTime);
+        if (listReservationsStartTime.isEmpty())return null;
+        else return listReservationsStartTime.getFirst();
+    }
+
+    @Override
+    public LocalTime maximumTimeAvailabaleDesk(LocalDate reservationDate, LocalTime reservationTime) {
+        List<LocalTime> listReservationsStartTime = visitOfDeskRepository.maximumTimeAvailabale(reservationDate,reservationTime);
+        if (listReservationsStartTime.isEmpty())return null;
+        else return listReservationsStartTime.getFirst();
+    }
+
 }
