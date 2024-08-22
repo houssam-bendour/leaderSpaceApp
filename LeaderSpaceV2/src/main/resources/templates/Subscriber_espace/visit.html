@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Visits</title>
+    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+
+</head>
+<body>
+<header>
+    <h1>My visits</h1>
+    <div class="header-buttons">
+        <form th:action="@{/}" method="get">
+            <button type="submit">Cancel</button>
+        </form>
+    </div>
+    <!-- Search form -->
+
+    <form method="post" th:action="@{/subscriber/visit}">
+        <input type="date" name="date_debut" th:value="${param.date_debut != null ? param.date_debut : null}">
+        <input type="date" name="date_fin" th:value="${param.date_fin != null ? param.date_fin : null}">
+        <button type="submit">Chercher</button>
+    </form>
+
+</header>
+
+<main>
+    <h2>Visits</h2>
+
+    <table border="1">
+
+        <thead>
+        <tr>
+            <th>Day</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Snacks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="visit : ${visits}">
+            <td th:text="${visit.day}">Day</td>
+            <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
+            <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
+            <td>
+                <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                    <li th:text="${snack.snacksAndBoissons.name}"></li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+</body>
+</html>

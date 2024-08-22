@@ -105,7 +105,11 @@
         <div>
             <button id="qrCodeBtn">QR code</button>
         </div>
-
+        <form th:action="@{/reception/badge}" method="post">
+            <input type="hidden" name="userId" th:value="${profile.id}">
+            <input type="hidden" name="qrCodeBase64" th:value="${qrCodeBase64}">
+            <button type="submit">my badge</button>
+        </form>
         <!-- Modal for QR Code -->
         <div id="qrCodeModal" class="modal">
             <div class="modal-content">
@@ -117,6 +121,9 @@
             </div>
         </div>
     </section>
+    <form th:action="@{/admin/update-password}" method="get">
+        <button type="submit">modifier le mote de passe</button>
+    </form>
 </main>
 
 

@@ -1192,7 +1192,7 @@ public class ManagerController {
     }
 
 
-
+//=======================uploadProfileImage=========================
     @PostMapping("/uploadProfileImage")
     public String uploadProfileImage(@RequestParam("file") MultipartFile file, @ModelAttribute("userId") UUID id, Model model) {
         Manager manager = managerRepository.findById(id).get();
