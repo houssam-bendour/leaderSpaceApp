@@ -7,30 +7,70 @@
 <body>
 
 <main id="" style="display: block;">
-  <h2>Bank</h2>
+    <h2>Bank</h2>
+    <div class="transfer-form">
+        <form th:action="@{/manager/transferFromBank}" method="post">
+            <input type="number" name="sumBank" placeholder="Enter sum to transfer" min="0" th:max="${FirstBank.totale_bank}"/></td>
+            <textarea id="motif" name="motif" rows="4" cols="50" placeholder="Motif for transfer"></textarea></td>
+            <button type="submit">Transfer</button>
+        </form>
+    </div>
+    <div class="visitType-buttons">
+        <button onclick="showTable('FromBank')">From Bank</button>
+        <button onclick="showTable('ToBank')">To Bank</button>
+    </div>
+    <div id="Table-From-Bank" style="display: none;">
+        <h2>From Bank</h2>
+        <table border="1">
 
-  <table border="1">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Somme</th>
+                <th>Totale</th>
+                <th>Motif</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bk : ${FromBank}">
+                <td th:text="${bk.date}">Date</td>
+                <td th:text="${bk.time}">Time</td>
+                <td th:text="${bk.somme}">Somme</td>
+                <td th:text="${bk.totale_bank}">Totale</td>
+                <td th:text="${bk.motif}">Motif</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="Table-To-Bank" style="display: none;">
+        <h2>To Bank</h2>
+        <table border="1">
 
-    <thead>
-    <tr>
-      <th>Date</th>
-      <th>Time</th>
-      <th>Somme</th>
-      <th>Totale</th>
-      <th>Motif</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="bk : ${bank}">
-      <td th:text="${bk.date}">Date</td>
-      <td th:text="${bk.time}">Time</td>
-      <td th:text="${bk.somme}">Somme</td>
-      <td th:text="${bk.totale_bank}">Totale</td>
-      <td th:text="${bk.motif}">Motif</td>
-    </tr>
-    </tbody>
-  </table>
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Somme</th>
+                <th>Totale</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="bk : ${ToBank}">
+                <td th:text="${bk.date}">Date</td>
+                <td th:text="${bk.time}">Time</td>
+                <td th:text="${bk.somme}">Somme</td>
+                <td th:text="${bk.totale_bank}">Totale</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
-
+<script>
+    function showTable(table) {
+        document.getElementById('Table-From-Bank').style.display = table === 'FromBank' ? 'block' : 'none';
+        document.getElementById('Table-To-Bank').style.display = table === 'ToBank' ? 'block' : 'none';
+    }
+</script>
 </body>
 </html>

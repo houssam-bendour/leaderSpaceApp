@@ -1093,14 +1093,21 @@ public class ManagerController {
     @GetMapping("caisse")
     String getCaisse(Model model){
         List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
+        Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
         model.addAttribute("caisse", caisse);
+        model.addAttribute("FirstCaisse", FirstCaisse);
         return "Manager_espace/caisse";
     }
 
     @GetMapping("bank")
     String getBank(Model model){
-        List<Bank> bank = bankRepository.findTopByOrderByDateTimeDesc();
-        model.addAttribute("bank", bank);
+        List<Bank> FromBank = bankRepository.findAllFromBank();
+        List<Bank> ToBank = bankRepository.findAllFromCaisseToBank();
+        List<Bank> Bank = bankRepository.findTopByOrderByDateTimeDesc();
+        Bank FirstBank = Bank.isEmpty() ? null : Bank.getFirst();
+        model.addAttribute("FromBank", FromBank);
+        model.addAttribute("ToBank", ToBank);
+        model.addAttribute("FirstBank", FirstBank);
         return "Manager_espace/bank";
     }
 
@@ -1111,10 +1118,6 @@ public class ManagerController {
             return "redirect:/error?message=no_caisse_found";
         }
         double total_caisse = c.getTotale_caisse();
-        if (sum <= 0 || total_caisse < sum) {
-            return "redirect:/error?message=invalid_transaction";
-        }
-
         double total_caisse_restant = total_caisse - sum;
 
         ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
@@ -1148,6 +1151,32 @@ public class ManagerController {
         bankRepository.save(bk);
 
         return "redirect:/manager/caisse";
+    }
+
+    @PostMapping("/transferFromBank")
+    public String transferFromBank(@RequestParam("sumBank") double sum, @RequestParam("motif") String motif){
+        Bank b = bankRepository.findTopByOrderByDateTimeDesc().getFirst();
+        if (b == null) {
+            return "redirect:/error?message=no_bank_found";
+        }
+        double total_bank = b.getTotale_bank();
+        double total_bank_restant = total_bank - sum;
+
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+
+        Bank bk = new Bank();
+
+        bk.setTotale_bank(total_bank_restant);
+        bk.setSomme(-sum);
+        bk.setMotif(motif);
+        bk.setTime(localTime);
+        bk.setDate(moroccoDateTime.toLocalDate());
+
+        bankRepository.save(bk);
+
+        return "redirect:/manager/bank";
     }
 
     @GetMapping("delete-reservation-of-desk")

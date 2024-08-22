@@ -11,4 +11,8 @@ import java.util.UUID;
 public interface BankRepository extends JpaRepository<Bank, UUID> {
     @Query("SELECT b FROM Bank b ORDER BY b.date DESC, b.time DESC")
     List<Bank> findTopByOrderByDateTimeDesc();
+    @Query("SELECT b FROM Bank b WHERE b.somme >= 0 ORDER BY b.date DESC, b.time DESC")
+    List<Bank> findAllFromCaisseToBank();
+    @Query("SELECT b FROM Bank b WHERE b.somme < 0 ORDER BY b.date DESC, b.time DESC")
+    List<Bank> findAllFromBank();
 }

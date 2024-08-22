@@ -8,7 +8,12 @@
 
 <main id="" style="display: block;">
   <h2>Caisse</h2>
-
+  <div class="transfer-form">
+    <form th:action="@{/manager/transfer}" method="post">
+      <input type="number" name="sum" placeholder="Enter sum to transfer" min="0" th:max="${FirstCaisse.totale_caisse}"/>
+      <button type="submit">Transfer</button>
+    </form>
+  </div>
   <table border="1">
 
     <thead>
@@ -26,12 +31,6 @@
       <td th:text="${cs.somme}">Somme</td>
       <td th:text="${cs.totale_caisse}">Totale</td>
     </tr>
-    <div class="transfer-form">
-      <form th:action="@{/manager/transfer}" method="post">
-        <input type="number" name="sum" placeholder="Enter sum to transfer" />
-        <button type="submit">Transfer</button>
-      </form>
-    </div>
     </tbody>
   </table>
 </main>
