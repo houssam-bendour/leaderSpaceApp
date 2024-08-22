@@ -35,6 +35,13 @@ public abstract class Utilisateur {
 
     private String resetToken;
 
+    @Lob
+    @Column(length=100000)
+    private byte[] image;
+
+    @Transient
+    private String base64Image;
+
     public String getDiscriminatorValue() {
         DiscriminatorValue annotation = this.getClass().getAnnotation(DiscriminatorValue.class);
         return (annotation != null) ? annotation.value() : null;

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.Base64;
+
 @Controller
 @AllArgsConstructor
 public class HomeController {
@@ -63,6 +65,10 @@ public class HomeController {
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(manager.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", manager);
+        if (manager.getImage() != null) {
+            String base64Image = Base64.getEncoder().encodeToString(manager.getImage());
+            manager.setBase64Image(base64Image);
+        }
         return "/Manager_espace/Home";
     }
 

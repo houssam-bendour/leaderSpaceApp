@@ -5,6 +5,64 @@
     <title>Manager Home</title>
     <link rel="stylesheet" type="text/css" href="/css/Home.css">
     <script th:src="@{/js/modal.js}"></script>
+    <style>
+        /* CSS for profile picture */
+        :root {
+            --circleSize: 165px;
+            --radius: 50%;
+            --shadow: 0 0 10px 0 rgba(255, 255, 255, .35);
+            --fontColor: rgb(250, 250, 250);
+        }
+
+        .profile-pic {
+            color: transparent;
+            transition: all .3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .profile-pic input {
+            display: none;
+        }
+
+        .profile-pic img {
+            width: 165px;
+            height: 165px;
+            object-fit: cover;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 0 rgba(255, 255, 255, .35);
+        }
+
+
+        .profile-pic .-label {
+            cursor: pointer;
+            height: var(--circleSize);
+            width: var(--circleSize);
+        }
+
+        .profile-pic:hover .-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, .8);
+            z-index: 10000;
+            color: var(--fontColor);
+            transition: background-color .2s ease-in-out;
+            border-radius: var(--radius);
+            margin-bottom: 0;
+        }
+
+        .profile-pic span {
+            display: inline-flex;
+            padding: .2em;
+            height: 2em;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -71,6 +129,23 @@
 <main>
     <section>
         <h2>Profile Information</h2>
+
+        <!-- Profile Picture Section -->
+        <div class="profile-pic">
+            <form th:action="@{/manager/uploadProfileImage}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="userId" th:value="${profile.id}">
+                <label class="-label" for="file">
+                    <span class="glyphicon glyphicon-camera"></span>
+                    <span>Change Image</span>
+                </label>
+                <input id="file" type="file" name="file" onchange="loadFile(event)" />
+                <img th:src="${profile.base64Image != null ? 'data:image/png;base64,' + profile.base64Image : 'https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg'}" class="profile-pic" id="profileImage" />
+                <button type="submit">Save Image</button>
+            </form>
+        </div>
+
+
+
         <div>
             <label>ID: </label>
             <span th:text="${profile.id}"></span>
@@ -108,8 +183,8 @@
         <div id="qrCodeModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" alt="QR Code" th:data-filename="${profile.first_name +'_'+ profile.last_name}"/>
-
+                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" alt="QR Code"
+                     th:data-filename="${profile.first_name +'_'+ profile.last_name}"/>
                 <br>
                 <button id="downloadBtn">Download QR code</button>
             </div>
@@ -123,5 +198,13 @@
 <footer>
     <p>© 2024 leader space. All Rights Reserved.</p>
 </footer>
+
+<script>
+    var loadFile = function (event) {
+        var image = document.getElementById("profileImage");
+        image.src = URL.createObjectURL(event.target.files[0]);
+    };
+
+</script>
 </body>
 </html>

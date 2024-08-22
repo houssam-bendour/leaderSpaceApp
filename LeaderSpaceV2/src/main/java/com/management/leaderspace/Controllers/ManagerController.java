@@ -1190,4 +1190,24 @@ public class ManagerController {
         visitOfRoomRepository.deleteById(visit_room_id);
         return "redirect:/manager/visit";
     }
+
+
+
+    @PostMapping("/uploadProfileImage")
+    public String uploadProfileImage(@RequestParam("file") MultipartFile file, @ModelAttribute("userId") UUID id, Model model) {
+        Manager manager = managerRepository.findById(id).get();
+        try {
+            if (!file.isEmpty()) {
+                byte[] imageData = file.getBytes();
+                manager.setImage(imageData);
+                managerRepository.save(manager);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("message", "Failed to upload image.");
+        }
+        return "redirect:/"; // rediriger vers la page de profil ou page souhaitée
+    }
+
+
 }
