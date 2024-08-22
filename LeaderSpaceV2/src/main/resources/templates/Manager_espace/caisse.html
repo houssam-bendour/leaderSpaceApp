@@ -10,10 +10,27 @@
   <h2>Caisse</h2>
   <div class="transfer-form">
     <form th:action="@{/manager/transfer}" method="post">
-      <input type="number" name="sum" placeholder="Enter sum to transfer" min="0" th:max="${FirstCaisse.totale_caisse}"/>
+      <input type="number" name="sum" placeholder="Enter sum to transfer" min="0" th:max="${FirstCaisse.totale_caisse}" required/>
       <button type="submit">Transfer</button>
     </form>
   </div>
+  <div class="form-container" id="form-particulier" >
+    <form id="particulier" th:action="@{/manager/caisse}" method="post">
+      <div>
+        <label for="date">From</label>
+        <input type="date" name="dateDebut" id="date1" th:value="${param.dateDebut != null ? param.dateDebut : null}" required>
+        <label for="date">To</label>
+        <input type="date" name="dateFin" id="date" th:value="${param.dateFin != null ? param.dateFin : null}" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit">search</button>
+        <a class="cancel-link" th:href="@{/}">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+
+
   <table border="1">
 
     <thead>

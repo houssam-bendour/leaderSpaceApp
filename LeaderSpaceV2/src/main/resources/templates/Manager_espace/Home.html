@@ -118,10 +118,10 @@
     <form method="get" th:action="@{/manager/list-contrat}">
         <button type="submit">contrat</button>
     </form>
-    <form method="get" th:action="@{/manager/caisse}">
+    <form method="post" th:action="@{/manager/caisse}">
         <button type="submit">Caisse</button>
     </form>
-    <form method="get" th:action="@{/manager/bank}">
+    <form method="post" th:action="@{/manager/bank}">
         <button type="submit">Bank</button>
     </form>
 </header>
@@ -143,8 +143,6 @@
                 <button type="submit">Save Image</button>
             </form>
         </div>
-
-
 
         <div>
             <label>ID: </label>

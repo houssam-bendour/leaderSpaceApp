@@ -1090,23 +1090,32 @@ public class ManagerController {
         return "Manager_espace/new-contrat-ar-pdf";
     }
 
-    @GetMapping("caisse")
-    String getCaisse(Model model){
+    @PostMapping("caisse")
+    String getCaisse(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,Model model){
         List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
         Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
-        model.addAttribute("caisse", caisse);
+        if(startDate==null || endDate==null)
+            model.addAttribute("caisse", caisse);
+        else
+            model.addAttribute("caisse", caisseRepository.filterCaisseByDate(startDate, endDate));
         model.addAttribute("FirstCaisse", FirstCaisse);
         return "Manager_espace/caisse";
     }
 
-    @GetMapping("bank")
-    String getBank(Model model){
+    @PostMapping("bank")
+    String getBank(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,Model model){
         List<Bank> FromBank = bankRepository.findAllFromBank();
         List<Bank> ToBank = bankRepository.findAllFromCaisseToBank();
         List<Bank> Bank = bankRepository.findTopByOrderByDateTimeDesc();
         Bank FirstBank = Bank.isEmpty() ? null : Bank.getFirst();
-        model.addAttribute("FromBank", FromBank);
-        model.addAttribute("ToBank", ToBank);
+        if(startDate==null || endDate==null){
+            model.addAttribute("FromBank", FromBank);
+            model.addAttribute("ToBank", ToBank);
+        }
+        else{
+            model.addAttribute("FromBank", bankRepository.filterFromBankByDate(startDate, endDate));
+            model.addAttribute("ToBank", bankRepository.filterToBankByDate(startDate, endDate));
+        }
         model.addAttribute("FirstBank", FirstBank);
         return "Manager_espace/bank";
     }
@@ -1208,6 +1217,14 @@ public class ManagerController {
         }
         return "redirect:/"; // rediriger vers la page de profil ou page souhaitée
     }
+
+//    @PostMapping("/filter_caisse_by_date")
+//    public String filterCaisseByDate(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate, Model model) {
+//        List<Caisse> filteredCaisseByDate = ;
+//        model.addAttribute("filteredCaisse", caisseRepository.filterCaisseByDate(startDate, endDate)); // Ajout au modèle
+//        return "Manager_espace/caisse"; // Retourner la vue sans redirection
+//    }
+
 
 
 }

@@ -10,9 +10,23 @@
     <h2>Bank</h2>
     <div class="transfer-form">
         <form th:action="@{/manager/transferFromBank}" method="post">
-            <input type="number" name="sumBank" placeholder="Enter sum to transfer" min="0" th:max="${FirstBank.totale_bank}"/></td>
-            <textarea id="motif" name="motif" rows="4" cols="50" placeholder="Motif for transfer"></textarea></td>
+            <input type="number" name="sumBank" placeholder="Enter sum to transfer" min="0" th:max="${FirstBank.totale_bank}" required/></td><br>
+            <textarea id="motif" name="motif" rows="4" cols="50" placeholder="Motif for transfer" required></textarea></td><br>
             <button type="submit">Transfer</button>
+        </form>
+    </div>
+    <div class="form-container" id="form-particulier" >
+        <form id="particulier" th:action="@{/manager/bank}" method="post">
+            <div>
+                <label for="date">From</label>
+                <input type="date" name="dateDebut" id="date1" th:value="${param.dateDebut != null ? param.dateDebut : null}" required>
+                <label for="date">To</label>
+                <input type="date" name="dateFin" id="date" th:value="${param.dateFin != null ? param.dateFin : null}" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit">search</button>
+                <a class="cancel-link" th:href="@{/}">Cancel</a>
+            </div>
         </form>
     </div>
     <div class="visitType-buttons">
