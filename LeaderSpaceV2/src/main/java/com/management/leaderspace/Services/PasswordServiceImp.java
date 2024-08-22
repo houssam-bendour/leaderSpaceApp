@@ -2,10 +2,11 @@ package com.management.leaderspace.Services;
 
 import com.management.leaderspace.Entities.Utilisateur;
 import com.management.leaderspace.Repositories.UtilisateurRepository;
+import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import java.util.UUID;
 @AllArgsConstructor
@@ -13,7 +14,8 @@ import java.util.UUID;
 public class PasswordServiceImp implements PasswordService {
     private final PasswordEncoder passwordEncoder;
     private final UtilisateurRepository utilisateurRepository;
-//    JavaMailSender mailSender;
+    JavaMailSender mailSender;
+
     @Override
     public boolean sendPasswordResetLink(String email) {
         Utilisateur utilisateur = utilisateurRepository.findByEmail(email);
@@ -24,21 +26,25 @@ public class PasswordServiceImp implements PasswordService {
         utilisateur.setResetToken(token);
         utilisateurRepository.save(utilisateur);
         System.out.println("http://localhost:9090/reset-password?token=" + token);
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(utilisateur.getEmail());
-//        message.setSubject("Réinitialisation de votre mot de passe");
-//        message.setText("Pour réinitialiser votre mot de passe, veuillez cliquer sur le lien suivant : "
-//                + "http://localhost:8080/reset-password?token=" + token);
-//
-//        // Envoyer l'e-mail
-//        try {
-//            mailSender.send(message);
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-        return true;
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(utilisateur.getEmail());
+            helper.setFrom("noreply@leaderspace.net"); // Set the sender's email address
+            helper.setSubject("Réinitialisation de votre mot de passe");
+            helper.setText("Pour réinitialiser votre mot de passe, veuillez cliquer sur le lien suivant : "
+                    + "http://localhost:9090/reset-password?token=" + token, true);
+
+            mailSender.send(message);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Exception: " + e.getMessage());
+            return false;
+        }
     }
+
 
     @Override
     public boolean validatePasswordResetToken(String token) {
