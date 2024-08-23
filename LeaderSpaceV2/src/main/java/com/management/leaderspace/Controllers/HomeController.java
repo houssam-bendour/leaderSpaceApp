@@ -69,6 +69,7 @@ public class HomeController {
             String base64Image = Base64.getEncoder().encodeToString(manager.getImage());
             manager.setBase64Image(base64Image);
         }
+        model.addAttribute("profileImage", manager.getBase64Image() != null ? "data:image/png;base64," + manager.getBase64Image() : "https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg");
         return "/Manager_espace/Home";
     }
 

@@ -62,87 +62,145 @@
         a:hover {
             text-decoration: none;
         }
+
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            min-height: 100vh;
+            background-color:#005f6a;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        nav{
+            background-color: white;
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav ul{
+            width: 100%;
+            list-style: none;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        nav li{
+            height: 50px;
+        }
+        nav a{
+            height: 100%;
+            padding: 0 30px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            color: black;
+        }
+        nav a:hover{
+            background-color: #f0f0f0;
+        }
+        nav li:first-child{
+            margin-right: auto;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh; /* Assure que la barre latérale couvre toute la hauteur de la fenêtre */
+            width: 350px;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            box-shadow: -10px 0 10px rgba(0, 0, 0, 0.1);
+            list-style: none;
+            display: none;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow-y: auto; /* Permet de défiler verticalement si le contenu dépasse la hauteur de la fenêtre */
+        }
+
+        .sidebar li{
+            width: 100%;
+        }
+        .sidebar a{
+            width: 100%;
+        }
+        .menu-button{
+            display: none;
+        }
+        .hideOnMobile{
+            display: none;
+        }
+        .menu-button{
+            display: block;
+        }
+
+        @media(max-width: 400px){
+            .sidebar{
+                width: 100%;
+            }
+
+        }
     </style>
 </head>
 <body>
-<header>
-    <h1>Welcome to the Manager Home Page</h1>
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
-    <form th:action="@{/reception/visit-of-team}" method="get">
-        <button type="submit">team management</button>
-    </form>
-    <form th:action="@{/reception/visit-subscriber}" method="get">
-        <button type="submit">Visit for subscriber</button>
-    </form>
-    <form th:action="@{/reception/visit-room}" method="get">
-        <button type="submit">Visit for conference room</button>
-    </form>
-    <form th:action="@{/reception/visit-desk}" method="get">
-        <button type="submit">Visit for Desk</button>
-    </form>
-    <form th:action="@{/manager/visit}" method="get">
-        <button type="submit">Visit</button>
-    </form>
-    <form th:action="@{/manager/list-snacks}" method="get">
-        <button type="submit">snacks</button>
-    </form>
-    <form th:action="@{/manager/list-NotSubscribers}" method="get">
-        <button type="submit">NotSubscribers QR Code</button>
-    </form>
-    <form method="get" th:action="@{/manager/turnover}">
-        <button type="submit">turnover</button>
-    </form>
-    <form method="get" th:action="@{/manager/list-services}">
-        <button type="submit">Services</button>
-    </form>
-    <form method="get" th:action="@{/manager/list-subscriptions}">
-        <button type="submit">Subscriptions</button>
-    </form>
-    <form method="get" th:action="@{/manager/list-subscribers}">
-        <button type="submit">Subscribers</button>
-    </form>
-    <form method="get" th:action="@{/reception/Resubscribe}">
-        <button type="submit">Resubscribe</button>
-    </form>
-    <form method="get" th:action="@{/manager/list-receptionist}">
-        <button type="submit">Receptionist</button>
-    </form>
-    <form method="get" th:action="@{/manager/list-devis}">
-        <button type="submit">devis</button>
-    </form>
-    <form method="get" th:action="@{/manager/list-facture}">
-        <button type="submit">facture</button>
-    </form>
-    <form method="get" th:action="@{/manager/list-contrat}">
-        <button type="submit">contrat</button>
-    </form>
-    <form method="post" th:action="@{/manager/caisse}">
-        <button type="submit">Caisse</button>
-    </form>
-    <form method="post" th:action="@{/manager/bank}">
-        <button type="submit">Bank</button>
-    </form>
-</header>
+<nav>
+    <ul class="sidebar">
+        <li onclick=hideSidebar()><a ><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26"><path d="m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z"/></svg></a></li>
+        <li><a href="#" onclick="document.getElementById('teamManagementForm').submit();">Team Management</a></li>
+        <li><a href="#" onclick="document.getElementById('visitSubscriberForm').submit();">Visit for Subscriber</a></li>
+        <li><a href="#" onclick="document.getElementById('visitConferenceRoomForm').submit();">Visit for Conference Room</a></li>
+        <li><a href="#" onclick="document.getElementById('visitDeskForm').submit();">Visit for Desk</a></li>
+        <li><a href="#" onclick="document.getElementById('visitForm').submit();">Visit</a></li>
+        <li><a href="#" onclick="document.getElementById('snacksForm').submit();">Snacks</a></li>
+        <li><a href="#" onclick="document.getElementById('notSubscribersQRCodeForm').submit();">NotSubscribers QR Code</a></li>
+        <li><a href="#" onclick="document.getElementById('turnoverForm').submit();">Turnover</a></li>
+        <li><a href="#" onclick="document.getElementById('servicesForm').submit();">Services</a></li>
+        <li><a href="#" onclick="document.getElementById('subscriptionsForm').submit();">Subscriptions</a></li>
+        <li><a href="#" onclick="document.getElementById('subscribersForm').submit();">Subscribers</a></li>
+        <li><a href="#" onclick="document.getElementById('resubscribeForm').submit();">Resubscribe</a></li>
+        <li><a href="#" onclick="document.getElementById('receptionistForm').submit();">Receptionist</a></li>
+        <li><a href="#" onclick="document.getElementById('devisForm').submit();">Devis</a></li>
+        <li><a href="#" onclick="document.getElementById('factureForm').submit();">Facture</a></li>
+        <li><a href="#" onclick="document.getElementById('contratForm').submit();">Contrat</a></li>
+        <li><a href="#" onclick="document.getElementById('caisseForm').submit();">Caisse</a></li>
+        <li><a href="#" onclick="document.getElementById('bankForm').submit();">Bank</a></li>
+        <li><a href="#" onclick="document.getElementById('logout').submit();">Logout</a></li>
+    </ul>
+    <ul>
+        <li><a href="#" onclick="document.getElementById('homeForm').submit();">Home</a></li>
+        <li class="menu-button" onclick=showSidebar()><a><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26"><path d="M120 816v-60h720v60H120Zm0-210v-60h720v60H120Zm0-210v-60h720v60H120Z"/></svg></a></li>
+    </ul>
+</nav>
+<!-- Formulaires cachés pour chaque lien -->
+<form id="teamManagementForm" method="get" th:action="@{/reception/visit-of-team}" style="display:none;"></form>
+<form id="visitSubscriberForm" method="get" th:action="@{/reception/visit-subscriber}" style="display:none;"></form>
+<form id="visitConferenceRoomForm" method="get" th:action="@{/reception/visit-room}" style="display:none;"></form>
+<form id="visitDeskForm" method="get" th:action="@{/reception/visit-desk}" style="display:none;"></form>
+<form id="visitForm" method="get" th:action="@{/manager/visit}" style="display:none;"></form>
+<form id="snacksForm" method="get" th:action="@{/manager/list-snacks}" style="display:none;"></form>
+<form id="notSubscribersQRCodeForm" method="get" th:action="@{/manager/list-NotSubscribers}" style="display:none;"></form>
+<form id="turnoverForm" method="get" th:action="@{/manager/turnover}" style="display:none;"></form>
+<form id="servicesForm" method="get" th:action="@{/manager/list-services}" style="display:none;"></form>
+<form id="subscriptionsForm" method="get" th:action="@{/manager/list-subscriptions}" style="display:none;"></form>
+<form id="subscribersForm" method="get" th:action="@{/manager/list-subscribers}" style="display:none;"></form>
+<form id="resubscribeForm" method="get" th:action="@{/reception/Resubscribe}" style="display:none;"></form>
+<form id="receptionistForm" method="get" th:action="@{/manager/list-receptionist}" style="display:none;"></form>
+<form id="devisForm" method="get" th:action="@{/manager/list-devis}" style="display:none;"></form>
+<form id="factureForm" method="get" th:action="@{/manager/list-facture}" style="display:none;"></form>
+<form id="contratForm" method="get" th:action="@{/manager/list-contrat}" style="display:none;"></form>
+<form id="caisseForm" method="post" th:action="@{/manager/caisse}" style="display:none;"></form>
+<form id="bankForm" method="post" th:action="@{/manager/bank}" style="display:none;"></form>
+<form id="homeForm" method="get" th:action="@{/}" style="display:none;"></form>
+<form id="logout" method="get" th:action="@{/logout}" style="display:none;"></form>
+
 
 <main>
-    <section>
+    <section style="background-color: rgba(255,255,255,0.4)">
         <h2>Profile Information</h2>
 
-        <!-- Profile Picture Section -->
-        <div class="profile-pic">
-            <form th:action="@{/manager/uploadProfileImage}" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="userId" th:value="${profile.id}">
-                <label class="-label" for="file">
-                    <span class="glyphicon glyphicon-camera"></span>
-                    <span>Change Image</span>
-                </label>
-                <input id="file" type="file" name="file" onchange="loadFile(event)" />
-                <img th:src="${profile.base64Image != null ? 'data:image/png;base64,' + profile.base64Image : 'https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg'}" class="profile-pic" id="profileImage" />
-                <button type="submit">Save Image</button>
-            </form>
-        </div>
+
 
         <div>
             <label>ID: </label>
@@ -198,16 +256,22 @@
     </form>
 </main>
 
-<footer>
-    <p>© 2024 leader space. All Rights Reserved.</p>
-</footer>
-
 <script>
     var loadFile = function (event) {
         var image = document.getElementById("profileImage");
         image.src = URL.createObjectURL(event.target.files[0]);
     };
 
+</script>
+<script>
+    function showSidebar(){
+        const sidebar = document.querySelector('.sidebar')
+        sidebar.style.display = 'flex'
+    }
+    function hideSidebar(){
+        const sidebar = document.querySelector('.sidebar')
+        sidebar.style.display = 'none'
+    }
 </script>
 </body>
 </html>
