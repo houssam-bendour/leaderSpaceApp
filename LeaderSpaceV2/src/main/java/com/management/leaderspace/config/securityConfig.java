@@ -20,13 +20,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import java.util.Collections;
+import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
 public class securityConfig {
     private UtilisateurRepository utilisateurRepository;
+    private final DataSource dataSource;
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -45,11 +49,23 @@ public class securityConfig {
                                 .loginPage("/login")
                                 .defaultSuccessUrl("/default", true)
                                 .permitAll()
+                ).rememberMe(rememberMe ->
+                        rememberMe
+                                .tokenRepository(persistentTokenRepository())
+                                .tokenValiditySeconds(2592000) // 30 jours en secondes
+                                .rememberMeParameter("remember-me")
                 )
                 .logout(LogoutConfigurer::permitAll
                 );
         return http.build();
     }
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
+    }
+
     @Bean
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {

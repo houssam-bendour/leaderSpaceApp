@@ -49,6 +49,18 @@
             box-sizing: border-box;
         }
 
+        input[type="checkbox"] {
+            margin-right: 10px;
+            align-self: flex-start;
+        }
+        .checkbox{
+            display: flex;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        #remember-me{
+            width: max-content;
+        }
         button {
             width: 100%;
             padding: 10px;
@@ -92,6 +104,10 @@
         <div class="form-group">
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required/>
+        </div>
+        <div class="checkbox">
+            <input type="checkbox" id="remember-me" name="remember-me"/>
+            <label  for="remember-me">Rester connecté un mois</label>
         </div>
         <div class="form-group">
             <button type="submit">Login</button>
