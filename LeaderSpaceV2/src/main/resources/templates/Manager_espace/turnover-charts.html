@@ -77,11 +77,11 @@
             </div>
         </div>
     </div>
-    <div th:if="${!labelsNormale.isEmpty() || !labelsRoom.isEmpty() || !labelsDesk.isEmpty() || !labelsContracts.isEmpty() || !labelsTeam.isEmpty()}">
+    <div th:if="${!labelsNormale.isEmpty() || !labelsRoom.isEmpty() || !labelsDesk.isEmpty() || !labelsContracts.isEmpty() || !labelsTeam.isEmpty() || !labelsSubscriptions.isEmpty()}">
         <div class="separator"></div>
         <div class="card shadow-lg grow" style="height: 450px;">
             <div class="card-body" style="height: 100%;">
-                <h4>Chiffre d'affaires total</h4>
+                <h4>Chiffre d'affaires Total</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverTotalChart" style="height: 100%;"></canvas>
                 </div>
@@ -93,7 +93,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsTurnover.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Les visits normale</h4>
+                <h4>Les Visits Normale</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverChart" style="height: 100%;"></canvas>
                 </div>
@@ -102,7 +102,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsRoom.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Visits de la salle de conférence</h4>
+                <h4>Visits Of Room</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverVisitRoomChart" style="height: 100%;"></canvas>
                 </div>
@@ -112,7 +112,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsDesk.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Les visites de bureau</h4>
+                <h4>visites Of Desk</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverVisitDeskChart" style="height: 100%;"></canvas>
                 </div>
@@ -132,7 +132,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsSubscriptions.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Les abonnements</h4>
+                <h4>Les Abonnements</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverSubscriptionsChart" style="height: 100%;"></canvas>
                 </div>

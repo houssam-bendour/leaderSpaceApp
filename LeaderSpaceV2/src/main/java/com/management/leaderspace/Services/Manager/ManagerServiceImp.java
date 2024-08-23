@@ -712,8 +712,10 @@ public class ManagerServiceImp implements ManagerService {
     @Override
     public Double sommeSnacksAndBoissonsForVisitsTeam(Map<UUID, Double> sommeOfSnacksAndBoissonsByVisitFomTeam) {
         double somme = 0.0;
-        for (Double value : sommeOfSnacksAndBoissonsByVisitFomTeam.values()) {
-            somme+=value;
+        if (sommeOfSnacksAndBoissonsByVisitFomTeam!=null){
+            for (Double value : sommeOfSnacksAndBoissonsByVisitFomTeam.values()) {
+                somme+=value;
+            }
         }
         return somme;
     }
