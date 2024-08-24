@@ -22,10 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -60,7 +57,13 @@ public class ManagerServiceImp implements ManagerService {
         } else {
             username = principal.toString();
         }
-        return (Manager) managerRepository.findByEmail(username);
+        Manager manager=managerRepository.findByEmail(username);
+        if (manager.getImage() != null) {
+            String base64Image = Base64.getEncoder().encodeToString(manager.getImage());
+            manager.setBase64Image(base64Image);
+        }else
+            manager.setBase64Image("https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg");
+        return manager;
     }
 
     @Override

@@ -38,6 +38,7 @@ public class HomeController {
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(admin.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", admin);
+        model.addAttribute("profileImage", admin.getBase64Image());
         return "/Admin_espace/Home";
     }
 

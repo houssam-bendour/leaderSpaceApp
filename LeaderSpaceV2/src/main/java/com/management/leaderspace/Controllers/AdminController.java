@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -134,6 +135,14 @@ public class AdminController {
         adminRepository.save(admin);
         return "Receptionist_espace/password-changed-successfully";
 
+    }
+
+    @GetMapping("profile")
+    String profile( Model model) {
+        Admin admin = adminService.getProfile();
+        model.addAttribute("profile", admin);
+        model.addAttribute("profileImage", admin.getBase64Image());
+        return "Admin_espace/profile";
     }
 
 }

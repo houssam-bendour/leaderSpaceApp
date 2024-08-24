@@ -28,7 +28,12 @@ header {
     display: flex;
     align-items: center;
 }
-
+.header {
+    width: auto;
+    padding: 20px;
+    background-color: #29978d;
+    color: white;
+}
 h1 {
     font-size: 24px;
     margin-left: 20px;
@@ -120,13 +125,12 @@ h1 {
 
 /* Main Content */
 main {
-    width: 100%;
-    max-width: 1200px;
+    width: auto;
+    margin: 0 20px;
     background-color: white;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    margin-top: 50px;
 }
 
 /* Table Styles */
@@ -229,7 +233,6 @@ screen and (min-resolution: 192dpi) {
         background-image: url('/image/ls@2x.jpg'); /* Use a higher-resolution background image */
     }
 }
-
 
 
 
