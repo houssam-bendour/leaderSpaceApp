@@ -1,8 +1,16 @@
+
+
+    /* Google Font */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
 /* General Styles */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: "Poppins", sans-serif;
     display: flex;
+    background-image: url(https://img.freepik.com/photos-gratuite/beaute-abstraite-automne-dans-motif-veines-feuilles-multicolores-genere-par-ia_188544-9871.jpg);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100%;
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -10,17 +18,20 @@ body {
 }
 
 .login-container {
-    background-color: white;
+    width: 100%;
+    max-width: 400px;
     padding: 30px;
-    border-radius: 10px;
+    border-radius: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
     text-align: center;
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.5);
 }
 
 h1 {
+    font-size: 28px;
+    color: #fff;
     margin-bottom: 20px;
-    color: #333;
 }
 
 .form-group {
@@ -32,28 +43,89 @@ label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #fff;
 }
 
 input[type="text"],
 input[type="password"] {
     width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
+    height: 50px;
+    padding: 0 35px 0 5px;
+    background: transparent;
+    border: 2px solid #fff;
     border-radius: 5px;
     box-sizing: border-box;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+}
+
+input[type="text"]::placeholder,
+input[type="password"]::placeholder {
+    color: #f9f9f9;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+    align-self: flex-start;
+}
+
+.checkbox {
+    display: flex;
+    margin-bottom: 15px;
+    text-align: left;
+    color: #fff;
 }
 
 button {
     width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: white;
+    height: 40px;
+    background: #fff;
+    color: #000;
     border: none;
-    border-radius: 5px;
+    border-radius: 40px;
     cursor: pointer;
     font-size: 16px;
+    transition: all 0.5s;
 }
 
 button:hover {
-    background-color: #45a049;
+    background: #1f73c9;
+    color: #fff;
+}
+
+.forgot-password {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.forgot-password a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 460px) {
+    .login-container {
+        width: 350px;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-container {
+        width: 100%;
+        height: 100vh;
+        border: none;
+        padding: 20px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        height: 40px;
+    }
 }
