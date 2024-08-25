@@ -14,7 +14,6 @@ body {
 }
 
 
-
 /* Header Styles */
 .header {
     width: auto;
@@ -115,13 +114,13 @@ h1 {
 /* Main Content */
 main {
     width: max-content;
-    margin: 10ex 10ex;
     background-color: white;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    align-items: center;
-
+    margin: 10ex auto;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 /* Table Styles */
@@ -143,7 +142,6 @@ th {
     background: #29978d;
     cursor: default; /* Remove pointer cursor on hover */
 }
-
 
 
 td {
@@ -169,6 +167,7 @@ tr:hover td {
 td .action-buttons {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
 }
 

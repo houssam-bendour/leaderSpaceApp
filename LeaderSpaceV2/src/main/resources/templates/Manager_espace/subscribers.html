@@ -7,14 +7,13 @@
     <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
     <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <!--    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">-->
 </head>
 <body>
 <div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 
 <main>
     <div class="header">
-        <h1>List of Subscribers</h1>
+        <h1>Liste des abonnés</h1>
     </div>
     <div class="search-bar-buttons">
         <!-- Switched Cancel and Add buttons with icons -->
@@ -34,7 +33,7 @@
         <!-- Search form -->
         <div class="search-form">
             <form th:action="@{/reception/subscriber-Search}" method="get">
-                <input type="text" name="Name" placeholder="Search by name"/>
+                <input type="text" name="Name" placeholder="Rechercher par nom"/>
                 <abbr title="Rechercher">
                     <button type="submit"><i class="fa fa-search"></i></button> <!-- Icon only -->
                 </abbr>
@@ -45,14 +44,14 @@
         <thead>
         <tr>
             <th>CIN</th>
-            <th>Subscription Type</th>
-            <th>Quantity</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Type d'abonnement</th>
+            <th>Quantité</th>
+            <th>Prénom</th>
+            <th>Nom</th>
             <th>Email</th>
-            <th>Phone</th>
-            <th>Start Date</th>
-            <th>End Date</th>
+            <th>Téléphone</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
             <th>Actions</th>
         </tr>
         </thead>
