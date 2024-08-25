@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier le Profil</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: rgba(0, 0, 0, 0.62);
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 50px auto;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #339794;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: rgb(255, 254, 254);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group input[type="file"] {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+        }
+
+        .form-group select {
+            appearance: none;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            background-color: #339794;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .form-actions button:hover {
+            background-color: #02c1bc;
+        }
+
+        .form-actions a {
+            margin-left: 15px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            background: transparent;
+            color: #fff;
+            outline: none;
+        }
+        .profile-picture-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px auto;
+        }
+        .profile-image-preview {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        #file-input {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 30px;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .profile-picture-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px; /* Adjust the size to match the image */
+            height: 30px; /* Adjust the size to match the image */
+            background-color: #339794;
+            border-radius: 50%;
+            background-image: url('/image/camera.png'); /* Replace with your image path */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            pointer-events: none;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+</head>
+<body>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+
+<div class="form-container">
+    <h1>Modifier le Profil</h1>
+    <form th:action="@{/reception/saveUpdateProfile}" method="post" enctype="multipart/form-data">
+        <div class="profile-picture-container">
+            <img id="profileImagePreview" class="profile-image-preview" th:src="${profile.base64Image}" alt="Photo de profil">
+            <input type="file" id="file-input" name="profileImage" accept="image/*" onchange="previewImage(event)">
+        </div>
+        <div class="form-group">
+            <label for="firstName">Prénom</label>
+            <input type="text" id="firstName" name="firstName" th:value="${profile.first_name}" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Nom</label>
+            <input type="text" id="lastName" name="lastName" th:value="${profile.last_name}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" th:value="${profile.email}" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Téléphone</label>
+            <input type="text" id="phone" name="phone" th:value="${profile.phone}" required>
+        </div>
+        <div class="form-group">
+            <label for="CIN">CIN</label>
+            <input type="text" id="CIN" name="CIN" th:value="${profile.CIN}" required>
+        </div>
+        <div class="form-group">
+            <label for="CNSS">Numéro CNSS</label>
+            <input type="text" id="CNSS" name="CNSS" th:value="${profile.CNSS_number}" required>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Enregistrer</button>
+            <a th:href="@{/reception/profile}">Annuler</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function(){
+            const output = document.getElementById('profileImagePreview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+
+</body>
+</html>

@@ -1,104 +1,15 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html >
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <title>Receptionist Home</title>
-    <link rel="stylesheet" type="text/css" href="/css/Home.css">
-    <script th:src="@{/js/modal.js}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 </head>
-<body>
-<header>
-    <h1>Welcome to the Receptionist Home Page</h1>
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
-    <form th:action="@{/reception/visit-of-team}" method="get">
-        <button type="submit">team management</button>
-    </form>
-    <form th:action="@{/reception/visit-subscriber}" method="get">
-        <button type="submit">Visit for subscriber</button>
-    </form>
-    <form th:action="@{/reception/visit-room}" method="get">
-        <button type="submit">Visit for conference room</button>
-    </form>
-    <form th:action="@{/reception/visit-desk}" method="get">
-        <button type="submit">Visit for Desk</button>
-    </form>
-    <form th:action="@{/reception/visit-today}" method="get">
-        <button type="submit">all Visit today</button>
-    </form>
-    <form th:action="@{/reception/get-subscribers}" method="get">
-        <button type="submit">Subscribers</button>
-    </form>
-    <form method="get" th:action="@{/reception/Resubscribe}">
-        <button type="submit">Resubscribe</button>
-    </form>
-    <form method="get" th:action="@{/reception/list-snacks}">
-        <button type="submit">Snacks</button>
-    </form>
-</header>
 
-<main>
-    <section>
-        <h2>Profile Information</h2>
-        <div>
-            <label>ID: </label>
-            <span th:text="${profile.id}"></span>
-        </div>
-        <div>
-            <label>CIN: </label>
-            <span th:text="${profile.CIN}"></span>
-        </div>
-        <div>
-            <label>First Name: </label>
-            <span th:text="${profile.first_name}"></span>
-        </div>
-        <div>
-            <label>Last Name: </label>
-            <span th:text="${profile.last_name}"></span>
-        </div>
-        <div>
-            <label>Email: </label>
-            <span th:text="${profile.email}"></span>
-        </div>
-        <div>
-            <label>Phone: </label>
-            <span th:text="${profile.phone}"></span>
-        </div>
-        <div>
-            <label>CNSS Number: </label>
-            <span th:text="${profile.CNSS_number}"></span>
-        </div>
-        <div>
-            <button id="qrCodeBtn">QR code</button>
-        </div>
-        <form th:action="@{/reception/badge}" method="post">
-            <input type="hidden" name="userId" th:value="${profile.id}">
-            <input type="hidden" name="qrCodeBase64" th:value="${qrCodeBase64}">
-            <button type="submit">my badge</button>
-        </form>
+<body th:style="'background: url(/image/backgroundlogo.webp) no-repeat center center;background-size: 50%; height: 100vh;'">
 
-        <!-- Modal for QR Code -->
-        <div id="qrCodeModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" alt="QR Code"
-                     th:data-filename="${profile.first_name +'_'+ profile.last_name}"/>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
 
-                <br>
-                <button id="downloadBtn">Download QR code</button>
-
-
-            </div>
-        </div>
-    </section>
-    <form th:action="@{/reception/update-password}" method="get">
-        <button type="submit">modifier le mote de passe</button>
-    </form>
-</main>
-
-<footer>
-    <p>© 2024 leader space. All Rights Reserved.</p>
-</footer>
 </body>
 </html>

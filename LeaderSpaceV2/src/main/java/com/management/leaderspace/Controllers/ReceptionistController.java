@@ -8,14 +8,18 @@ import com.management.leaderspace.Services.Manager.ManagerServiceImp;
 import com.management.leaderspace.Services.Receptionist.ReceptionistService;
 import com.management.leaderspace.Services.Receptionist.ReceptionistServiceImp;
 import com.management.leaderspace.model.CaisseService;
+import com.management.leaderspace.model.QrCodeGenerator;
 import com.management.leaderspace.model.SnackForm;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.*;
 import java.util.*;
 
@@ -29,6 +33,7 @@ public class ReceptionistController {
     private final ReceptionistServiceImp receptionistServiceImp;
     private final ReceptionistRepository receptionistRepository;
     private final UtilisateurRepository utilisateurRepository;
+    private final HttpSession httpSession;
     PasswordEncoder passwordEncoder;
 
     ReceptionistService receptionistService;
@@ -1744,4 +1749,53 @@ public class ReceptionistController {
 
         return "/Receptionist_espace/visit-of-room-checkout";
     }
+    @GetMapping("profile")
+    String profile( Model model) {
+        Receptionist receptionist = receptionistService.getProfile();
+        String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(receptionist.getId().toString());
+        model.addAttribute("qrCodeBase64", qrCodeBase64);
+        model.addAttribute("profile", receptionist);
+        model.addAttribute("profileImage", receptionist.getBase64Image());
+        return "Receptionist_espace/profile";
+    }
+
+    @GetMapping("updateProfile")
+    String updateProfile(Model model) {
+        Receptionist receptionist = receptionistService.getProfile();
+        model.addAttribute("profile", receptionist);
+        return "Receptionist_espace/updateProfile";
+    }
+    @PostMapping("saveUpdateProfile")
+    String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
+                             @RequestParam("firstName") String firstName,
+                             @RequestParam("lastName") String lastName,
+                             @RequestParam("email") String email,
+                             @RequestParam("phone") String phone,
+                             @RequestParam("CIN") String CIN,
+                             @RequestParam("CNSS") String CNSS,
+                             Model model) {
+        Receptionist receptionist = receptionistService.getProfile();
+        receptionist.setEmail(email);
+        receptionist.setPhone(phone);
+        receptionist.setCNSS_number(CNSS);
+        receptionist.setCIN(CIN);
+        receptionist.setLast_name(lastName);
+        receptionist.setFirst_name(firstName);
+        try {
+            if (!file.isEmpty()) {
+                byte[] imageData = file.getBytes();
+                receptionist.setImage(imageData);
+                receptionistRepository.save(receptionist);
+                String base64Image = Base64.getEncoder().encodeToString(receptionist.getImage());
+                receptionist.setBase64Image("data:image/png;base64,"+base64Image);
+                httpSession.setAttribute("profileImage", receptionist.getBase64Image());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("message", "Failed to upload image.");
+        }
+        model.addAttribute("profile", receptionist);
+        return "redirect:/reception/profile";
+    }
+
 }

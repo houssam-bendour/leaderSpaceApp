@@ -26,7 +26,7 @@ public class BusinessServiceImp implements BusinessService {
         Business business = businessRepository.findByEmail(username);
         if (business.getImage() != null) {
             String base64Image = Base64.getEncoder().encodeToString(business.getImage());
-            business.setBase64Image(base64Image);
+            business.setBase64Image("data:image/png;base64,"+base64Image);
         } else
             business.setBase64Image("https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg");
         return business;

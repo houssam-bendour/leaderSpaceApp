@@ -4,6 +4,7 @@ import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.AdminRepository;
 import com.management.leaderspace.Repositories.ManagerRepository;
 import com.management.leaderspace.Services.Admin.AdminService;
+import com.management.leaderspace.model.QrCodeGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -140,9 +141,11 @@ public class AdminController {
     @GetMapping("profile")
     String profile( Model model) {
         Admin admin = adminService.getProfile();
+        String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(admin.getId().toString());
+        model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", admin);
         model.addAttribute("profileImage", admin.getBase64Image());
-        return "Admin_espace/profile";
+        return "Receptionist_espace/profile";
     }
 
 }

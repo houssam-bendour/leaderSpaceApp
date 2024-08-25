@@ -3,140 +3,161 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Server Card</title>
-  <style>
-    :root {
-      --card-width: 15em;
-      --card-height: 22em;
-      --border-radius: 0.5em;
-      --shadow: 2px 2px 17px rgba(0, 0, 0, 0.2);
-      --primary-color: #005f6a;
-      --secondary-color: #fc4c02;
-      --gradient-start: #149a8f;
-      --gradient-end: #049fb5;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #131f21;
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    .card {
-      width: var(--card-width);
-      height: var(--card-height);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 1em;
-      background: linear-gradient(180deg, var(--gradient-start), var(--gradient-end));
-      color: #fff;
-    }
-
-    .logo-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      margin-bottom: 1em;
-    }
-
-    .logo {
-      opacity: 0.5;
-      width: 4em;
-      height: 4em;
-    }
-
-    .logo_name {
-      opacity: 0.5;
-      width: auto;
-      height: 3em;
-    }
-
-    .profile-picture {
-      width: 4em;
-      height: 4em;
-      border-radius: 50%;
-      border: 0.2em solid #fff;
-      margin-bottom: 1em;
-      object-fit: cover;
-    }
-
-    .name {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 1em;
-      text-align: center;
-      color: #131f21;
-    }
-
-    .qr-code {
-      width: 7em;
-      height: 7em;
-      /*margin-bottom: 1em;*/
-      object-fit: cover;
-      background-color: #fff;
-      /*padding: 0.3em;*/
-      /*border-radius: 0.3em;*/
-    }
-
-    .link {
-      margin-top: 1em;
-      font-size: 0.9em;
-      color: #fff;
-      text-decoration: none;
-    }
-
-    .link_container{
-      background-color: aquamarine;
-    }
-
-    #downloadBtn {
-      margin-top: 2em;
-      padding: 0.5em 1em;
-      border-radius: var(--border-radius);
-      border: none;
-      background-color: var(--secondary-color);
-      color: #fff;
-      font-size: 1em;
-      cursor: pointer;
-    }
-
-    #downloadBtn:hover {
-      background-color: #ff5c24;
-    }
-  </style>
+  <title>Member ID Card</title>
 </head>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('/image/ls.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+    flex-direction: column;
+  }
+
+  .id-card-container {
+    text-align: center;
+    position: relative;
+  }
+
+  .id-card {
+    width: 320px;
+    height: 520px;
+    background: linear-gradient(135deg, #1F2A38 0%, #3B4B5B 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #E3D9F5 0%, #C0E0F0 100%);
+    padding: 5px;
+    border-bottom: 4px solid #2997aa;
+  }
+
+  .company-logo {
+    width: 100px;
+    height: auto;
+  }
+
+  .member-info {
+    padding: 15px;
+    background: linear-gradient(135deg, #1F2A38 0%, #3B4B5B 100%);
+  }
+
+  .photo-container {
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    display: inline-block;
+    margin-bottom: 15px;
+  }
+
+  .member-photo {
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    display: inline-block;
+    margin-bottom: 15px;
+  }
+
+  .member-name {
+    font-size: 24px;
+    margin: 10px 0;
+    color: #fff;
+    font-weight: 600;
+
+  }
+
+
+
+  .qr-code {
+    width: 130px;
+    height: 130px;
+  }
+
+  .card-footer {
+    background: linear-gradient(135deg, #E3D9F5 0%, #C0E0F0 100%);
+    padding: 10px;
+    border-top: 4px solid #2997aa;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .website {
+    color: #2997aa;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  button {
+    background-color: #339794;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #3d7372;
+  }
+
+  button:focus {
+    outline: none;
+  }
+</style>
 <body>
-<div class="card">
-  <div class="logo-container">
-    <img src="/image/logoOfCart.png" alt="LeaderSpace Logo" class="logo"/>
-    <img src="/image/logoNameOfCart.png" alt="LeaderSpace Logo" class="logo_name"/>
+<div class="id-card-container">
+  <div class="id-card" id="idCard">
+    <div class="card-header">
+      <img src="/image/logoLeadeSpace.png" alt="Company Logo" class="company-logo">
+    </div>
+    <div class="member-info">
+      <div class="photo-container">
+        <img th:src="@{${session.profileImage}}" alt="Member Photo" class="member-photo">
+      </div>
+      <h2 class="member-name" th:text="${user.first_name} + ' ' + ${user.last_name}"></h2>
+      <div class="qr-code-container">
+        <img th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" alt="QR Code" class="qr-code">
+      </div>
+    </div>
+    <div class="card-footer">
+      <label class="website">www.leaderspace.net</label>
+    </div>
   </div>
-  <img src="https://avatars.githubusercontent.com/u/114355387?v=4&size=64" class="profile-picture" alt="Profile Picture">
-  <div class="name" th:text="${user.first_name} + ' ' + ${user.last_name}"></div>
-  <img th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" class="qr-code" alt="QR Code">
+  <div class="button-container">
+    <button id="downloadButton">Télécharger la carte</button>
+    <form th:action="@{/reception/profile}" method="get">
+      <button type="submit">Retour à profile</button>
+    </form>
+  </div>
 </div>
 
-<button id="downloadBtn">Download as Image</button>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
 <script>
-  document.getElementById("downloadBtn").addEventListener("click", function() {
-    html2canvas(document.querySelector(".card")).then(canvas => {
-      let link = document.createElement("a");
-      link.download = "server-card.png";
-      link.href = canvas.toDataURL();
+  document.getElementById('downloadButton').addEventListener('click', function () {
+    html2canvas(document.getElementById('idCard')).then(function (canvas) {
+      let link = document.createElement('a');
+      link.download = 'id_card.png';
+      link.href = canvas.toDataURL('image/png');
       link.click();
     });
   });

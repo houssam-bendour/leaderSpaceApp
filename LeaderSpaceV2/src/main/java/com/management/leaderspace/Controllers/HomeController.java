@@ -7,6 +7,7 @@ import com.management.leaderspace.Services.Manager.ManagerService;
 import com.management.leaderspace.Services.Receptionist.ReceptionistService;
 import com.management.leaderspace.Services.Subscriber.SubscriberService;
 import com.management.leaderspace.model.QrCodeGenerator;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +18,7 @@ import java.util.Base64;
 @Controller
 @AllArgsConstructor
 public class HomeController {
+    private final HttpSession httpSession;
 
     //test new branche
 
@@ -38,7 +40,11 @@ public class HomeController {
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(admin.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", admin);
-        model.addAttribute("profileImage", admin.getBase64Image());
+        String largeString = (String) httpSession.getAttribute("profileImage");
+        System.out.println(largeString);
+        if (largeString == null) {
+            httpSession.setAttribute("profileImage", admin.getBase64Image());
+        }
         return "/Admin_espace/Home";
     }
 
@@ -48,6 +54,11 @@ public class HomeController {
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(subscriber.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", subscriber);
+        String largeString = (String) httpSession.getAttribute("profileImage");
+        System.out.println(largeString);
+        if (largeString == null) {
+            httpSession.setAttribute("profileImage", subscriber.getBase64Image());
+        }
         return "/Subscriber_espace/Home";
     }
 
@@ -57,6 +68,11 @@ public class HomeController {
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(receptionist.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", receptionist);
+        String largeString = (String) httpSession.getAttribute("profileImage");
+        System.out.println(largeString);
+        if (largeString == null) {
+            httpSession.setAttribute("profileImage", receptionist.getBase64Image());
+        }
         return "/Receptionist_espace/Home";
     }
 
@@ -66,11 +82,11 @@ public class HomeController {
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(manager.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", manager);
-        if (manager.getImage() != null) {
-            String base64Image = Base64.getEncoder().encodeToString(manager.getImage());
-            manager.setBase64Image(base64Image);
+        String largeString = (String) httpSession.getAttribute("profileImage");
+        System.out.println(largeString);
+        if (largeString == null) {
+            httpSession.setAttribute("profileImage", manager.getBase64Image());
         }
-        model.addAttribute("profileImage", manager.getBase64Image() != null ? "data:image/png;base64," + manager.getBase64Image() : "https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg");
         return "/Manager_espace/Home";
     }
 
@@ -80,6 +96,11 @@ public class HomeController {
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(business.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", business);
+        String largeString = (String) httpSession.getAttribute("profileImage");
+        System.out.println(largeString);
+        if (largeString == null) {
+            httpSession.setAttribute("profileImage", business.getBase64Image());
+        }
         return "/Business_espace/Home";
     }
 

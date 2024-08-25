@@ -60,7 +60,7 @@ public class ManagerServiceImp implements ManagerService {
         Manager manager=managerRepository.findByEmail(username);
         if (manager.getImage() != null) {
             String base64Image = Base64.getEncoder().encodeToString(manager.getImage());
-            manager.setBase64Image(base64Image);
+            manager.setBase64Image("data:image/png;base64,"+base64Image);
         }else
             manager.setBase64Image("https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg");
         return manager;

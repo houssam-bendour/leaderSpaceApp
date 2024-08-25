@@ -1,10 +1,13 @@
-<div th:fragment="navbar" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <nav class="navbar">
+<!-- navbar.html -->
+
+    <nav class="navbar" th:fragment="navbar" xmlns:sec="http://www.w3.org/1999/xhtml">
         <div class="logo">
             <a href="#" onclick="document.getElementById('homeForm').submit();"><img src="/image/esc_logo.png"
                                                                                      alt="esc_logo" height="40px"></a>
         </div>
+
         <ul class="nav-links">
+            <li  sec:authorize="hasRole('ROLE_MANAGER')"><a href="#" onclick="document.getElementById('receptionistForm').submit();">Receptionist</a></li>
             <li sec:authorize="hasRole('ROLE_ADMIN')" class="dropdown">
                 <a href="#" class="dropbtn">Equipes</a>
                 <div class="dropdown-content">
@@ -13,7 +16,7 @@
                     <a href="#" onclick="document.getElementById('receptionistForm').submit();">Receptionist</a>
                 </div>
             </li>
-            <li class="dropdown">
+            <li class="dropdown" sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER') or hasRole('ROLE_RECEPTIONIST')">
                 <a href="#" class="dropbtn">Nouvelle visite</a>
                 <div class="dropdown-content">
                     <a href="#" onclick="document.getElementById('teamManagementForm').submit();">Equipe</a>
@@ -23,7 +26,7 @@
                         réunion</a>
                 </div>
             </li>
-            <li class="dropdown">
+            <li class="dropdown" sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
                 <a href="#" class="dropbtn">Gestion et finances</a>
                 <div class="dropdown-content">
                     <a href="#" onclick="document.getElementById('turnoverForm').submit();">Chiffre d'affaire</a>
@@ -31,14 +34,14 @@
                     <a href="#" onclick="document.getElementById('bankForm').submit();">Virements bancaires</a>
                 </div>
             </li>
-            <li class="dropdown">
+            <li class="dropdown"  sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
                 <a href="#" class="dropbtn">Offre</a>
                 <div class="dropdown-content">
                     <a href="#" onclick="document.getElementById('servicesForm').submit();">Services</a>
                     <a href="#" onclick="document.getElementById('subscriptionsForm').submit();">Abonnements</a>
                 </div>
             </li>
-            <li class="dropdown">
+            <li class="dropdown"  sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')">
                 <a href="#" class="dropbtn">Documents</a>
                 <div class="dropdown-content">
                     <a href="#" onclick="document.getElementById('devisForm').submit();">devises</a>
@@ -46,82 +49,93 @@
                     <a href="#" onclick="document.getElementById('contratForm').submit();">Contrats du domiciliation</a>
                 </div>
             </li>
-            <li class="dropdown">
+            <li class="dropdown" >
                 <a href="#" class="dropbtn">Gestion des abonnés</a>
                 <div class="dropdown-content">
-                    <a href="#" onclick="document.getElementById('subscribersForm').submit();">Les abonnés</a>
-                    <a href="#" onclick="document.getElementById('visitForm').submit();">Les visites des abonnés</a>
-                    <a href="#" onclick="document.getElementById('resubscribeForm').submit();">Se réabonner</a>
+                    <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')" href="#" onclick="document.getElementById('subscribersForm').submit();">Les abonnés</a>
+                    <a sec:authorize="hasRole('ROLE_RECEPTIONIST')" href="#" onclick="document.getElementById('subscribersFormForReceptionist').submit();">Les abonnés</a>
+                    <a sec:authorize="hasRole('ROLE_RECEPTIONIST')" href="#" onclick="document.getElementById('visitFormForReceptionist').submit();">Les visites des abonnés</a>
+                    <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')" href="#" onclick="document.getElementById('visitForm').submit();">Les visites des abonnés</a>
+                    <a  href="#" onclick="document.getElementById('resubscribeForm').submit();">Se réabonner</a>
                 </div>
-            <li><a href="#" onclick="document.getElementById('snacksForm').submit();">Stocke</a></li>
-            <li><a href="#" onclick="document.getElementById('notSubscribersQRCodeForm').submit();">Cart</a></li>
+            <li  sec:authorize="hasRole('ROLE_RECEPTIONIST')"><a href="#" onclick="document.getElementById('snacksFormForReceptionist').submit();">Stocke</a></li>
+            <li  sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')"><a href="#" onclick="document.getElementById('snacksForm').submit();">Stocke</a></li>
+            <li  sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')"><a href="#" onclick="document.getElementById('notSubscribersQRCodeForm').submit();">Cart</a></li>
             </li>
             <li class="dropdown profile">
-                <a href="#" class="dropbtn"><img th:src="${profileImage}"
+                <a href="#" class="dropbtn"><img th:src="${session.profileImage}"
                                                  alt="Profile" class="profile-img"></a>
                 <div class="dropdown-content">
-                    <a href="#" onclick="document.getElementById('profileForm').submit();">Profile</a>
-                    <a href="#">Parametre</a>
+                    <a sec:authorize="hasRole('ROLE_RECEPTIONIST')" href="#" onclick="document.getElementById('profileFormForReceptionist').submit();">Profile</a>
+                    <a sec:authorize="hasRole('ROLE_ADMIN')" href="#" onclick="document.getElementById('profileFormForAdmin').submit();">Profile</a>
+                    <a sec:authorize="hasRole('ROLE_MANAGER')" href="#" onclick="document.getElementById('profileFormForManager').submit();">Profile</a>
+                    <a sec:authorize="hasRole('ROLE_SUBSCRIBER')" href="#" onclick="document.getElementById('profileFormForSubscriber').submit();">Profile</a>
                     <a href="#" onclick="document.getElementById('logout').submit();">Logout</a>
                 </div>
             </li>
 
         </ul>
+        <!-- Formulaires cachés pour chaque lien -->
+        <form id="teamManagementForm" method="get" th:action="@{/reception/visit-of-team}" style="display:none;"></form>
+        <form id="profileFormForReceptionist" method="get" th:action="@{/reception/profile}" style="display:none;"></form>
+        <form id="profileFormForAdmin" method="get" th:action="@{/admin/profile}" style="display:none;"></form>
+        <form id="profileFormForManager" method="get" th:action="@{/manager/profile}" style="display:none;"></form>
+        <form id="profileFormForSubscriber" method="get" th:action="@{/subscriber/profile}" style="display:none;"></form>
+        <form id="adminForm" method="get" th:action="@{/admin/list-admins}" style="display:none;"></form>
+        <form id="ManagerForm" method="get" th:action="@{/admin/list-managers}" style="display:none;"></form>
+        <form id="visitSubscriberForm" method="get" th:action="@{/reception/visit-subscriber}" style="display:none;"></form>
+        <form id="visitConferenceRoomForm" method="get" th:action="@{/reception/visit-room}" style="display:none;"></form>
+        <form id="visitDeskForm" method="get" th:action="@{/reception/visit-desk}" style="display:none;"></form>
+        <form id="visitForm" method="get" th:action="@{/manager/visit}" style="display:none;"></form>
+        <form id="visitFormForReceptionist" method="get" th:action="@{/reception/visit-today}" style="display:none;"></form>
+        <form id="snacksForm" method="get" th:action="@{/manager/list-snacks}" style="display:none;"></form>
+        <form id="snacksFormForReceptionist" method="get" th:action="@{/reception/list-snacks}" style="display:none;"></form>
+        <form id="notSubscribersQRCodeForm" method="get" th:action="@{/manager/list-NotSubscribers}"
+              style="display:none;"></form>
+        <form id="turnoverForm" method="get" th:action="@{/manager/turnover}" style="display:none;"></form>
+        <form id="servicesForm" method="get" th:action="@{/manager/list-services}" style="display:none;"></form>
+        <form id="subscriptionsForm" method="get" th:action="@{/manager/list-subscriptions}" style="display:none;"></form>
+        <form id="subscribersForm" method="get" th:action="@{/manager/list-subscribers}" style="display:none;"></form>
+        <form id="subscribersFormForReceptionist" method="get" th:action="@{/reception/get-subscribers}" style="display:none;"></form>
+        <form id="resubscribeForm" method="get" th:action="@{/reception/Resubscribe}" style="display:none;"></form>
+        <form id="receptionistForm" method="get" th:action="@{/manager/list-receptionist}" style="display:none;"></form>
+        <form id="devisForm" method="get" th:action="@{/manager/list-devis}" style="display:none;"></form>
+        <form id="factureForm" method="get" th:action="@{/manager/list-facture}" style="display:none;"></form>
+        <form id="contratForm" method="get" th:action="@{/manager/list-contrat}" style="display:none;"></form>
+        <form id="caisseForm" method="post" th:action="@{/manager/caisse}" style="display:none;"></form>
+        <form id="bankForm" method="post" th:action="@{/manager/bank}" style="display:none;"></form>
+        <form id="homeForm" method="get" th:action="@{/}" style="display:none;"></form>
+        <form id="logout" method="get" th:action="@{/logout}" style="display:none;"></form>
+        <script>
+            document.querySelectorAll('.dropbtn').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.stopPropagation(); // Prevents the event from bubbling up
+
+                    const dropdownContent = this.nextElementSibling;
+
+                    // Close other dropdowns if open
+                    document.querySelectorAll('.dropdown-content').forEach(content => {
+                        if (content !== dropdownContent) {
+                            content.style.display = 'none';
+                        }
+                    });
+
+                    // Toggle the clicked dropdown
+                    dropdownContent.style.display =
+                        dropdownContent.style.display === 'block' ? 'none' : 'block';
+                });
+            });
+
+            // Close the dropdown if clicked outside
+            window.addEventListener('click', function (e) {
+                if (!e.target.matches('.dropbtn') && !e.target.closest('.dropdown-content')) {
+                    document.querySelectorAll('.dropdown-content').forEach(content => {
+                        content.style.display = 'none';
+                    });
+                }
+            });
+
+        </script>
+
     </nav>
 
-    <!-- Formulaires cachés pour chaque lien -->
-    <form id="teamManagementForm" method="get" th:action="@{/reception/visit-of-team}" style="display:none;"></form>
-    <form id="profileForm" method="get" th:action="@{/admin/profile}" style="display:none;"></form>
-    <form id="adminForm" method="get" th:action="@{/admin/list-admins}" style="display:none;"></form>
-    <form id="ManagerForm" method="get" th:action="@{/admin/list-managers}" style="display:none;"></form>
-    <form id="visitSubscriberForm" method="get" th:action="@{/reception/visit-subscriber}" style="display:none;"></form>
-    <form id="visitConferenceRoomForm" method="get" th:action="@{/reception/visit-room}" style="display:none;"></form>
-    <form id="visitDeskForm" method="get" th:action="@{/reception/visit-desk}" style="display:none;"></form>
-    <form id="visitForm" method="get" th:action="@{/manager/visit}" style="display:none;"></form>
-    <form id="snacksForm" method="get" th:action="@{/manager/list-snacks}" style="display:none;"></form>
-    <form id="notSubscribersQRCodeForm" method="get" th:action="@{/manager/list-NotSubscribers}"
-          style="display:none;"></form>
-    <form id="turnoverForm" method="get" th:action="@{/manager/turnover}" style="display:none;"></form>
-    <form id="servicesForm" method="get" th:action="@{/manager/list-services}" style="display:none;"></form>
-    <form id="subscriptionsForm" method="get" th:action="@{/manager/list-subscriptions}" style="display:none;"></form>
-    <form id="subscribersForm" method="get" th:action="@{/manager/list-subscribers}" style="display:none;"></form>
-    <form id="resubscribeForm" method="get" th:action="@{/reception/Resubscribe}" style="display:none;"></form>
-    <form id="receptionistForm" method="get" th:action="@{/manager/list-receptionist}" style="display:none;"></form>
-    <form id="devisForm" method="get" th:action="@{/manager/list-devis}" style="display:none;"></form>
-    <form id="factureForm" method="get" th:action="@{/manager/list-facture}" style="display:none;"></form>
-    <form id="contratForm" method="get" th:action="@{/manager/list-contrat}" style="display:none;"></form>
-    <form id="caisseForm" method="post" th:action="@{/manager/caisse}" style="display:none;"></form>
-    <form id="bankForm" method="post" th:action="@{/manager/bank}" style="display:none;"></form>
-    <form id="homeForm" method="get" th:action="@{/}" style="display:none;"></form>
-    <form id="logout" method="get" th:action="@{/logout}" style="display:none;"></form>
-    <script>
-        document.querySelectorAll('.dropbtn').forEach(button => {
-            button.addEventListener('click', function (e) {
-                e.stopPropagation(); // Prevents the event from bubbling up
-
-                const dropdownContent = this.nextElementSibling;
-
-                // Close other dropdowns if open
-                document.querySelectorAll('.dropdown-content').forEach(content => {
-                    if (content !== dropdownContent) {
-                        content.style.display = 'none';
-                    }
-                });
-
-                // Toggle the clicked dropdown
-                dropdownContent.style.display =
-                    dropdownContent.style.display === 'block' ? 'none' : 'block';
-            });
-        });
-
-        // Close the dropdown if clicked outside
-        window.addEventListener('click', function (e) {
-            if (!e.target.matches('.dropbtn') && !e.target.closest('.dropdown-content')) {
-                document.querySelectorAll('.dropdown-content').forEach(content => {
-                    content.style.display = 'none';
-                });
-            }
-        });
-
-    </script>
-</div>

@@ -7,16 +7,21 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
             margin: 0;
             padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
         }
 
         .profile-container {
             width: 100%;
             max-width: 900px;
             margin: 50px auto;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.44);
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             overflow: hidden;
@@ -77,7 +82,7 @@
         }
 
         .profile-footer {
-            background-color: #f7f7f7;
+            background-color: rgba(247, 247, 247, 0.44);
             padding: 15px;
             text-align: center;
             border-top: 1px solid #e7e7e7;
@@ -99,12 +104,27 @@
             background-color: #02c1bc;
             color: black;
         }
+        .profile-details button{
+            background-color: #f31414;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-transform: uppercase;
+            font-size: 0.7em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .profile-details button:hover {
+            background-color: #ec7575;
+            color: black;
+        }
     </style>
     <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 
 </head>
 <body>
-<div th:replace="Admin_espace/fragments/navbar :: navbar" th:with="profileImage=${profileImage}"></div>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
 
 <div class="profile-container">
     <div class="profile-header">
@@ -121,12 +141,19 @@
             <p><span>CIN:</span> <span th:text="${profile.CIN}">CIN000000</span></p>
             <p><span>Numéro CNSS:</span> <span th:text="${profile.CNSS_number}">CNSS000000</span></p>
             <p><span>Type d'utiltsateur:</span> <span th:text="${profile.getDiscriminatorValue()}">Type</span></p>
+            <button type="button" onclick="document.getElementById('password').submit();">Modifier le  mot de passe</button>
         </div>
     </div>
     <div class="profile-footer">
-        <button type="button" onclick="window.location.href='/edit-profile'">Modifier le profil</button>
+        <button type="button" onclick="document.getElementById('updateProfile').submit();">Modifier</button>
+        <button type="button" onclick="document.getElementById('MyBadg').submit();">mon badge</button>
     </div>
 </div>
-
+<form id="password" method="get" th:action="@{/reception/update-password}" style="display:none;"></form>
+<form id="updateProfile" method="get" th:action="@{/reception/updateProfile}" style="display:none;"></form>
+<form id="MyBadg" method="post" th:action="@{/reception/badge}" style="display:none;">
+    <input type="hidden" name="userId" th:value="${profile.id}">
+    <input type="hidden" name="qrCodeBase64" th:value="${qrCodeBase64}">
+</form>
 </body>
 </html>

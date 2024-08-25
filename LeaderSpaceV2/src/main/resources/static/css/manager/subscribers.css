@@ -1,38 +1,27 @@
+/* subscribers.css*/
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-image: url('/image/ls.jpg');
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: 100%;
+    background-size: cover;
+    background-attachment: fixed;
     color: #333;
-    display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+
+
 }
+
 
 
 /* Header Styles */
-header {
-    width: 100%;
-    padding: 20px;
-    background-color: #29978d;
-    color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-}
 .header {
     width: auto;
     padding: 20px;
     background-color: #29978d;
     color: white;
+    margin-bottom: 2ex;
 }
 h1 {
     font-size: 24px;
@@ -125,12 +114,14 @@ h1 {
 
 /* Main Content */
 main {
-    width: auto;
-    margin: 0 20px;
+    width: max-content;
+    margin: 10ex 10ex;
     background-color: white;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    align-items: center;
+
 }
 
 /* Table Styles */
@@ -153,15 +144,11 @@ th {
     cursor: default; /* Remove pointer cursor on hover */
 }
 
-th:hover {
-    background-color: #29978d; /* Maintain the same background color */
-    transform: none; /* Ensure no scaling happens */
-    box-shadow: none; /* Remove any potential shadow */
-}
+
 
 td {
-    text-align: left;
-    padding: 15px;
+    text-align: center;
+    padding: 15px 5px;
     border-bottom: 1px solid #ddd;
     transition: background-color 0.5s ease;
 }
@@ -177,9 +164,6 @@ tr:hover td {
     opacity: unset;
 }
 
-tr td{
-    opacity: 0.8;
-}
 
 /* Action Buttons in Table */
 td .action-buttons {
@@ -207,32 +191,5 @@ td .action-buttons button:nth-child(1):hover i {
 td .action-buttons button:nth-child(2):hover i {
     color: #29978d;
 }
-
-
-/* Retina and Non-Retina Media Queries */
-
-/* ----------- Non-Retina Screens ----------- */
-@media screen and (-webkit-min-device-pixel-ratio: 1),
-screen and (min-resolution: 96dpi) {
-    /* Adjustments for non-Retina screens if necessary */
-    body {
-        font-size: 1rem;
-    }
-}
-
-/* ----------- Retina Screens ----------- */
-@media screen and (-webkit-min-device-pixel-ratio: 2),
-screen and (min-resolution: 192dpi) {
-    /* High-resolution images for Retina screens */
-    body {
-        font-size: 1.1rem;
-    }
-
-    /* Example of swapping images for Retina screens */
-    header {
-        background-image: url('/image/ls@2x.jpg'); /* Use a higher-resolution background image */
-    }
-}
-
 
 

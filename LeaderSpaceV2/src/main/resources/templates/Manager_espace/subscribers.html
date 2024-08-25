@@ -1,13 +1,16 @@
+<!-- subscribers.html -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>List of Subscribers</title>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
     <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">-->
+    <!--    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">-->
 </head>
 <body>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 
 <main>
     <div class="header">
@@ -31,7 +34,7 @@
         <!-- Search form -->
         <div class="search-form">
             <form th:action="@{/reception/subscriber-Search}" method="get">
-                <input type="text" name="Name" placeholder="Search by name" />
+                <input type="text" name="Name" placeholder="Search by name"/>
                 <abbr title="Rechercher">
                     <button type="submit"><i class="fa fa-search"></i></button> <!-- Icon only -->
                 </abbr>
@@ -86,18 +89,17 @@
 </html>
 
 
-
 <script>
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Highlight row on hover
         const rows = document.querySelectorAll('tbody tr');
         rows.forEach(row => {
-            row.addEventListener('mouseover', function() {
+            row.addEventListener('mouseover', function () {
                 this.style.backgroundColor = '#e9ecef';
             });
 
-            row.addEventListener('mouseout', function() {
+            row.addEventListener('mouseout', function () {
                 this.style.backgroundColor = '';
             });
         });
@@ -105,11 +107,11 @@
         // Click effect for buttons
         const buttons = document.querySelectorAll('button');
         buttons.forEach(button => {
-            button.addEventListener('mousedown', function() {
+            button.addEventListener('mousedown', function () {
                 this.style.transform = 'scale(0.95)';
             });
 
-            button.addEventListener('mouseup', function() {
+            button.addEventListener('mouseup', function () {
                 this.style.transform = 'scale(1)';
             });
         });

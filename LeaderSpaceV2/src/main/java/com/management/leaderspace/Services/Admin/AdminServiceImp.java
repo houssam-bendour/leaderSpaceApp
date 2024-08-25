@@ -30,7 +30,7 @@ public class AdminServiceImp implements AdminService{
         Admin admin=adminRepository.findByEmail(username);
         if (admin.getImage() != null) {
             String base64Image = Base64.getEncoder().encodeToString(admin.getImage());
-            admin.setBase64Image(base64Image);
+            admin.setBase64Image("data:image/png;base64,"+base64Image);
         }else
             admin.setBase64Image("https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg");
         return admin;

@@ -1224,5 +1224,13 @@ public class ManagerController {
 //        model.addAttribute("filteredCaisse", caisseRepository.filterCaisseByDate(startDate, endDate)); // Ajout au modèle
 //        return "Manager_espace/caisse"; // Retourner la vue sans redirection
 //    }
-
+@GetMapping("profile")
+String profile( Model model) {
+    Manager manager = managerService.getProfile();
+    String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(manager.getId().toString());
+    model.addAttribute("qrCodeBase64", qrCodeBase64);
+    model.addAttribute("profile", manager);
+    model.addAttribute("profileImage", manager.getBase64Image());
+    return "Receptionist_espace/profile";
+}
 }

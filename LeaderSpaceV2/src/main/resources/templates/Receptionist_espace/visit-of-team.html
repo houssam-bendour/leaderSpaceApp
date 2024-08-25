@@ -4,6 +4,34 @@
     <title>QR Code Scanner</title>
     <script src="/js/qr-scanner.js"></script>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+        }
+        button {
+            background-color: #339794;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3d7372;
+        }
         main {
             display: flex;
             justify-content: center;

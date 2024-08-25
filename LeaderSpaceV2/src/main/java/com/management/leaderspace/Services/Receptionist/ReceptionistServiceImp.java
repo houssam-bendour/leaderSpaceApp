@@ -47,7 +47,7 @@ public class ReceptionistServiceImp implements ReceptionistService {
         Receptionist receptionist=receptionistRepository.findByEmail(username);
         if (receptionist.getImage() != null) {
             String base64Image = Base64.getEncoder().encodeToString(receptionist.getImage());
-            receptionist.setBase64Image(base64Image);
+            receptionist.setBase64Image("data:image/png;base64,"+base64Image);
         }else
             receptionist.setBase64Image("https://cdn.pixabay.com/photo/2017/08/06/21/01/louvre-2596278_960_720.jpg");
         return receptionist;    }
