@@ -1090,7 +1090,7 @@ public class ManagerController {
         return "Manager_espace/new-contrat-ar-pdf";
     }
 
-    @PostMapping("caisse")
+    @RequestMapping("caisse")
     String getCaisse(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,Model model){
         List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
         Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
@@ -1102,7 +1102,7 @@ public class ManagerController {
         return "Manager_espace/caisse";
     }
 
-    @PostMapping("bank")
+    @RequestMapping("bank")
     String getBank(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,Model model){
         List<Bank> FromBank = bankRepository.findAllFromBank();
         List<Bank> ToBank = bankRepository.findAllFromCaisseToBank();

@@ -1,85 +1,117 @@
+
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('/image/ls.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+    flex-direction: column;
 }
 
-h1 {
-    color: #333;
-    text-align: center;
-}
-
-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-label {
-    display: inline-block;
-    width: 150px;
-    font-weight: bold;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"],
-select {
-    width: 250px;
-    padding: 5px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-}
-
-.password-container {
-    position: relative;
-    display: inline-block;
-    width: 250px;
-}
-
-.password-container input {
+.form-container {
     width: 100%;
-    /*padding-right: 20px;  Make space for the icon */
+    max-width: 600px;
+    background-color: rgba(0, 0, 0, 0.62);
+    padding: 30px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 50px auto;
 }
 
-.password-icon {
-    position: absolute;
-    top: 50%;
-    right: -4%;
-    transform: translateY(-80%);
-    cursor: pointer;
-    color: #a5a5a5;
+.form-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #339794;
 }
 
-.password-icon .feather-eye-off {
-    display: none;
+.form-group {
+    margin-bottom: 15px;
+    position: relative;
 }
 
-button {
-    background-color: #007BFF;
-    color: #fff;
-    padding: 10px 15px;
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: rgb(255, 254, 254);
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="number"],
+.form-group input[type="password"]{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: transparent;
+    color: #ffffff;
+    outline: none;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    background: #ffffff;
+    outline: none;
+}
+
+.form-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    background-color: #339794;
+    color: white;
     border: none;
-    border-radius: 3px;
+    padding: 10px 20px;
+    text-transform: uppercase;
+    font-size: 0.9em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.form-actions a {
+    margin-left: 15px;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+input[type="password"] {
+    color: #fff;
+    outline: none;
+}
+/* Style for the eye icon */
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #0056b3;
-}
-
-a.cancel-link {
-    display: inline-block;
-    margin-top: 10px;
-    color: #007BFF;
-    text-decoration: none;
-}
-
-a.cancel-link:hover {
-    text-decoration: underline;
+.eye-icon img {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 50%;
 }
