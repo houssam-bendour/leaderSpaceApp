@@ -40,49 +40,51 @@
             </form>
         </div>
     </div>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>CIN</th>
-            <th>Type d'abonnement</th>
-            <th>Quantité</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Téléphone</th>
-            <th>Date de début</th>
-            <th>Date de fin</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="subscriber : ${subscribers}">
-            <td th:text="${subscriber.CIN}">CIN</td>
-            <td th:text="${subscriber.subscription_type.name}">Subscription Type</td>
-            <td th:text="${subscriber.quantity}">Quantity</td>
-            <td th:text="${subscriber.first_name}">First Name</td>
-            <td th:text="${subscriber.last_name}">Last Name</td>
-            <td th:text="${subscriber.email}">Email</td>
-            <td th:text="${subscriber.phone}">Phone</td>
-            <td th:text="${subscriber.date_debut}">Start Date</td>
-            <td th:text="${subscriber.date_fin}">End Date</td>
-            <td>
-                <div class="action-buttons">
-                    <form th:action="@{/manager/update-subscriber(subscriberId=${subscriber.id})}" method="post">
-                        <abbr title="Modifier un abonné">
-                            <button type="submit"><i class="fa fa-edit"></i></button> <!-- Edit icon -->
-                        </abbr>
-                    </form>
-                    <form th:action="@{/manager/delete-subscriber(subscriberId=${subscriber.id})}" method="post">
-                        <abbr title="Supprimer un abonné">
-                            <button type="submit"><i class="fa fa-trash"></i></button> <!-- Delete icon -->
-                        </abbr>
-                    </form>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table border="1" class="subscriber-table">
+            <thead>
+            <tr>
+                <th>CIN</th>
+                <th>Type d'abonnement</th>
+                <th>Quantité</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="subscriber : ${subscribers}">
+                <td th:text="${subscriber.CIN}">CIN</td>
+                <td th:text="${subscriber.subscription_type.name}">Subscription Type</td>
+                <td th:text="${subscriber.quantity}">Quantity</td>
+                <td th:text="${subscriber.first_name}">First Name</td>
+                <td th:text="${subscriber.last_name}">Last Name</td>
+                <td th:text="${subscriber.email}">Email</td>
+                <td th:text="${subscriber.phone}">Phone</td>
+                <td th:text="${subscriber.date_debut}">Start Date</td>
+                <td th:text="${subscriber.date_fin}">End Date</td>
+                <td>
+                    <div class="action-buttons">
+                        <form th:action="@{/manager/update-subscriber(subscriberId=${subscriber.id})}" method="post">
+                            <abbr title="Modifier un abonné">
+                                <button type="submit"><i class="fa fa-edit"></i></button> <!-- Edit icon -->
+                            </abbr>
+                        </form>
+                        <form th:action="@{/manager/delete-subscriber(subscriberId=${subscriber.id})}" method="post">
+                            <abbr title="Supprimer un abonné">
+                                <button type="submit"><i class="fa fa-trash"></i></button> <!-- Delete icon -->
+                            </abbr>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
 </body>
 </html>
@@ -115,5 +117,15 @@
             });
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.querySelector('.subscriber-table tbody');
+        const rows = table.querySelectorAll('tr');
+
+        if (rows.length >= 6) {
+            table.parentElement.classList.add('subscriber-table-container');
+        }
+    });
+
 
 </script>

@@ -134,6 +134,17 @@ table {
     transition: all 0.3s ease;
 }
 
+.table-container {
+    max-height: 400px; /* Ajustez cette valeur selon vos besoins */
+    overflow-y: auto;
+}
+
+.subscriber-table {
+    width: 100%; /* Pour s'assurer que le tableau prend toute la largeur du conteneur */
+    border-collapse: collapse;
+}
+
+
 th {
     text-align: left;
     padding: 15px;

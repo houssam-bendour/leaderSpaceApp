@@ -38,51 +38,62 @@
             </form>
         </div>
     </div>
-
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Image</th>
-            <th>Nom</th>
-            <th>Quantité</th>
-            <th>Quantité Minimale</th>
-            <th>Prix d'achat</th>
-            <th>Prix de vente</th>
-            <th>Type</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="snack : ${snacks}" th:style="${(snack.quantity!=null && snack.quantity <= snack.requiredQuantity) ? 'background-color: #d45f6a; color: white;' : ''}" th:rowspan="2px">
-            <td>
-                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="QR Code" width="50"/>
-            </td>
-            <td th:text="${snack.name}">name</td>
-            <td th:text="${snack.quantity}"></td>
-            <td th:text="${snack.requiredQuantity}">Required Quantity</td>
-            <td th:text="${snack.purchase_price}">purchase price</td>
-            <td th:text="${snack.selling_price}">selling price</td>
-            <td th:text="${snack.type}">type</td>
-            <td>
-                <div class="action-buttons">
-                    <a class="btn btn-secondary" th:href="@{/manager/new-quantity-snack(snack_id=${snack.id})}">
-                        <abbr title="Ajouter une quantité du snack">
-                            <i class="fa fa-circle-plus"></i>
-                        </abbr>
-                    </a>
-                    <a class="btn btn-secondary" th:href="@{/manager/update-snack(snack_id=${snack.id})}">
-                        <abbr title="Modifier la quantité minimale du snack">
-                            <i class="fa fa-edit"></i>
-                        </abbr>
-                    </a>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table border="1" class="subscriber-table">
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Nom</th>
+                <th>Quantité</th>
+                <th>Quantité Minimale</th>
+                <th>Prix d'achat</th>
+                <th>Prix de vente</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="snack : ${snacks}" th:style="${(snack.quantity!=null && snack.quantity <= snack.requiredQuantity) ? 'background-color: #d45f6a; color: white;' : ''}" th:rowspan="2px">
+                <td>
+                    <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="QR Code" width="50"/>
+                </td>
+                <td th:text="${snack.name}">name</td>
+                <td th:text="${snack.quantity}"></td>
+                <td th:text="${snack.requiredQuantity}">Required Quantity</td>
+                <td th:text="${snack.purchase_price}">purchase price</td>
+                <td th:text="${snack.selling_price}">selling price</td>
+                <td th:text="${snack.type}">type</td>
+                <td>
+                    <div class="action-buttons">
+                        <a class="btn btn-secondary" th:href="@{/manager/new-quantity-snack(snack_id=${snack.id})}">
+                            <abbr title="Ajouter une quantité du snack">
+                                <i class="fa fa-circle-plus"></i>
+                            </abbr>
+                        </a>
+                        <a class="btn btn-secondary" th:href="@{/manager/update-snack(snack_id=${snack.id})}">
+                            <abbr title="Modifier la quantité minimale du snack">
+                                <i class="fa fa-edit"></i>
+                            </abbr>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
 <!--<footer>-->
 <!--    <p>© 2024 Leader Space. All Rights Reserved.</p>-->
 <!--</footer>-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.querySelector('.subscriber-table tbody');
+        const rows = table.querySelectorAll('tr');
+
+        if (rows.length >= 6) {
+            table.parentElement.classList.add('subscriber-table-container');
+        }
+    });
+</script>
 </body>
 </html>
