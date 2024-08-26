@@ -2,6 +2,9 @@ package com.management.leaderspace.Repositories;
 
 import com.management.leaderspace.Entities.Subscriber;
 import com.management.leaderspace.Entities.Visit;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -43,7 +46,14 @@ public interface VisitRepository extends JpaRepository<Visit, UUID> {
     @Query("select coalesce(sum(v.service_suplementaire_price),0.0) from Visit v where v.day>= :dateDebut and v.day<= :dateFin")
     Double sommeServiePriceSupplementaireOfVisits(@Param("dateDebut") LocalDate dateDebut,@Param("dateFin") LocalDate dateFin);
 
+    @Query("select v from Visit v where v.day >= :dateDebut and v.day <= :dateFin and (v.service_suplementaire_price != 0 or v.service_price != 0 or v.snacksAndBoissonsOfVisits is not empty) order by v.day desc , v.StartTime desc ")
+    Page<Visit> listNormaleVisitsByDayAndPage(LocalDate dateDebut, LocalDate dateFin, Pageable pageable);
 
+    @Query("select sum(v.service_price) from Visit v where v.day >= :dateDebut and v.day <= :dateFin")
+    double sumServicePriceNormaleVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
+
+    @Query("select sum(sbv.selling_price*sbv.quantity) from SnacksAndBoissonsOfVisit sbv , Visit v where sbv.visit=v and v.day >= :dateDebut and v.day <= :dateFin")
+    double sumSnacksAndBoissonsOfVisitsForVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
 }
 

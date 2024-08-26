@@ -6,9 +6,6 @@
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .fade-in {
-            animation: fadeIn 1s ease-in-out;
-        }
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -18,11 +15,6 @@
         .grow {
             transition: transform 0.3s ease-in-out;
         }
-
-        .grow:hover {
-            transform: scale(1.05);
-        }
-
         .separator {
             margin-top: 30px;
             margin-bottom: 30px;
@@ -31,24 +23,81 @@
     </style>
     <script>
         function validateDates() {
-            var dateDebut = new Date(document.getElementsByName('date_debut')[0].value);
-            var dateFin = new Date(document.getElementsByName('date_fin')[0].value);
-            var dateFinObj = new Date(dateFin);
-            const dateInMorocco = "[[${dateInMorocco}]]";
-            var dateInMoroccoObj = new Date(dateInMorocco);
+            const dateDebutInput = document.getElementsByName('date_debut')[0].value;
+            const dateFinInput = document.getElementsByName('date_fin')[0].value;
+            const dateInMoroccoObj = "[[${dateInMorocco}]]";
+
+            if (!dateDebutInput || !dateFinInput) {
+                alert("Veuillez saisir les deux dates.");
+                return false;
+            }
+
+            const dateDebut = new Date(dateDebutInput);
+            const dateFin = new Date(dateFinInput);
+            const currentDate = new Date(dateInMoroccoObj);
+
+            console.log("currenteDate == ",currentDate);
+            console.log("dateFin == ",dateFin);
+
             if (dateDebut > dateFin) {
-                alert("La date de début doit être antérieure à la date de fin.");
-                window.location.replace("/manager/turnover");
+                alert("La date de début doit être antérieure ou égale à la date de fin.");
                 return false;
             }
-            if (dateFinObj>dateInMoroccoObj){
-                alert("la date n'est pas disponible.");
-                window.location.replace("/manager/turnover");
+
+            if (dateFin > currentDate) {
+                alert("La date de fin ne peut pas être future.");
                 return false;
             }
+
             return true;
         }
     </script>
+
+    <script>
+        function showSection(section) {
+            const sections = ["normaleVisits", "roomVisits", "deskVisits", "teamVisits", "subscriptions", "contracts"];
+
+            // Retirer la classe active de tous les boutons
+            const buttons = document.querySelectorAll('.btn-group .btn');
+            buttons.forEach(button => button.classList.remove('btn-primary', 'active'));
+
+            // Ajouter la classe active au bouton correspondant
+            document.getElementById(section + 'Btn').classList.add('btn-primary', 'active');
+
+
+            // Masquer toutes les sections
+            sections.forEach(sec => {
+                const element = document.getElementById(sec);
+                if (element) {
+                    element.style.display = "none";
+                }
+            });
+
+            // Afficher la section sélectionnée
+            const selectedSection = document.getElementById(section);
+            if (selectedSection) {
+                selectedSection.style.display = "block";
+            } else {
+                console.error(`La section "${section}" n'existe pas.`);
+                return;
+            }
+
+            // Construire l'URL de redirection
+            const dateDebut = document.getElementsByName('date_debut')[0].value;
+            const dateFin = document.getElementsByName('date_fin')[0].value;
+            const pageIndex =  0; // Remplacez par la valeur appropriée côté serveur
+
+            const baseUrl = `/manager/turnover?date_debut=${encodeURIComponent(dateDebut)}&date_fin=${encodeURIComponent(dateFin)}&section=${encodeURIComponent(section)}&page=${pageIndex}&turnover=detail`;
+
+            // Redirection pour la section appropriée
+            if (sections.includes(section)) {
+                window.location.href = baseUrl;
+            } else {
+                console.log("Section non valide pour la redirection.");
+            }
+        }
+    </script>
+
 </head>
 <body class="bg-light">
     <div class="container mt-5">
@@ -63,6 +112,7 @@
                     <div class="col-md-5">
 <!--                        <h4>Date Fin</h4>-->
                         <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
+
                     </div>
                     <div class="col-md-2 d-grid">
                         <button type="submit" name="turnover" value="detail" class="btn btn-primary">Chercher</button>
@@ -73,7 +123,7 @@
                 </form>
                 <div class="mt-4 text-center">
                     <th:block th:if="${param.date_debut != null && param.date_fin != null}">
-                        <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totalPriceByVisits + totaleOfSubscriptions + totaleOfAllVisitsOfRoom +totaleOfVisitsOfDesk +totaleMontantOfContracts + totaleVisitsForTeams}"></h4>
+                        <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totalPriceByVisits + totaleOfSubscriptions + totaleOfAllVisitsOfRoom +totaleOfVisitsOfDesk +totaleMontantOfContracts + totaleVisitsForTeam}"></h4>
                     </th:block>
                 </div>
                 <div class="text-center mt-3">
@@ -81,114 +131,51 @@
                 </div>
             </div>
         </div>
+
         <div th:if="${param.date_debut!=null && param.date_fin!=null}">
-            <div th:if="${!listAllVisitBetweenStartDayAndEndTime.isEmpty() || !allSubscriptionsByDateDebutBetweenStartDayAndEndDay.isEmpty() || !allVisitsOfRoomByDate.isEmpty() || !allvisitsOfDeskByDate.isEmpty() || !allContractsByDate.isEmpty()}" class="fade-in mt-5">
-                <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
-                <div class="separator"></div>
-                <div class="card shadow-lg grow mb-4">
-                    <div class="card-body">
-                        <div th:if="${!listAllVisitBetweenStartDayAndEndTime.isEmpty()}" class="mt-4">
-                            <h4>Les visits normale</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Jour</th>
-                                    <th>Heure de début</th>
-                                    <th>Heure de fin</th>
-                                    <th>Type de visiteur</th>
-                                    <!--                            <th>Nom du service</th>-->
-                                    <!--                            <th>Durée du service</th>-->
-                                    <th>Prix du service</th>
-                                    <th>service supplémentaire</th>
-                                    <th>Consommations (quantité)</th>
-                                    <th>Total payé dans la visite</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="visit : ${listAllVisitBetweenStartDayAndEndTime}">
-                                    <td th:text="${visit.day}"></td>
-                                    <td th:text="${#temporals.format(visit.startTime,'HH:mm')}"></td>
-                                    <td th:text="${#temporals.format(visit.endTime,'HH:mm')}"></td>
-                                    <td th:text="${visit.subscriber != null ? 'Inscrit' : 'Non inscrit'}"></td>
-                                    <!--                                <td th:text="${visit.serviceType.name}"></td>-->
-                                    <!--                                <td th:text="${visit.serviceType.duration}"></td>-->
-                                    <td th:text="${visit.subscriber == null ? visit.service_price : 'Inscrit'}"></td>
-                                    <td th:text="${visit.service_suplementaire_price}"></td>
-                                    <td>
-                                        <ul>
-                                            <li th:each="snacksAndBoissonsOfVisit : ${visit.snacksAndBoissonsOfVisits}">
-                                                <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
-                                                <label>(</label>
-                                                <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
-                                                <label>)</label>
-                                                <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
-                                            </li>
-                                        </ul>
-                                        <div class="d-flex align-items-center">
-                                            <h6>Totale :</h6>
-                                            <h5 class="ms-2" th:text="${mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)}"></h5>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h4 th:text="${visit.subscriber == null ? visit.service_price + mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price : mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price}"></h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4"><h4>Totale</h4></td>
-                                    <td><h4 th:text="${sommeServicePriceOfNormaleVisits}"></h4></td>
-                                    <td><h4 th:text="${sommeServiePriceSupplementaireOfVisits}"></h4></td>
-                                    <td><h4 th:text="${sommeConsommationsNormaleVisits}"></h4></td>
-                                    <td><h4 th:text="${totalPriceByVisits}"></h4></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+            <div class="separator"></div>
+            <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
+            <div class="separator"></div>
+            <div class="card-body">
+                <div class="btn-group" role="group" aria-label="Navigation des sections">
+                    <button id="normaleVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('normaleVisits')">Visites Normales</button>
+                    <button id="roomVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('roomVisits')">Visites Salles</button>
+                    <button id="deskVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('deskVisits')">Visites Bureaux</button>
+                    <button id="teamVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('teamVisits')">Visites Équipes</button>
+                    <button id="subscriptionsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('subscriptions')">Abonnements</button>
+                    <button id="contractsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('contracts')">Contrats</button>
                 </div>
-                <div class="separator"></div>
-                <div th:if="${!allVisitsOfRoomByDate.isEmpty()}" class="mt-4">
-                    <div class="card shadow-lg grow mb-4">
-                        <div class="card-body">
-                            <h4>Visits de la salle de conférence</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Jour</th>
-                                    <th>Heure de début</th>
-                                    <th>Heure de fin</th>
-                                    <th>Prix du service</th>
-                                    <th>service supplémentaire</th>
-                                    <th>Consommations (quantité)</th>
-                                    <th>Consommation des participants</th>
-                                    <th>Total payé par la réservation</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="visitOfRoom : ${allVisitsOfRoomByDate}">
-                                    <td th:text="${visitOfRoom.day}"></td>
-                                    <td th:text="${visitOfRoom.startTime}"></td>
-                                    <td th:text="${visitOfRoom.endTime}"></td>
-                                    <td th:text="${visitOfRoom.service_room_price}"></td>
-                                    <td th:text="${visitOfRoom.service_suplementaire_price}"></td>
-                                    <td>
-                                        <ul th:if="${!visitOfRoom.snacksAndBoissonsOfVisitRoom.isEmpty()}">
-                                            <li th:each="snacksAndBoissonsOfVisit : ${visitOfRoom.snacksAndBoissonsOfVisitRoom}">
-                                                <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
-                                                <label>(</label>
-                                                <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
-                                                <label>)</label>
-                                                <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
-                                            </li>
-                                        </ul>
-                                        <div class="d-flex align-items-center">
-                                            <h6>Totale :</h6>
-                                            <h5 class="ms-2" th:text="${sommeOfSnacksAndBoissonsOfRoom.get(visitOfRoom.id)}"></h5>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div th:each="participant : ${visitOfRoom.participant}">
+                <div th:id="normaleVisits">
+                            <div th:if="${!listNormaleVisitsByDayAndSection.isEmpty()}" class="mt-4">
+                                <h4>Les visits normale</h4>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Jour</th>
+                                        <th>Heure de début</th>
+                                        <th>Heure de fin</th>
+                                        <th>Type de visiteur</th>
+                                        <!--                            <th>Nom du service</th>-->
+                                        <!--                            <th>Durée du service</th>-->
+                                        <th>Prix du service</th>
+                                        <th>service supplémentaire</th>
+                                        <th>Consommations (quantité)</th>
+                                        <th>Total payé dans la visite</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="visit : ${listNormaleVisitsByDayAndSection}">
+                                        <td th:text="${visit.day}"></td>
+                                        <td th:text="${#temporals.format(visit.startTime,'HH:mm')}"></td>
+                                        <td th:text="${#temporals.format(visit.endTime,'HH:mm')}"></td>
+                                        <td th:text="${visit.subscriber != null ? 'Inscrit' : 'Non inscrit'}"></td>
+                                        <!--                                <td th:text="${visit.serviceType.name}"></td>-->
+                                        <!--                                <td th:text="${visit.serviceType.duration}"></td>-->
+                                        <td th:text="${visit.subscriber == null ? visit.service_price : 'Inscrit'}"></td>
+                                        <td th:text="${visit.service_suplementaire_price}"></td>
+                                        <td>
                                             <ul>
-                                                <li th:each="snacksAndBoissonsOfVisit : ${participant.snacksAndBoissonsOfVisits}">
+                                                <li th:each="snacksAndBoissonsOfVisit : ${visit.snacksAndBoissonsOfVisits}">
                                                     <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
                                                     <label>(</label>
                                                     <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
@@ -196,67 +183,77 @@
                                                     <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
                                                 </li>
                                             </ul>
-                                            <div th:if="${participant.service_suplementaire_price!=0}" class="d-flex align-items-center">
-                                                <h6>Service supplimentaire : </h6>
-                                                <h5 class="ms-2" th:text="${participant.service_suplementaire_price}"></h5>
-                                            </div>
-                                            <div class="d-flex align-items-center">
-                                                <h6>Totale : </h6>
-                                                <h5 class="ms-2" th:text="${mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom.get(visitOfRoom.id).get(participant.id)}"></h5>
-                                            </div>
-                                            <hr th:if="${participant!=visitOfRoom.participant.last}">
-                                        </div>
-                                        <div th:if="${visitOfRoom.participant.isEmpty()}">
                                             <div class="d-flex align-items-center">
                                                 <h6>Totale :</h6>
-                                                <h5 class="ms-2" th:text="0.0"></h5>
+                                                <h5 class="ms-2" th:text="${mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)}"></h5>
                                             </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h4 th:text="${mapCalculeSommeForVisitOfRoom.get(visitOfRoom.id)}"></h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3"><h4>Totale</h4></td>
-                                    <td><h4 th:text="${sommeServicePriceForRoomVisits}"></h4></td>
-                                    <td><h4 th:text="${sommeServiceSuplimentaireOfVisitRoom}"></h4></td>
-                                    <td><h4 th:text="${sommeConsommationsForRoom}"></h4></td>
-                                    <td><h4 th:text="${sommeConsommationsForRoomParticipants}"></h4></td>
-                                    <td><h4 th:text="${totaleOfAllVisitsOfRoom}"></h4></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        </td>
+                                        <td>
+                                            <h4 th:text="${visit.subscriber == null ? visit.service_price + mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price : mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price}"></h4>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="4"><h4>Totale</h4></td>
+                                        <td><h4 th:text="${sommeServicePriceOfNormaleVisits}"></h4></td>
+                                        <td><h4 th:text="${sommeServiePriceSupplementaireOfVisits}"></h4></td>
+                                        <td><h4 th:text="${sommeConsommationsNormaleVisits}"></h4></td>
+                                        <td><h4 th:text="${totalPriceByVisits}"></h4></td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                                <nav aria-label="Page navigation example">
+                                    <ul class="pagination">
+                                        <li class="page-item ms-2" th:each="page,status :${pages}">
+                                            <a th:class="${(status.count == (currentPage+1))?'btn btn-info':'btn btn-outline-info' }" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='normaleVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="separator"></div>
-                <div th:if="${!allvisitsOfDeskByDate.isEmpty()}" class="mt-4">
-                    <div class="card shadow-lg grow mb-4">
-                        <div class="card-body">
-                            <h4>Visits bureau</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Jour</th>
-                                    <th>Heure de début</th>
-                                    <th>Heure de fin</th>
-                                    <th>Prix du service</th>
-                                    <th>service supplémentaire</th>
-                                    <th>Consommations (quantité)</th>
-                                    <th>Total payé dans la résirvation</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="visitOfDesk : ${allvisitsOfDeskByDate}">
-                                    <td th:text="${visitOfDesk.day}"></td>
-                                    <td th:text="${visitOfDesk.startTime}"></td>
-                                    <td th:text="${visitOfDesk.endTime}"></td>
-                                    <td th:text="${visitOfDesk.service_desk_price}"></td>
-                                    <td th:text="${visitOfDesk.service_suplementaire_price}"></td>
-                                    <td>
-                                        <ul th:if="${!visitOfDesk.snacksAndBoissonsOfVisits.isEmpty()}">
-                                            <li th:each="snacksAndBoissonsOfVisit : ${visitOfDesk.snacksAndBoissonsOfVisits}">
+                <div id="roomVisits">
+                    <div th:if="${!allVisitsOfRoomByDate.isEmpty()}" class="mt-4" >
+                        <h4>Visits de la salle de conférence</h4>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Jour</th>
+                                <th>Heure de début</th>
+                                <th>Heure de fin</th>
+                                <th>Prix du service</th>
+                                <th>service supplémentaire</th>
+                                <th>Consommations (quantité)</th>
+                                <th>Consommation des participants</th>
+                                <th>Total payé par la réservation</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="visitOfRoom : ${allVisitsOfRoomByDate}">
+                                <td th:text="${visitOfRoom.day}"></td>
+                                <td th:text="${visitOfRoom.startTime}"></td>
+                                <td th:text="${visitOfRoom.endTime}"></td>
+                                <td th:text="${visitOfRoom.service_room_price}"></td>
+                                <td th:text="${visitOfRoom.service_suplementaire_price}"></td>
+                                <td>
+                                    <ul th:if="${!visitOfRoom.snacksAndBoissonsOfVisitRoom.isEmpty()}">
+                                        <li th:each="snacksAndBoissonsOfVisit : ${visitOfRoom.snacksAndBoissonsOfVisitRoom}">
+                                            <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
+                                            <label>(</label>
+                                            <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
+                                            <label>)</label>
+                                            <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
+                                        </li>
+                                    </ul>
+                                    <div class="d-flex align-items-center">
+                                        <h6>Totale :</h6>
+                                        <h5 class="ms-2" th:text="${sommeOfSnacksAndBoissonsOfRoom.get(visitOfRoom.id)}"></h5>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div th:each="participant : ${visitOfRoom.participant}">
+                                        <ul>
+                                            <li th:each="snacksAndBoissonsOfVisit : ${participant.snacksAndBoissonsOfVisits}">
                                                 <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
                                                 <label>(</label>
                                                 <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
@@ -264,155 +261,250 @@
                                                 <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
                                             </li>
                                         </ul>
+                                        <div th:if="${participant.service_suplementaire_price!=0}" class="d-flex align-items-center">
+                                            <h6>Service supplimentaire : </h6>
+                                            <h5 class="ms-2" th:text="${participant.service_suplementaire_price}"></h5>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <h6>Totale : </h6>
+                                            <h5 class="ms-2" th:text="${mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom.get(visitOfRoom.id).get(participant.id)}"></h5>
+                                        </div>
+                                        <hr th:if="${participant!=visitOfRoom.participant.last}">
+                                    </div>
+                                    <div th:if="${visitOfRoom.participant.isEmpty()}">
                                         <div class="d-flex align-items-center">
                                             <h6>Totale :</h6>
-                                            <h5 class="ms-2" th:text="${sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)}"></h5>
+                                            <h5 class="ms-2" th:text="0.0"></h5>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <h4 th:text="${visitOfDesk.service_desk_price+sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)+visitOfDesk.service_suplementaire_price}"></h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3"><h4>Totale</h4></td>
-                                    <td><h4 th:text="${sommeServicePriceForDeskVisits}"></h4></td>
-                                    <td><h4 th:text="${sommeServiceSupplimentaiePriceOfDisk}"></h4></td>
-                                    <td><h4 th:text="${sommeConsommationsForDesk}"></h4></td>
-                                    <td><h4 th:text="${totaleOfVisitsOfDesk}"></h4></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <h4 th:text="${mapCalculeSommeForVisitOfRoom.get(visitOfRoom.id)}"></h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"><h4>Totale</h4></td>
+                                <td><h4 th:text="${sommeServicePriceForRoomVisits}"></h4></td>
+                                <td><h4 th:text="${sommeServiceSuplimentaireOfVisitRoom}"></h4></td>
+                                <td><h4 th:text="${sommeConsommationsForRoom}"></h4></td>
+                                <td><h4 th:text="${sommeConsommationsForRoomParticipants}"></h4></td>
+                                <td><h4 th:text="${totaleOfAllVisitsOfRoom}"></h4></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item ms-2" th:each="page,status :${pages}">
+                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='roomVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
-                <div class="separator"></div>
-                <div th:if="${!allVisitsOfTeamByDate.isEmpty()}" class="mt-4">
-                    <div class="card shadow-lg grow mb-4">
-                        <div class="card-body">
-                            <h4>Visits Of Team</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Jour</th>
-                                    <th>Heure de début</th>
-                                    <th>Heure de fin</th>
-                                    <th>service supplémentaire</th>
-                                    <th>Consommations (quantité)</th>
-                                    <th>Total payé dans la visit</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="visiTeam : ${allVisitsOfTeamByDate}">
-                                    <td th:text="${visiTeam.day}"></td>
-                                    <td th:text="${#temporals.format(visiTeam.startTime,'HH:mm')}"></td>
-                                    <td th:text="${#temporals.format(visiTeam.endTime,'HH:mm')}"></td>
-                                    <td th:text="${visiTeam.service_suplementaire_price}"></td>
-                                    <td>
-                                        <ul th:if="${!visiTeam.snacksAndBoissonsOfVisits.isEmpty()}">
-                                            <li th:each="snacksAndBoissonsOfVisit : ${visiTeam.snacksAndBoissonsOfVisits}">
-                                                <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
-                                                <label>(</label>
-                                                <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
-                                                <label>)</label>
-                                                <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
-                                            </li>
-                                        </ul>
-                                        <div class="d-flex align-items-center">
-                                            <h6>Totale :</h6>
-                                            <h5 class="ms-2" th:text="${sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h5>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <h4 th:text="${visiTeam.service_suplementaire_price+sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3"><h4>Totale</h4></td>
-                                    <td><h4 th:text="${sommeServiceSupplimentairePriceOfTeam}"></h4></td>
-                                    <td><h4 th:text="${sommeSnacksAndBoissonsForVisitsTeam}"></h4></td>
-                                    <td><h4 th:text="${totaleVisitsForTeams}"></h4></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div id="deskVisits">
+                    <div th:if="${!allvisitsOfDeskByDate.isEmpty()}" class="mt-4">
+                                <h4>Visits bureau</h4>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Jour</th>
+                                        <th>Heure de début</th>
+                                        <th>Heure de fin</th>
+                                        <th>Prix du service</th>
+                                        <th>service supplémentaire</th>
+                                        <th>Consommations (quantité)</th>
+                                        <th>Total payé dans la résirvation</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="visitOfDesk : ${allvisitsOfDeskByDate}">
+                                        <td th:text="${visitOfDesk.day}"></td>
+                                        <td th:text="${visitOfDesk.startTime}"></td>
+                                        <td th:text="${visitOfDesk.endTime}"></td>
+                                        <td th:text="${visitOfDesk.service_desk_price}"></td>
+                                        <td th:text="${visitOfDesk.service_suplementaire_price}"></td>
+                                        <td>
+                                            <ul th:if="${!visitOfDesk.snacksAndBoissonsOfVisits.isEmpty()}">
+                                                <li th:each="snacksAndBoissonsOfVisit : ${visitOfDesk.snacksAndBoissonsOfVisits}">
+                                                    <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
+                                                    <label>(</label>
+                                                    <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
+                                                    <label>)</label>
+                                                    <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
+                                                </li>
+                                            </ul>
+                                            <div class="d-flex align-items-center">
+                                                <h6>Totale :</h6>
+                                                <h5 class="ms-2" th:text="${sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)}"></h5>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h4 th:text="${visitOfDesk.service_desk_price+sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)+visitOfDesk.service_suplementaire_price}"></h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"><h4>Totale</h4></td>
+                                        <td><h4 th:text="${sommeServicePriceForDeskVisits}"></h4></td>
+                                        <td><h4 th:text="${sommeServiceSupplimentaiePriceOfDisk}"></h4></td>
+                                        <td><h4 th:text="${sommeConsommationsForDesk}"></h4></td>
+                                        <td><h4 th:text="${totaleOfVisitsOfDesk}"></h4></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item ms-2" th:each="page,status :${pages}">
+                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='deskVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                                </li>
+                            </ul>
+                        </nav>
                 </div>
-                <div class="separator"></div>
-                <div th:if="${!allSubscriptionsByDateDebutBetweenStartDayAndEndDay.isEmpty()}" class="fade-in">
-                    <div class="card shadow-lg grow mb-4">
-                        <div class="card-body">
-                            <h4>Inscriptions</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Jour</th>
-                                    <th>Nom</th>
-                                    <th>Prénom</th>
-                                    <th>E-mail</th>
-                                    <th>Téléphone</th>
-                                    <th>Date d'inscription</th>
-                                    <th>Date fin</th>
-                                    <th>Nom d'inscription</th>
-                                    <th>Quantité</th>
-                                    <th>Prix</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="subscription : ${allSubscriptionsByDateDebutBetweenStartDayAndEndDay}">
-                                    <td th:text="${subscription.startDate}"></td>
-                                    <td th:text="${subscription.subscriber.last_name}"></td>
-                                    <td th:text="${subscription.subscriber.first_name}"></td>
-                                    <td th:text="${subscription.subscriber.email}"></td>
-                                    <td th:text="${subscription.subscriber.phone}"></td>
-                                    <td th:text="${subscription.startDate}"></td>
-                                    <td th:text="${subscription.endDate}"></td>
-                                    <td th:text="${subscription.subscriptionType.name}"></td>
-                                    <td th:text="${subscription.quantity}"></td>
-                                    <td th:text="${subscription.price}"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="9"><h4>Totale</h4></td>
-                                    <td><h4 th:text="${totaleOfSubscriptions}"></h4></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+
                 </div>
-                <div class="separator"></div>
-                <div th:if="${!allContractsByDate.isEmpty()}" class="fade-in">
-                    <div class="card shadow-lg grow mb-4">
-                        <div class="card-body">
-                            <h4>Contracts</h4>
-                            <table class="table table-striped">
-                                <thead>
-                                <tr>
-                                    <th>Jour</th>
-                                    <th>Nom du business</th>
-                                    <th>Représentant</th>
-                                    <th>Durée</th>
-                                    <th>Prix</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="contract : ${allContractsByDate}">
-                                    <td th:text="${contract.date}"></td>
-                                    <td th:text="${contract.business_name}"></td>
-                                    <td th:text="${contract.the_person_who_represents_him}"></td>
-                                    <td th:text="${contract.duree}"></td>
-                                    <td th:text="${contract.montant_de_location_chiffre}"></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4"><h4>Totale</h4></td>
-                                    <td><h4 th:text="${totaleMontantOfContracts}"></h4></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div id="teamVisits">
+                    <div th:if="${!allVisitsOfTeamByDate.isEmpty()}" class="mt-4" >
+                                <h4>Visits Of Team</h4>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Jour</th>
+                                        <th>Heure de début</th>
+                                        <th>Heure de fin</th>
+                                        <th>service supplémentaire</th>
+                                        <th>Consommations (quantité)</th>
+                                        <th>Total payé dans la visit</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="visiTeam : ${allVisitsOfTeamByDate}">
+                                        <td th:text="${visiTeam.day}"></td>
+                                        <td th:text="${#temporals.format(visiTeam.startTime,'HH:mm')}"></td>
+                                        <td th:text="${#temporals.format(visiTeam.endTime,'HH:mm')}"></td>
+                                        <td th:text="${visiTeam.service_suplementaire_price}"></td>
+                                        <td>
+                                            <ul th:if="${!visiTeam.snacksAndBoissonsOfVisits.isEmpty()}">
+                                                <li th:each="snacksAndBoissonsOfVisit : ${visiTeam.snacksAndBoissonsOfVisits}">
+                                                    <label th:text="${snacksAndBoissonsOfVisit.snacksAndBoissons.name}"></label>
+                                                    <label>(</label>
+                                                    <label th:text="${snacksAndBoissonsOfVisit.quantity}"></label>
+                                                    <label>)</label>
+                                                    <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
+                                                </li>
+                                            </ul>
+                                            <div class="d-flex align-items-center">
+                                                <h6>Totale :</h6>
+                                                <h5 class="ms-2" th:text="${sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h5>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h4 th:text="${visiTeam.service_suplementaire_price+sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h4>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"><h4>Totale</h4></td>
+                                        <td><h4 th:text="${sommeServiceSupplimentairePriceOfTeam}"></h4></td>
+                                        <td><h4 th:text="${sommeSnacksAndBoissonsForVisitsTeam}"></h4></td>
+                                        <td><h4 th:text="${totaleVisitsForTeam}"></h4></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                    <li class="page-item ms-2" th:each="page,status :${pages}">
+                                        <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='teamVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                                    </li>
+                                </ul>
+                            </nav>
                     </div>
+
+                </div>
+                <div id="subscriptions">
+                    <div th:if="${!allSubscriptionsByDateDebutBetweenStartDayAndEndDay.isEmpty()}" class="mt-4">
+                                <h4>Inscriptions</h4>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Jour</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>E-mail</th>
+                                        <th>Téléphone</th>
+                                        <th>Date d'inscription</th>
+                                        <th>Date fin</th>
+                                        <th>Nom d'inscription</th>
+                                        <th>Quantité</th>
+                                        <th>Prix</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="subscription : ${allSubscriptionsByDateDebutBetweenStartDayAndEndDay}">
+                                        <td th:text="${subscription.startDate}"></td>
+                                        <td th:text="${subscription.subscriber.last_name}"></td>
+                                        <td th:text="${subscription.subscriber.first_name}"></td>
+                                        <td th:text="${subscription.subscriber.email}"></td>
+                                        <td th:text="${subscription.subscriber.phone}"></td>
+                                        <td th:text="${subscription.startDate}"></td>
+                                        <td th:text="${subscription.endDate}"></td>
+                                        <td th:text="${subscription.subscriptionType.name}"></td>
+                                        <td th:text="${subscription.quantity}"></td>
+                                        <td th:text="${subscription.price}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="9"><h4>Totale</h4></td>
+                                        <td><h4 th:text="${totaleOfSubscriptions}"></h4></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item ms-2" th:each="page,status :${pages}">
+                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='subscriptions',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+                <div id="contracts">
+                    <div th:if="${!allContractsByDate.isEmpty()}" class="mt-4">
+                                <h4>Contracts</h4>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Jour</th>
+                                        <th>Nom du business</th>
+                                        <th>Représentant</th>
+                                        <th>Durée</th>
+                                        <th>Prix</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="contract : ${allContractsByDate}">
+                                        <td th:text="${contract.date}"></td>
+                                        <td th:text="${contract.business_name}"></td>
+                                        <td th:text="${contract.the_person_who_represents_him}"></td>
+                                        <td th:text="${contract.duree}"></td>
+                                        <td th:text="${contract.montant_de_location_chiffre}"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4"><h4>Totale</h4></td>
+                                        <td><h4 th:text="${totaleMontantOfContracts}"></h4></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination">
+                                <li class="page-item ms-2" th:each="page,status :${pages}">
+                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='contracts',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 </html>

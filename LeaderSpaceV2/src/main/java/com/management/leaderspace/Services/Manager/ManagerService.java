@@ -89,4 +89,13 @@ public interface ManagerService {
     Double sommeSnacksAndBoissonsForVisitsTeam(Map<UUID,Double> sommeOfSnacksAndBoissonsByVisitFomTeam);
 
     Map<LocalDate,Double> totaleVisitsTeamChartByDates(LocalDate dateDebut, LocalDate dateFin);
+
+    /*
+    * normale visits
+    * */
+
+    double totalePriceByVisits(double sommeServicePriceOfNormaleVisits,double sommeServiePriceSupplementaireOfVisits, double sommeConsommationsNormaleVisits);
+    double totaleOfAllVisitsOfRoom(double sommeServicePriceForRoomVisits, double sommeServiceSuplimentaireOfVisitRoom, double sommeConsommationsForRoom, double sommeConsommationsForRoomParticipants);
+    double totaleOfVisitsOfDesk(double sommeServicePriceForDeskVisits, double sommeServiceSupplimentaiePriceOfDisk, double sommeConsommationsForDesk);
+    double totaleVisitsForTeam(double sommeServiceSupplimentairePriceOfTeam, double sommeSnacksAndBoissonsForVisitsTeam);
 }

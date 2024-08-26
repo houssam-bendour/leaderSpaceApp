@@ -11,6 +11,8 @@ import com.management.leaderspace.model.QrCodeGenerator;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -564,31 +566,62 @@ public class ManagerController {
         factureRepository.deleteById(factureId);
         return "redirect:/";
     }
-
+    /*
+    *
+    * */
     @GetMapping("turnover")
     public String turnover(@RequestParam(name = "date_debut", required = false) String ch_date_debut,
                            @RequestParam(name = "date_fin", required = false) String ch_date_fin,
-                           @RequestParam(name = "turnover", required = false) String turnover, Model model) {
+                           @RequestParam(name = "turnover", required = false) String turnover,
+                           @RequestParam(name = "section", defaultValue = "") String section,
+                           @RequestParam(name = "page", required = false) Integer page,
+                           Model model) {
 
-        List<Visit> listAllVisitsBetweenStartDayAndEndTime = new ArrayList<>();
-        List<SubscriptionHistory> allSubscriptionsByDateDebutBetweenStartDayAndEndDay = new ArrayList<>();
+        List<Visit> listNormaleVisitsByDayAndSectionAndPagee = new ArrayList<>();
+        List<SubscriptionHistory> subscripitonsByDayAndPagee = new ArrayList<>();
         Map<UUID, Double> mapTotalPriceOfSnacksAndBoissonsByVisit = new HashMap<>();
-        List<VisitOfRoom> allVisitsOfRoomByDate= new ArrayList<>();
+        List<VisitOfRoom> allVisitsOfRoomByDateAndPagee= new ArrayList<>();
         Map<UUID,Double> sommeOfSnacksAndBoissonsOfRoom = new HashMap<>();
         Map<UUID,Map<UUID,Double>> mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = new HashMap<>();
         Map<UUID,Double> mapCalculeSommeForVisitOfRoom = new HashMap<>();
-        List<VisitOfDesk> allVisitsOfDesdByDate= new ArrayList<>();
+        List<VisitOfDesk> visitsOfDeskByDayAndPagee= new ArrayList<>();
         Map<UUID,Double> sommeOfsnacksAndBoissonsByVisit = new HashMap<>();
-        List<Contrat> allContractsByDate = new ArrayList<>();
+        List<Contrat> allContractByDayAndPagee = new ArrayList<>();
         double totaleMontantOfContractsByDates;
         double sommeServiePriceSupplementaireOfVisits;
         double sommeServiceSuplimentaireOfVisitRoom;
         double sommeServiceSupplimentaiePriceOfDisk;
         //////////////////////////////////////////////
-        List<VisitOfTeam> allVisitsOfTeamByDate = new ArrayList<>();
+        List<VisitOfTeam> allVisitOfTeamByDayAndPagee = new ArrayList<>();
         Map<UUID,Double> sommeSnacksAndBoissonsByVisitForTeam = new HashMap<>();
         double sommeServiceSupplimentairePriceOfTeam;
         double sommeSnacksAndBoissonsForVisitsTeam;
+
+        double sommeServicePriceForRoomVisits;
+        double sommeConsommationsForRoom;
+        double totaleVisitsForTeam;
+
+        /*
+        * normale visits
+        * */
+
+        double sommeServicePriceOfNormaleVisits;
+        double sommeConsommationsNormaleVisits;
+        double totalPriceByVisits;
+
+        double sommeConsommationsForRoomParticipants;
+        double totaleOfAllVisitsOfRoom;
+
+        double sommeServicePriceForDeskVisits;
+        double sommeConsommationsForDesk;
+        double totaleOfVisitsOfDesk;
+
+        double totaleOfSubscriptions;
+
+        double totaleMontantOfContracts;
+        /*
+         * room visits
+         * */
 
         if (ch_date_debut != null && ch_date_fin != null) {
             if (ch_date_debut.isEmpty() || ch_date_fin.isEmpty()) {
@@ -597,85 +630,195 @@ public class ManagerController {
                 if(turnover.equals("chart")){
                     return "redirect:/manager/charts?date_debut="+ch_date_debut+"&date_fin="+ch_date_fin;
                 }
+
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate dateDebut = LocalDate.parse(ch_date_debut, formatter);
                 LocalDate dateFin = LocalDate.parse(ch_date_fin, formatter);
 
-                listAllVisitsBetweenStartDayAndEndTime = managerServiceImp.getAllVisitsBetweenStartDayAndEndTime(dateDebut, dateFin);
-                allSubscriptionsByDateDebutBetweenStartDayAndEndDay = managerServiceImp.getAllSubscriptionsByDateDebutBetweenStartDayAndEndDay(dateDebut, dateFin);
-                mapTotalPriceOfSnacksAndBoissonsByVisit = managerServiceImp.getTotalPriceOfSnacksAndBoissons(listAllVisitsBetweenStartDayAndEndTime);
-                allVisitsOfRoomByDate = managerServiceImp.findVisitOfRoomByDate(dateDebut,dateFin);
-                sommeOfSnacksAndBoissonsOfRoom = managerServiceImp.sommeOfSnacksAndBoissonsOfRoom(allVisitsOfRoomByDate);
-                mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = managerServiceImp.sommeOfSnacksAndBoissonsForParticipantOfVisitRoom(allVisitsOfRoomByDate);
-                mapCalculeSommeForVisitOfRoom = managerServiceImp.calculeSommeForVisitOfRoom(allVisitsOfRoomByDate,sommeOfSnacksAndBoissonsOfRoom,mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
-                ///////////////////////////////////////////////////////////////
-                allVisitsOfDesdByDate  = managerServiceImp.findVisitOfDeskByDate(dateDebut,dateFin);
-                sommeOfsnacksAndBoissonsByVisit = managerServiceImp.sommeOfsnacksAndBoissonsByVisit(allVisitsOfDesdByDate);
-                //////////////////////////////////////
-                allContractsByDate = contratRepository.allContractByDate(dateDebut,dateFin);
-                totaleMontantOfContractsByDates = contratRepository.totaleMontantOfContractByDates(dateDebut,dateFin);
-                //////////////////////////////////////////////////////
-                sommeServiePriceSupplementaireOfVisits = visitRepository.sommeServiePriceSupplementaireOfVisits(dateDebut,dateFin);
-                sommeServiceSuplimentaireOfVisitRoom= visitOfRoomRepository.sommeServiceSuplimentaireOfVisitRoom(dateDebut,dateFin);
-                sommeServiceSupplimentaiePriceOfDisk = visitOfDeskRepository.sommeServiceSupplimentaiePriceOfDisk(dateDebut,dateFin);
+                /*
+                * normale visits
+                * */
 
-                ///////////////////////////////////////////////////
-                allVisitsOfTeamByDate = visitOfTeamRepository.allVisitOfTeamByDate(dateDebut,dateFin);
-                sommeSnacksAndBoissonsByVisitForTeam = managerService.sommeOfSnacksAndBoissonsByVisitFomTeam(allVisitsOfTeamByDate);
+                sommeServicePriceOfNormaleVisits = visitRepository.sumServicePriceNormaleVisits(dateDebut, dateFin);
+                sommeServiePriceSupplementaireOfVisits = visitRepository.sommeServiePriceSupplementaireOfVisits(dateDebut,dateFin);
+                sommeConsommationsNormaleVisits = visitRepository.sumSnacksAndBoissonsOfVisitsForVisits(dateDebut,dateFin);
+                totalPriceByVisits = managerService.totalePriceByVisits(sommeServicePriceOfNormaleVisits,sommeServiePriceSupplementaireOfVisits,sommeConsommationsNormaleVisits);
+                model.addAttribute("totalPriceByVisits",totalPriceByVisits);
+
+
+                if (section.equals("normaleVisits")){
+
+
+                    Page<Visit>listNormaleVisitsByDayAndSectionAndPage = visitRepository.listNormaleVisitsByDayAndPage(dateDebut,dateFin, PageRequest.of(page,5));
+                    listNormaleVisitsByDayAndSectionAndPagee = listNormaleVisitsByDayAndSectionAndPage.getContent();
+
+
+                    mapTotalPriceOfSnacksAndBoissonsByVisit = managerService.getTotalPriceOfSnacksAndBoissons(listNormaleVisitsByDayAndSectionAndPage.getContent());
+
+                    model.addAttribute("mapTotalPriceOfSnacksAndBoissonsByVisit", mapTotalPriceOfSnacksAndBoissonsByVisit);
+
+                    model.addAttribute("sommeServicePriceOfNormaleVisits",sommeServicePriceOfNormaleVisits);
+
+                    model.addAttribute("sommeServiePriceSupplementaireOfVisits",sommeServiePriceSupplementaireOfVisits);
+
+                    model.addAttribute("sommeConsommationsNormaleVisits",sommeConsommationsNormaleVisits);
+
+                    model.addAttribute("currentPage",page);
+
+                    model.addAttribute("pages",new int[listNormaleVisitsByDayAndSectionAndPage.getTotalPages()]);
+
+                }
+                model.addAttribute("listNormaleVisitsByDayAndSection",listNormaleVisitsByDayAndSectionAndPagee);
+
+
+                /*
+                 * room visits
+                 * */
+
+                sommeServicePriceForRoomVisits = visitOfRoomRepository.sumServicePriceRoomVisits(dateDebut, dateFin);
+                sommeServiceSuplimentaireOfVisitRoom= visitOfRoomRepository.sommeServiceSuplimentaireOfVisitRoom(dateDebut,dateFin);
+                sommeConsommationsForRoom = visitOfRoomRepository.sumSnacksAndBoissonsOfVisitsForVisitsRoom(dateDebut,dateFin);
+                sommeConsommationsForRoomParticipants = visitOfRoomRepository.sommeConsommationsForRoomParticipants(dateDebut,dateFin);
+                totaleOfAllVisitsOfRoom = managerServiceImp.totaleOfAllVisitsOfRoom(sommeServicePriceForRoomVisits,sommeServiceSuplimentaireOfVisitRoom,sommeConsommationsForRoom,sommeConsommationsForRoomParticipants);
+
+                model.addAttribute("totaleOfAllVisitsOfRoom",totaleOfAllVisitsOfRoom);
+
+
+                if (section.equals("roomVisits")){
+
+
+
+                    Page<VisitOfRoom> allVisitsOfRoomByDateAndPage = visitOfRoomRepository.findVisitsOfRoomByDateAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    allVisitsOfRoomByDateAndPagee = allVisitsOfRoomByDateAndPage.getContent();
+
+
+                    sommeOfSnacksAndBoissonsOfRoom = managerServiceImp.sommeOfSnacksAndBoissonsOfRoom(allVisitsOfRoomByDateAndPage.getContent());
+
+                    model.addAttribute("sommeOfSnacksAndBoissonsOfRoom",sommeOfSnacksAndBoissonsOfRoom);
+
+                    mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = managerServiceImp.sommeOfSnacksAndBoissonsForParticipantOfVisitRoom(allVisitsOfRoomByDateAndPage.getContent());
+
+                    model.addAttribute("mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom",mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
+
+                    mapCalculeSommeForVisitOfRoom = managerServiceImp.calculeSommeForVisitOfRoom(allVisitsOfRoomByDateAndPage.getContent(),sommeOfSnacksAndBoissonsOfRoom,mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
+
+                    model.addAttribute("mapCalculeSommeForVisitOfRoom", mapCalculeSommeForVisitOfRoom);
+
+                    model.addAttribute("sommeServicePriceForRoomVisits",sommeServicePriceForRoomVisits);
+
+                    model.addAttribute("sommeServiceSuplimentaireOfVisitRoom",sommeServiceSuplimentaireOfVisitRoom);
+
+                    model.addAttribute("sommeConsommationsForRoom",sommeConsommationsForRoom);
+
+                    model.addAttribute("sommeConsommationsForRoomParticipants",sommeConsommationsForRoomParticipants);
+
+
+                    model.addAttribute("pages",new int[allVisitsOfRoomByDateAndPage.getTotalPages()]);
+                }
+
+                model.addAttribute("allVisitsOfRoomByDate",allVisitsOfRoomByDateAndPagee);
+
+
+                /*
+                * desck visits
+                * */
+
+                sommeServicePriceForDeskVisits = visitOfDeskRepository.sumServiceDeskPriceForDeskVisits(dateDebut,dateFin);
+                sommeServiceSupplimentaiePriceOfDisk = visitOfDeskRepository.sommeServiceSupplimentaiePriceOfDisk(dateDebut,dateFin);
+                sommeConsommationsForDesk = visitOfDeskRepository.sumSnacksAndBoissonsOfVisitsForDeskVisits(dateDebut,dateFin);
+                totaleOfVisitsOfDesk = managerService.totaleOfVisitsOfDesk(sommeServicePriceForDeskVisits,sommeServiceSupplimentaiePriceOfDisk,sommeConsommationsForDesk);
+                model.addAttribute("totaleOfVisitsOfDesk",totaleOfVisitsOfDesk);
+
+
+                if (section.equals("deskVisits")){
+
+
+
+                    Page<VisitOfDesk> visitsOfDeskByDayAndPage  = visitOfDeskRepository.visitsOfDeskByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    visitsOfDeskByDayAndPagee  = visitsOfDeskByDayAndPage.getContent();
+
+
+                    sommeOfsnacksAndBoissonsByVisit = managerServiceImp.sommeOfsnacksAndBoissonsByVisit(visitsOfDeskByDayAndPage.getContent());
+
+                    model.addAttribute("sommeOfsnacksAndBoissonsByVisit",sommeOfsnacksAndBoissonsByVisit);
+
+                    model.addAttribute("sommeServicePriceForDeskVisits",sommeServicePriceForDeskVisits);
+
+                    model.addAttribute("sommeServiceSupplimentaiePriceOfDisk",sommeServiceSupplimentaiePriceOfDisk);
+
+                    model.addAttribute("sommeConsommationsForDesk",sommeConsommationsForDesk);
+
+
+                    model.addAttribute("pages",new int[visitsOfDeskByDayAndPage.getTotalPages()]);
+
+                }
+                model.addAttribute("allvisitsOfDeskByDate",visitsOfDeskByDayAndPagee);
+
+                /*
+                * visitsOfTeam
+                * */
+
                 sommeServiceSupplimentairePriceOfTeam = visitOfTeamRepository.sommeServiceSupplimentaiePriceForTeams(dateDebut,dateFin);
-                sommeSnacksAndBoissonsForVisitsTeam=managerService.sommeSnacksAndBoissonsForVisitsTeam(sommeSnacksAndBoissonsByVisitForTeam);
+                sommeSnacksAndBoissonsForVisitsTeam= visitOfTeamRepository.sumSnacksAndBoissonsOfVisitsForTeamVisits(dateDebut,dateFin);
+                totaleVisitsForTeam = managerService.totaleVisitsForTeam(sommeServiceSupplimentairePriceOfTeam,sommeSnacksAndBoissonsForVisitsTeam);
+                model.addAttribute("totaleVisitsForTeam",totaleVisitsForTeam);
+
+                if (section.equals("teamVisits")){
+
+                    Page<VisitOfTeam> allVisitOfTeamByDayAndPage = visitOfTeamRepository.allVisitOfTeamByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    allVisitOfTeamByDayAndPagee = allVisitOfTeamByDayAndPage.getContent();
+
+
+                    sommeSnacksAndBoissonsByVisitForTeam = managerService.sommeOfSnacksAndBoissonsByVisitFomTeam(allVisitOfTeamByDayAndPagee);
+
+                    model.addAttribute("sommeSnacksAndBoissonsByVisitForTeam",sommeSnacksAndBoissonsByVisitForTeam);
+
+                    model.addAttribute("sommeServiceSupplimentairePriceOfTeam",sommeServiceSupplimentairePriceOfTeam);
+
+                    model.addAttribute("sommeSnacksAndBoissonsForVisitsTeam",sommeSnacksAndBoissonsForVisitsTeam);
+
+                    model.addAttribute("pages",new int[allVisitOfTeamByDayAndPage.getTotalPages()]);
+
+                }
+                model.addAttribute("allVisitsOfTeamByDate",allVisitOfTeamByDayAndPagee);
+
+                /*
+                * subscriptions
+                * */
+
+                totaleOfSubscriptions = subscriptionHistoryRepository.sumPriceOfSubscriptions(dateDebut,dateFin);
+                model.addAttribute("totaleOfSubscriptions", totaleOfSubscriptions);
+
+                if (section.equals("subscriptions")){
+
+                    Page<SubscriptionHistory> subscripitonsByDayAndPage = subscriptionHistoryRepository.subscriptionsByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    subscripitonsByDayAndPagee = subscripitonsByDayAndPage.getContent();
+                    model.addAttribute("pages",new int[subscripitonsByDayAndPage.getTotalPages()]);
+                }
+                model.addAttribute("allSubscriptionsByDateDebutBetweenStartDayAndEndDay", subscripitonsByDayAndPagee);
+
+                /*
+                * contracts
+                * */
+
+                totaleMontantOfContracts = contratRepository.totaleMontantOfContractByDates(dateDebut,dateFin);
+                model.addAttribute("totaleMontantOfContracts",totaleMontantOfContracts);
+
+                if (section.equals("contracts")){
+
+                    Page<Contrat> allContractByDayAndPage = contratRepository.allContractByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    allContractByDayAndPagee = allContractByDayAndPage.getContent();
+                    model.addAttribute("pages",new int[allContractByDayAndPage.getTotalPages()]);
+
+                }
+
+                model.addAttribute("allContractsByDate",allContractByDayAndPagee);
+
             }
             ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
 
             model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
 
-            model.addAttribute("listAllVisitBetweenStartDayAndEndTime", listAllVisitsBetweenStartDayAndEndTime);
-
-            model.addAttribute("mapTotalPriceOfSnacksAndBoissonsByVisit", mapTotalPriceOfSnacksAndBoissonsByVisit);
-
-            model.addAttribute("totalPriceByVisits", managerServiceImp.calculeTotale(listAllVisitsBetweenStartDayAndEndTime, mapTotalPriceOfSnacksAndBoissonsByVisit));
-
-            model.addAttribute("allSubscriptionsByDateDebutBetweenStartDayAndEndDay", allSubscriptionsByDateDebutBetweenStartDayAndEndDay);
-
-            model.addAttribute("totaleOfSubscriptions", managerServiceImp.calculeTotaleOfSubscriptions(allSubscriptionsByDateDebutBetweenStartDayAndEndDay));
-
-            model.addAttribute("allVisitsOfRoomByDate",allVisitsOfRoomByDate);
-
-            model.addAttribute("sommeOfSnacksAndBoissonsOfRoom",sommeOfSnacksAndBoissonsOfRoom);
-
-            model.addAttribute("mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom",mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
-
-            model.addAttribute("mapCalculeSommeForVisitOfRoom", mapCalculeSommeForVisitOfRoom);
-
-            model.addAttribute("totaleOfAllVisitsOfRoom",managerServiceImp.calculeTotaleOfAllVisitsOfRoom(mapCalculeSommeForVisitOfRoom));
-            ////////////////////////////////////////////
-            model.addAttribute("allvisitsOfDeskByDate",allVisitsOfDesdByDate);
-
-            model.addAttribute("sommeOfsnacksAndBoissonsByVisit",sommeOfsnacksAndBoissonsByVisit);
-
-            model.addAttribute("totaleOfVisitsOfDesk",managerServiceImp.totaleOfVisitsOfDesk(allVisitsOfDesdByDate,sommeOfsnacksAndBoissonsByVisit));
-            /////////////////////////////////////////////////////////////
-            model.addAttribute("sommeConsommationsNormaleVisits",managerServiceImp.calculeSommeOfConsommations(mapTotalPriceOfSnacksAndBoissonsByVisit));
-            model.addAttribute("sommeConsommationsForRoom",managerServiceImp.calculeSommeOfConsommations(sommeOfSnacksAndBoissonsOfRoom));
-            model.addAttribute("sommeConsommationsForDesk",managerServiceImp.calculeSommeOfConsommations(sommeOfsnacksAndBoissonsByVisit));
-            model.addAttribute("sommeConsommationsForRoomParticipants",managerServiceImp.calculeSommeConsommationForRoomParticipants(mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom));
-
-            model.addAttribute("sommeServicePriceOfNormaleVisits",managerServiceImp.calculeSommeOfServicePriceForNormaleVisits(listAllVisitsBetweenStartDayAndEndTime));
-            model.addAttribute("sommeServicePriceForRoomVisits",managerServiceImp.calculeSommeOfServicePriceForRoom(allVisitsOfRoomByDate));
-            model.addAttribute("sommeServicePriceForDeskVisits",managerServiceImp.calculeSommeOfServicePriceForDesk(allVisitsOfDesdByDate));
-            //////////////////////////////////////////////////////
-            model.addAttribute("allContractsByDate",allContractsByDate);
-            model.addAttribute("totaleMontantOfContracts",totaleMontantOfContractsByDates);
-            ////////////////////////////////////////////////////////
-            model.addAttribute("sommeServiePriceSupplementaireOfVisits",sommeServiePriceSupplementaireOfVisits);
-            model.addAttribute("sommeServiceSuplimentaireOfVisitRoom",sommeServiceSuplimentaireOfVisitRoom);
-            model.addAttribute("sommeServiceSupplimentaiePriceOfDisk",sommeServiceSupplimentaiePriceOfDisk);
-            //////////////////////////////////////////////////////////
-            model.addAttribute("allVisitsOfTeamByDate",allVisitsOfTeamByDate);
-            model.addAttribute("sommeSnacksAndBoissonsByVisitForTeam",sommeSnacksAndBoissonsByVisitForTeam);
-            model.addAttribute("sommeServiceSupplimentairePriceOfTeam",sommeServiceSupplimentairePriceOfTeam);
-            model.addAttribute("sommeSnacksAndBoissonsForVisitsTeam",sommeSnacksAndBoissonsForVisitsTeam);
-            model.addAttribute("totaleVisitsForTeams",sommeServiceSupplimentairePriceOfTeam+sommeSnacksAndBoissonsForVisitsTeam);
         }
         return "Manager_espace/turnover";
     }

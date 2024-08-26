@@ -1,6 +1,8 @@
 package com.management.leaderspace.Repositories;
 
 import com.management.leaderspace.Entities.VisitOfDesk;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,5 +31,16 @@ public interface VisitOfDeskRepository extends JpaRepository<VisitOfDesk, UUID> 
 
     @Query("select vd.StartTime from VisitOfDesk vd where vd.day= :reservationDate and vd.StartTime > :reservationTime order by vd.StartTime desc ")
     List<LocalTime> maximumTimeAvailabale(@Param("reservationDate") LocalDate reservationDate, @Param("reservationTime") LocalTime reservationTime);
+
+    @Query("select vd from VisitOfDesk vd where vd.day>= :dateDebut and vd.day<= :dateFin order by vd.day desc ,vd.StartTime desc ")
+    Page<VisitOfDesk> visitsOfDeskByDayAndPage(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin, Pageable pageable);
+
+    @Query("select sum(vd.service_desk_price) from VisitOfDesk vd where vd.day >= :dateDebut and vd.day <= :dateFin")
+    double sumServiceDeskPriceForDeskVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
+
+    @Query("select sum(sbv.selling_price*sbv.quantity) from SnacksAndBoissonsOfVisit sbv , VisitOfDesk vd where sbv.visitOfDesk=vd  and vd.day >= :dateDebut and vd.day <= :dateFin")
+    double sumSnacksAndBoissonsOfVisitsForDeskVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
+
+
 
 }

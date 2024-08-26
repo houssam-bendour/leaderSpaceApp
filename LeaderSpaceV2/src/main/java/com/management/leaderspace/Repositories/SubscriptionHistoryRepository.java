@@ -3,6 +3,8 @@ package com.management.leaderspace.Repositories;
 import com.management.leaderspace.Entities.Subscriber;
 import com.management.leaderspace.Entities.SubscriptionHistory;
 import com.management.leaderspace.Entities.SubscriptionType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +20,11 @@ public interface SubscriptionHistoryRepository extends JpaRepository<Subscriptio
 
     @Query("select s from SubscriptionHistory s where s.subscriber = :sub and s.subscriptionType= :subType and s.startDate = :sDate and s.endDate = :eDate")
     SubscriptionHistory getBySubscriber(@Param("subType") SubscriptionType subscriptionType, @Param("sub") Subscriber subscriber, @Param("sDate") LocalDate dateDebut, @Param("eDate") LocalDate dateFin);
+
+    @Query("select sh from SubscriptionHistory sh WHERE sh.startDate>= :start and sh.startDate<= :end order by sh.startDate desc")
+    Page<SubscriptionHistory> subscriptionsByDayAndPage(@Param("start") LocalDate start, @Param("end") LocalDate end, Pageable pageable);
+
+    @Query("select sum(sh.price) from SubscriptionHistory sh where sh.startDate >= :dateDebut and sh.startDate <= :dateFin")
+    double sumPriceOfSubscriptions (@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
+
 }

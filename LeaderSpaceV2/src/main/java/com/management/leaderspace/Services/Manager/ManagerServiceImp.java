@@ -739,4 +739,24 @@ public class ManagerServiceImp implements ManagerService {
         }
         return totaleVisitsTeamCharts;
     }
+
+    @Override
+    public double totalePriceByVisits(double sommeServicePriceOfNormaleVisits, double sommeServiePriceSupplementaireOfVisits, double sommeConsommationsNormaleVisits) {
+        return sommeServicePriceOfNormaleVisits+sommeServiePriceSupplementaireOfVisits+sommeConsommationsNormaleVisits;
+    }
+
+    @Override
+    public double totaleOfAllVisitsOfRoom(double sommeServicePriceForRoomVisits, double sommeServiceSuplimentaireOfVisitRoom, double sommeConsommationsForRoom, double sommeConsommationsForRoomParticipants) {
+        return sommeServicePriceForRoomVisits+sommeServiceSuplimentaireOfVisitRoom+sommeConsommationsForRoom+sommeConsommationsForRoomParticipants;
+    }
+
+    @Override
+    public double totaleOfVisitsOfDesk(double sommeServicePriceForDeskVisits, double sommeServiceSupplimentaiePriceOfDisk, double sommeConsommationsForDesk) {
+        return sommeServicePriceForDeskVisits+sommeServiceSupplimentaiePriceOfDisk+sommeConsommationsForDesk;
+    }
+
+    @Override
+    public double totaleVisitsForTeam(double sommeServiceSupplimentairePriceOfTeam, double sommeSnacksAndBoissonsForVisitsTeam) {
+        return sommeServiceSupplimentairePriceOfTeam+sommeSnacksAndBoissonsForVisitsTeam;
+    }
 }
