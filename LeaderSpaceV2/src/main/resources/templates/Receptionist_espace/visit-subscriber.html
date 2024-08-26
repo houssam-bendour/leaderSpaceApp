@@ -3,14 +3,11 @@
 <head>
     <title>QR Code Scanner</title>
     <script src="/js/qr-scanner.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+
             background-image: url('/image/ls.jpg');
             background-repeat: no-repeat;
             background-position: center center;
@@ -47,7 +44,8 @@
     </style>
 </head>
 <body>
-<h1>QR Code Scanner</h1>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+
 <main>
     <div id="reader"></div>
     <!-- <div id="result"></div> -->

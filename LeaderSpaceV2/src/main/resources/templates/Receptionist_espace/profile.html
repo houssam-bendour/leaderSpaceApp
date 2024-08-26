@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -141,16 +141,24 @@
             <p><span>CIN:</span> <span th:text="${profile.CIN}">CIN000000</span></p>
             <p><span>Numéro CNSS:</span> <span th:text="${profile.CNSS_number}">CNSS000000</span></p>
             <p><span>Type d'utiltsateur:</span> <span th:text="${profile.getDiscriminatorValue()}">Type</span></p>
-            <button type="button" onclick="document.getElementById('password').submit();">Modifier le  mot de passe</button>
+            <button sec:authorize="hasRole('ROLE_RECEPTIONIST')" type="button" onclick="document.getElementById('passwordForReceptionist').submit();">Modifier le  mot de passe</button>
+            <button sec:authorize="hasRole('ROLE_MANAGER')" type="button" onclick="document.getElementById('passwordForManager').submit();">Modifier le  mot de passe</button>
+            <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" onclick="document.getElementById('passwordForAdmin').submit();">Modifier le  mot de passe</button>
         </div>
     </div>
     <div class="profile-footer">
-        <button type="button" onclick="document.getElementById('updateProfile').submit();">Modifier</button>
+        <button sec:authorize="hasRole('ROLE_RECEPTIONIST')" type="button" onclick="document.getElementById('updateProfileForReceptionist').submit();">Modifier</button>
+        <button sec:authorize="hasRole('ROLE_MANAGER')" type="button" onclick="document.getElementById('updateProfileForManager').submit();">Modifier</button>
+        <button sec:authorize="hasRole('ROLE_ADMIN')" type="button" onclick="document.getElementById('updateProfileForAdmin').submit();">Modifier</button>
         <button type="button" onclick="document.getElementById('MyBadg').submit();">mon badge</button>
     </div>
 </div>
-<form id="password" method="get" th:action="@{/reception/update-password}" style="display:none;"></form>
-<form id="updateProfile" method="get" th:action="@{/reception/updateProfile}" style="display:none;"></form>
+<form sec:authorize="hasRole('ROLE_RECEPTIONIST')" id="passwordForReceptionist" method="get" th:action="@{/reception/update-password}" style="display:none;"></form>
+<form sec:authorize="hasRole('ROLE_MANAGER')" id="passwordForManager" method="get" th:action="@{/manager/update-password}" style="display:none;"></form>
+<form sec:authorize="hasRole('ROLE_ADMIN')" id="passwordForAdmin" method="get" th:action="@{/admin/update-password}" style="display:none;"></form>
+<form sec:authorize="hasRole('ROLE_RECEPTIONIST')" id="updateProfileForReceptionist" method="get" th:action="@{/reception/updateProfile}" style="display:none;"></form>
+<form sec:authorize="hasRole('ROLE_MANAGER')" id="updateProfileForManager" method="get" th:action="@{/manager/updateProfile}" style="display:none;"></form>
+<form sec:authorize="hasRole('ROLE_ADMIN')" id="updateProfileForAdmin" method="get" th:action="@{/admin/updateProfile}" style="display:none;"></form>
 <form id="MyBadg" method="post" th:action="@{/reception/badge}" style="display:none;">
     <input type="hidden" name="userId" th:value="${profile.id}">
     <input type="hidden" name="qrCodeBase64" th:value="${qrCodeBase64}">

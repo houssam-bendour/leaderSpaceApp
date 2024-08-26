@@ -8,6 +8,7 @@ import com.management.leaderspace.model.CaisseService;
 import com.management.leaderspace.model.DesignationForm;
 import com.management.leaderspace.model.NumberToWordsService;
 import com.management.leaderspace.model.QrCodeGenerator;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.repository.query.Param;
@@ -56,6 +57,8 @@ public class ManagerController {
     private VisitOfTeamRepository visitOfTeamRepository;
     private CaisseRepository caisseRepository;
     private BankRepository bankRepository;
+    private final HttpSession httpSession;
+
 
     @GetMapping("/add-snack")
     public String showAddSnackForm() {
@@ -1226,6 +1229,7 @@ public class ManagerController {
 //    }
 @GetMapping("profile")
 String profile( Model model) {
+
     Manager manager = managerService.getProfile();
     String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(manager.getId().toString());
     model.addAttribute("qrCodeBase64", qrCodeBase64);
@@ -1233,4 +1237,43 @@ String profile( Model model) {
     model.addAttribute("profileImage", manager.getBase64Image());
     return "Receptionist_espace/profile";
 }
+
+    @GetMapping("updateProfile")
+    String updateProfile(Model model) {
+        Manager manager = managerService.getProfile();
+        model.addAttribute("profile", manager);
+        return "Receptionist_espace/updateProfile";
+    }
+    @PostMapping("saveUpdateProfile")
+    String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
+                             @RequestParam("firstName") String firstName,
+                             @RequestParam("lastName") String lastName,
+                             @RequestParam("email") String email,
+                             @RequestParam("phone") String phone,
+                             @RequestParam("CIN") String CIN,
+                             @RequestParam("CNSS") String CNSS,
+                             Model model) {
+        Manager manager = managerService.getProfile();
+        manager.setEmail(email);
+        manager.setPhone(phone);
+        manager.setCNSS_number(CNSS);
+        manager.setCIN(CIN);
+        manager.setLast_name(lastName);
+        manager.setFirst_name(firstName);
+        try {
+            if (!file.isEmpty()) {
+                byte[] imageData = file.getBytes();
+                manager.setImage(imageData);
+                managerRepository.save(manager);
+                String base64Image = Base64.getEncoder().encodeToString(manager.getImage());
+                manager.setBase64Image("data:image/png;base64,"+base64Image);
+                httpSession.setAttribute("profileImage", manager.getBase64Image());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("message", "Failed to upload image.");
+        }
+        model.addAttribute("profile", manager);
+        return "redirect:/manager/profile";
+    }
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -145,7 +145,13 @@
   </div>
   <div class="button-container">
     <button id="downloadButton">Télécharger la carte</button>
-    <form th:action="@{/reception/profile}" method="get">
+    <form sec:authorize="hasRole('ROLE_RECEPTIONIST')" th:action="@{/reception/profile} " method="get">
+      <button type="submit">Retour à profile</button>
+    </form>
+    <form sec:authorize="hasRole('ROLE_MANAGER')" th:action="@{/manager/profile} " method="get">
+      <button type="submit">Retour à profile</button>
+    </form>
+    <form sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{/admin/profile} " method="get">
       <button type="submit">Retour à profile</button>
     </form>
   </div>

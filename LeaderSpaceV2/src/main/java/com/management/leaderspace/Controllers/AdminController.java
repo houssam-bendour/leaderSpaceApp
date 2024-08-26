@@ -5,13 +5,16 @@ import com.management.leaderspace.Repositories.AdminRepository;
 import com.management.leaderspace.Repositories.ManagerRepository;
 import com.management.leaderspace.Services.Admin.AdminService;
 import com.management.leaderspace.model.QrCodeGenerator;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +29,8 @@ public class AdminController {
     private final AdminService adminService;
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final HttpSession httpSession;
+
     //==============================MANAGER CRUD============================
     @GetMapping("list-managers")
     String getAllManagers(Model model) {
@@ -140,6 +145,7 @@ public class AdminController {
 
     @GetMapping("profile")
     String profile( Model model) {
+
         Admin admin = adminService.getProfile();
         String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(admin.getId().toString());
         model.addAttribute("qrCodeBase64", qrCodeBase64);
@@ -148,4 +154,42 @@ public class AdminController {
         return "Receptionist_espace/profile";
     }
 
+    @GetMapping("updateProfile")
+    String updateProfile(Model model) {
+        Admin admin = adminService.getProfile();
+        model.addAttribute("profile", admin);
+        return "Receptionist_espace/updateProfile";
+    }
+    @PostMapping("saveUpdateProfile")
+    String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
+                             @RequestParam("firstName") String firstName,
+                             @RequestParam("lastName") String lastName,
+                             @RequestParam("email") String email,
+                             @RequestParam("phone") String phone,
+                             @RequestParam("CIN") String CIN,
+                             @RequestParam("CNSS") String CNSS,
+                             Model model) {
+        Admin admin = adminService.getProfile();
+        admin.setEmail(email);
+        admin.setPhone(phone);
+        admin.setCNSS_number(CNSS);
+        admin.setCIN(CIN);
+        admin.setLast_name(lastName);
+        admin.setFirst_name(firstName);
+        try {
+            if (!file.isEmpty()) {
+                byte[] imageData = file.getBytes();
+                admin.setImage(imageData);
+                adminRepository.save(admin);
+                String base64Image = Base64.getEncoder().encodeToString(admin.getImage());
+                admin.setBase64Image("data:image/png;base64,"+base64Image);
+                httpSession.setAttribute("profileImage", admin.getBase64Image());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("message", "Failed to upload image.");
+        }
+        model.addAttribute("profile", admin);
+        return "redirect:/admin/profile";
+    }
 }
