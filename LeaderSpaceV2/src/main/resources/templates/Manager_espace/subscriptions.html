@@ -3,39 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>List of Subscribers</title>
-    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+    <link rel="stylesheet" th:href="@{/css/manager/subscriptions.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<header>
-    <h1>List of Subscriptions</h1>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+<main>
+    <div class="header">
+        <h1>Liste des abonnements</h1>
+    </div>
     <div class="header-buttons">
         <form th:action="@{/}" method="get">
-            <button type="submit">Cancel</button>
+            <abbr title="Retourner à la page d'accueil">
+                <button type="submit"><i class="fa fa-arrow-left"></i></button>
+            </abbr>
         </form>
-    </div>
-    <!-- Search form -->
-    <!--<div class="search-form">
-        <form th:action="@{/reception/subscriber-Search}" method="get">
-            <input type="text" name="Name" placeholder="Search by name" />
-            <button type="submit">Search</button>
-        </form>
-    </div>-->
-</header>
-<main>
-    <div class="main-buttons">
         <form th:action="@{/manager/add-subscription}" method="get">
-            <button type="submit">add</button>
+            <abbr title="Ajouter une abonnement">
+                <button type="submit"><i class="fa fa-plus"></i></button>
+            </abbr>
         </form>
     </div>
     <table border="1">
         <thead>
         <tr>
-            <th>name</th>
-            <th>Durée (par jour)</th>
-            <th>Flexibilité de durée (par mois)</th>
-            <th>Nombre de boissons gratuites par jour</th>
+            <th>Nom</th>
+            <th>Durée (Jours)</th>
+            <th>Flexibilité de durée (Mois)</th>
+            <th>Nombre de boissons gratuits par jour</th>
             <th>Nombre d'heures par jour</th>
-            <th>Prix de l'abonnement(mad)</th>
+            <th>Prix de l'abonnement (MAD)</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -48,12 +46,18 @@
             <td th:text="${subscription.hour_of_day}">Nombre d'heures par jour</td>
             <td th:text="${subscription.price}">Prix de l'abonnement(mad)</td>
             <td>
-                <form th:action="@{/manager/update-subscription(subscriptionId=${subscription.id})}" method="post">
-                    <button type="submit">modifier</button>
-                </form>
-                <form th:action="@{/manager/delete-subscription(subscriptionId=${subscription.id})}" method="post">
-                    <button type="submit">supprimer</button>
-                </form>
+                <div class="action-buttons">
+                    <form th:action="@{/manager/update-subscription(subscriptionId=${subscription.id})}" method="post">
+                        <abbr title="Modifier une abonnement">
+                            <button type="submit"><i class="fa fa-edit"></i></button>
+                        </abbr>
+                    </form>
+                    <form th:action="@{/manager/delete-subscription(subscriptionId=${subscription.id})}" method="post">
+                        <abbr title="Supprimer une abonnement">
+                            <button type="submit"><i class="fa fa-trash"></i></button>
+                        </abbr>
+                    </form>
+                </div>
             </td>
         </tbody>
     </table>

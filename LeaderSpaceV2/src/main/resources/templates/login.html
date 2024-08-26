@@ -130,7 +130,18 @@
             color: #fff;
             margin-right: 8px;
             margin-bottom: 5px;
+            font-size: 20px;
         }
+
+        .eye-icon {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(100%);
+            cursor: pointer;
+            color: white;
+        }
+
 
         /* Responsive Design */
         @media (max-width: 460px) {
@@ -157,7 +168,7 @@
 </head>
 <body>
 <div class="login-container">
-    <h1>Login</h1>
+    <h1>Se connecter</h1>
     <form th:action="@{/login}" method="post">
         <div class="form-group">
             <div class="icones">
@@ -172,13 +183,16 @@
                 <label for="password">Password</label>
             </div>
             <input type="password" id="password" name="password" required/>
+            <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
+                <i class="fa fa-eye"></i>
+            </span>
         </div>
         <div class="checkbox">
             <input type="checkbox" id="remember-me" name="remember-me"/>
             <label for="remember-me">Rester connecté un mois</label>
         </div>
         <div class="form-group">
-            <button type="submit">Login</button>
+            <button type="submit">Se connecter</button>
         </div>
         <div class="forgot-password">
             <a th:href="@{/forgot-password}">Mot de passe oublié ?</a>
@@ -186,4 +200,22 @@
     </form>
 </div>
 </body>
+<script>
+    function togglePasswordVisibility(inputId, eyeIcon) {
+        const passwordInput = document.getElementById(inputId);
+        const icon = eyeIcon.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+
+</script>
 </html>

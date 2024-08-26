@@ -2,38 +2,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List of Subscribers</title>
-    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+    <title>Liste des services</title>
+    <link rel="stylesheet" th:href="@{/css/manager/services.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<header>
-    <h1>List of services</h1>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+
+<main>
+    <div class="header">
+        <h1>Liste des services</h1>
+    </div>
     <div class="header-buttons">
         <form th:action="@{/}" method="get">
-            <button type="submit">Cancel</button>
+            <abbr title="Retourner à la page d'accueil">
+                <button type="submit"><i class="fa fa-arrow-left"></i></button>
+            </abbr>
         </form>
-    </div>
-    <!-- Search form -->
-    <!--<div class="search-form">
-        <form th:action="@{/reception/subscriber-Search}" method="get">
-            <input type="text" name="Name" placeholder="Search by name" />
-            <button type="submit">Search</button>
-        </form>
-    </div>-->
-</header>
-<main>
-    <div class="main-buttons">
         <form th:action="@{/manager/add-service}" method="get">
-            <button type="submit">add</button>
+            <abbr title="Ajouter un service">
+                <button type="submit"><i class="fa fa-plus"></i></button>
+            </abbr>
         </form>
     </div>
     <table border="1">
         <thead>
         <tr>
-            <th>name</th>
-            <th>duration (par heurs)</th>
-            <th>Nombre de boissons gratuites</th>
-            <th>prix</th>
+            <th>Nom</th>
+            <th>Durée (Heures)</th>
+            <th>Nombre de boissons gratuits</th>
+            <th>Prix (DH)</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -41,15 +40,21 @@
         <tr th:each="service : ${services}">
             <td th:text="${service.name}">name</td>
             <td th:text="${service.duration}">duration (par heurs)</td>
-            <td th:text="${service.number_of_Free_Drinks}">Nombre de boissons gratuites</td>
+            <td th:text="${service.number_of_Free_Drinks}">Nombre de boissons gratuits</td>
             <td th:text="${service.price}">prix</td>
             <td>
-                <form th:action="@{/manager/update-service(serviceId=${service.id})}" method="post">
-                    <button type="submit">modifier</button>
-                </form>
-                <form th:action="@{/manager/delete-service(serviceId=${service.id})}" method="post">
-                    <button type="submit">supprimer</button>
-                </form>
+                <div class="action-buttons">
+                    <form th:action="@{/manager/update-service(serviceId=${service.id})}" method="post">
+                        <abbr title="Modifier un service">
+                            <button type="submit"><i class="fa fa-edit"></i></button>
+                        </abbr>
+                    </form>
+                    <form th:action="@{/manager/delete-service(serviceId=${service.id})}" method="post">
+                        <abbr title="Supprimer un service">
+                            <button type="submit"><i class="fa fa-trash"></i></button>
+                        </abbr>
+                    </form>
+                </div>
             </td>
         </tbody>
     </table>

@@ -2,15 +2,27 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List of devis</title>
-    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+    <title>Liste des devises</title>
+    <link rel="stylesheet" th:href="@{/css/manager/services.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<header>
-    <h1>List of devis</h1>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+<main>
+    <div class="header">
+        <h1>Liste des devises</h1>
+    </div>
     <div class="header-buttons">
         <form th:action="@{/}" method="get">
-            <button type="submit">Cancel</button>
+            <abbr title="Retourner à la page d'accueil">
+                <button type="submit"><i class="fa fa-arrow-left"></i></button>
+            </abbr>
+        </form>
+        <form th:action="@{/manager/devis}" method="get">
+            <abbr title="Ajouter un service">
+                <button type="submit"><i class="fa fa-plus"></i></button>
+            </abbr>
         </form>
     </div>
     <!-- Search form -->
@@ -20,20 +32,15 @@
             <button type="submit">Search</button>
         </form>
     </div>-->
-</header>
-<main>
-    <div class="main-buttons">
-        <form th:action="@{/manager/devis}" method="get">
-            <button type="submit">add</button>
-        </form>
-    </div>
+
+
     <table border="1">
         <thead>
         <tr>
-            <th>date</th>
-            <th>devis number</th>
-            <th>client id</th>
-            <th>client name</th>
+            <th>Date</th>
+            <th>Numéro de devise</th>
+            <th>ID client</th>
+            <th>Nom du client</th>
         </tr>
         </thead>
         <tbody>

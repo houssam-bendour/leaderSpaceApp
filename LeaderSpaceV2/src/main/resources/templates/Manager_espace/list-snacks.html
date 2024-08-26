@@ -2,44 +2,54 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List of Snacks</title>
-    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
-    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <title>Liste des Snacks</title>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<header>
-    <h1>List of Snacks</h1>
-    <div class="header-buttons">
-        <form th:action="@{/}" method="get">
-            <button type="submit">Cancel</button>
-        </form>
-    </div>
-    <!-- Search form -->
-    <div class="search-form">
-        <form th:action="@{/manager/snack-Search}" method="get">
-            <input type="text" name="Name" placeholder="Search by name" />
-            <button type="submit">Search</button>
-        </form>
-    </div>
-</header>
+
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+
 <main>
-    <div class="main-buttons">
-        <form th:action="@{/manager/add-snack}" method="get">
-            <button type="submit">add</button>
-        </form>
+    <div class="header">
+        <h1>Liste des Snacks</h1>
     </div>
-    <table th:style="'border-spacing: 0 10px; border-collapse: separate;'">
+    <div class="search-bar-buttons">
+        <div class="header-buttons">
+            <form th:action="@{/}" method="get">
+                <abbr title="Retourner à la page d'accueil">
+                    <button type="submit"><i class="fa fa-arrow-left"></i></button>
+                </abbr>
+            </form>
+            <form th:action="@{/manager/add-snack}" method="get">
+                <abbr title="Ajouter un snack">
+                    <button type="submit"><i class="fa fa-plus"></i></button>
+                </abbr>
+            </form>
+        </div>
+        <!-- Search form -->
+        <div class="search-form">
+            <form th:action="@{/manager/snack-Search}" method="get">
+                <input type="text" name="Name" placeholder="Rechercher par nom" />
+                <abbr title="Rechercher">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </abbr>
+            </form>
+        </div>
+    </div>
+
+    <table border="1">
         <thead>
         <tr>
-            <th>image</th>
-            <th>name</th>
-            <th>Quantity</th>
-            <th>Required Quantity</th>
-            <th>purchase_price</th>
-            <th>selling_price</th>
-            <th>type</th>
-            <th>Action</th>
+            <th>Image</th>
+            <th>Nom</th>
+            <th>Quantité</th>
+            <th>Quantité Minimale</th>
+            <th>Prix d'achat</th>
+            <th>Prix de vente</th>
+            <th>Type</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -54,15 +64,25 @@
             <td th:text="${snack.selling_price}">selling price</td>
             <td th:text="${snack.type}">type</td>
             <td>
-                <a class="btn btn-secondary" th:href="@{/manager/new-quantity-snack(snack_id=${snack.id})}">New Quantity</a>
-                <a class="btn btn-secondary" th:href="@{/manager/update-snack(snack_id=${snack.id})}">Update</a>
+                <div class="action-buttons">
+                    <a class="btn btn-secondary" th:href="@{/manager/new-quantity-snack(snack_id=${snack.id})}">
+                        <abbr title="Ajouter une quantité du snack">
+                            <i class="fa fa-circle-plus"></i>
+                        </abbr>
+                    </a>
+                    <a class="btn btn-secondary" th:href="@{/manager/update-snack(snack_id=${snack.id})}">
+                        <abbr title="Modifier la quantité minimale du snack">
+                            <i class="fa fa-edit"></i>
+                        </abbr>
+                    </a>
+                </div>
             </td>
         </tr>
         </tbody>
     </table>
 </main>
-<footer>
-    <p>© 2024 Leader Space. All Rights Reserved.</p>
-</footer>
+<!--<footer>-->
+<!--    <p>© 2024 Leader Space. All Rights Reserved.</p>-->
+<!--</footer>-->
 </body>
 </html>
