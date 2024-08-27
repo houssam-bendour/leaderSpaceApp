@@ -39,9 +39,10 @@ public interface VisitRepository extends JpaRepository<Visit, UUID> {
     List<Visit> getAllVisitsBetweenStartDayAndEndTime(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
     @Query("select v from Visit v where v.notSubscriber is null order by v.day DESC, v.StartTime DESC")
-    List<Visit> getVisitsOfSubscribers();
+    Page<Visit> getVisitsOfSubscribers(Pageable pageable);
+
     @Query("select v from Visit v where v.subscriber is null order by v.day DESC, v.StartTime DESC")
-    List<Visit> getVisitsOfNotSubscribers();
+    Page<Visit> getVisitsOfNotSubscribers(Pageable pageable);
 
     @Query("select coalesce(sum(v.service_suplementaire_price),0.0) from Visit v where v.day>= :dateDebut and v.day<= :dateFin")
     Double sommeServiePriceSupplementaireOfVisits(@Param("dateDebut") LocalDate dateDebut,@Param("dateFin") LocalDate dateFin);
