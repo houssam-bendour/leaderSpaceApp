@@ -16,7 +16,6 @@
         <h1>Liste des abonnés</h1>
     </div>
     <div class="search-bar-buttons">
-        <!-- Switched Cancel and Add buttons with icons -->
         <div class="header-buttons">
             <form th:action="@{/}" method="get">
                 <abbr title="Retourner à la page d'accueil">
@@ -71,12 +70,12 @@
                     <div class="action-buttons">
                         <form th:action="@{/manager/update-subscriber(subscriberId=${subscriber.id})}" method="post">
                             <abbr title="Modifier un abonné">
-                                <button type="submit"><i class="fa fa-edit"></i></button> <!-- Edit icon -->
+                                <button type="submit"><i class="fa fa-edit"></i></button>
                             </abbr>
                         </form>
                         <form th:action="@{/manager/delete-subscriber(subscriberId=${subscriber.id})}" method="post">
                             <abbr title="Supprimer un abonné">
-                                <button type="submit"><i class="fa fa-trash"></i></button> <!-- Delete icon -->
+                                <button type="submit"><i class="fa fa-trash"></i></button>
                             </abbr>
                         </form>
                     </div>

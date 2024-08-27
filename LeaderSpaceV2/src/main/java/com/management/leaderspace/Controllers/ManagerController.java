@@ -1086,23 +1086,55 @@ public class ManagerController {
     //==============================VISIT CRUD============================
 
     @GetMapping("visit")
-    public String VisitsToday(Model model) {
+    public String VisitsToday(
+            @RequestParam(name = "section", defaultValue = "") String section,
+            @RequestParam(name = "page", required = false) Integer page,
+            Model model) {
 
-        List<Visit> visitOfSubscribers = managerService.getVisitsOfSubscribers();
+        if (section.equals("Table-Subscribers")){
 
-        model.addAttribute("visitOfSubscribers", visitOfSubscribers);
+            Page<Visit> pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,5));
+            List<Visit> visitOfSubscribers = pageVisitOfSubscribers.getContent();
 
-        List<Visit> visitOfNotSubscribers = managerService.getVisitsOfNotSubscribers();
+            model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage",page);
+            model.addAttribute("visitOfSubscribers", visitOfSubscribers);
+        }
 
-        model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
+        if (section.equals("Table-Non-Subscribers")){
 
-        List<VisitOfRoom> visitOfRooms = managerService.getVisitsOfRoom();
+            Page<Visit> pageVisitOfNotSubscribers = managerService.getVisitsOfNotSubscribers(PageRequest.of(page,5));
 
-        model.addAttribute("visitOfRooms", visitOfRooms);
+            List<Visit> visitOfNotSubscribers = pageVisitOfNotSubscribers.getContent();
 
-        List<VisitOfDesk> visitOfDesks = managerService.getVisitsOfDesk();
+            model.addAttribute("pages",new int[pageVisitOfNotSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage",page);
 
-        model.addAttribute("visitOfDesks", visitOfDesks);
+            model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
+
+        }
+
+        if (section.equals("Table-Room")){
+
+            Page<VisitOfRoom> pageVisitOfSubscribers = managerService.getVisitsOfRoom(PageRequest.of(page,5));
+
+            List<VisitOfRoom> visitOfRooms = pageVisitOfSubscribers.getContent();
+
+            model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage",page);
+            model.addAttribute("visitOfRooms", visitOfRooms);
+        }
+
+        if (section.equals("Table-Desk")){
+
+            Page<VisitOfDesk> pageVisitOfDesks = managerService.getVisitsOfDesk(PageRequest.of(page,5));
+
+            List<VisitOfDesk> visitOfDesks = pageVisitOfDesks.getContent();
+
+            model.addAttribute("pages",new int[pageVisitOfDesks.getTotalPages()]);
+            model.addAttribute("currentPage",page);
+            model.addAttribute("visitOfDesks", visitOfDesks);
+        }
 
         ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
         model.addAttribute("nowInMorocco", nowInMorocco);
@@ -1250,13 +1282,26 @@ public class ManagerController {
     }
 
     @RequestMapping("caisse")
-    String getCaisse(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,Model model){
-        List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
+    String getCaisse(
+            @RequestParam(value = "dateDebut" ,required = false) LocalDate startDate,
+            @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            Model model){
+        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page,5));
+        List<Caisse> caisse = pageCaisse.getContent();
         Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
-        if(startDate==null || endDate==null)
+        if(startDate==null || endDate==null){
             model.addAttribute("caisse", caisse);
-        else
-            model.addAttribute("caisse", caisseRepository.filterCaisseByDate(startDate, endDate));
+            model.addAttribute("pages",new int[pageCaisse.getTotalPages()]);
+
+        }else{
+            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate,PageRequest.of(page,5));
+            List<Caisse> filterCaisseByDate = pageFilterCaisseByDate.getContent();
+            model.addAttribute("pages",new int[pageFilterCaisseByDate.getTotalPages()]);
+            model.addAttribute("caisse", filterCaisseByDate);
+        }
+        model.addAttribute("currentPage",page);
+
         model.addAttribute("FirstCaisse", FirstCaisse);
         return "Manager_espace/caisse";
     }

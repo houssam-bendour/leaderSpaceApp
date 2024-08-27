@@ -5,6 +5,29 @@
     <title>List of Visits</title>
     <link rel="stylesheet" th:href="@{/css/visit-today.css}">
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <style>
+        .btn-pagination-custom {
+            color: #29978d;
+            border-color: #29978d;
+        }
+
+        .btn-pagination-custom:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+
+        .btn-pagination-customHov {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+        .btn-pagination-customHov:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+    </style>
 
 </head>
 <body>
@@ -24,49 +47,59 @@
     </div>
 </header>
 <div class="visitType-buttons">
-    <button onclick="showTable('Subscribers')">Visits of Subscribers</button>
-    <button onclick="showTable('Non-Subscribers')">Visits of Non-Subscribers</button>
-    <button onclick="showTable('Desk')">Visits of Desk</button>
-    <button onclick="showTable('Room')">Visits of Conference Room</button>
+    <button onclick="showSection('Table-Subscribers')">Visits of Subscribers</button>
+    <button onclick="showSection('Table-Non-Subscribers')">Visits of Non-Subscribers</button>
+    <button onclick="showSection('Table-Desk')">Visits of Desk</button>
+    <button onclick="showSection('Table-Room')">Visits of Conference Room</button>
 </div>
-<main id="Table-Subscribers" style="display: block;">
-    <h2>Visits of Subscribers</h2>
+<main id="Table-Subscribers">
+        <h2>Visits of Subscribers</h2>
 
-    <table border="1">
+        <table border="1">
 
-        <thead>
-        <tr>
-            <th>CIN</th>
-            <th>subscription type</th>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Email</th>
-            <th>Day</th>
-            <th>Start time</th>
-            <th>End time</th>
-            <th>Snacks</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="visit : ${visitOfSubscribers}">
-            <td th:text="${visit.subscriber.CIN}">CIN</td>
-            <td th:text="${visit.subscriber.subscription_type.name}">subscription type</td>
-            <td th:text="${visit.subscriber.first_name}">First name</td>
-            <td th:text="${visit.subscriber.last_name}">Last name</td>
-            <td th:text="${visit.subscriber.email}">Email</td>
-            <td th:text="${visit.day}">Day</td>
-            <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
-            <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
-            <td>
-                <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
-                    <li th:text="${snack.snacksAndBoissons.name}"></li>
-                </ul>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+            <thead>
+            <tr>
+                <th>CIN</th>
+                <th>subscription type</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Email</th>
+                <th>Day</th>
+                <th>Start time</th>
+                <th>End time</th>
+                <th>Snacks</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="visit : ${visitOfSubscribers}">
+                <td th:text="${visit.subscriber.CIN}">CIN</td>
+                <td th:text="${visit.subscriber.subscription_type.name}">subscription type</td>
+                <td th:text="${visit.subscriber.first_name}">First name</td>
+                <td th:text="${visit.subscriber.last_name}">Last name</td>
+                <td th:text="${visit.subscriber.email}">Email</td>
+                <td th:text="${visit.day}">Day</td>
+                <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
+                <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
+                <td>
+                    <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                        <li th:text="${snack.snacksAndBoissons.name}"></li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item ms-2" th:each="page, status : ${pages}">
+                <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                   th:href="@{visit(section='Table-Subscribers', page=${status.index})}"
+                   th:text="${status.count}">
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
-<main id="Table-Non-Subscribers" style="display: none;">
+<main id="Table-Non-Subscribers">
     <h2>Visits of Non-Subscribers</h2>
     <table border="1">
         <thead>
@@ -90,8 +123,18 @@
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item ms-2" th:each="page, status : ${pages}">
+                <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                   th:href="@{visit(section='Table-Non-Subscribers', page=${status.index})}"
+                   th:text="${status.count}">
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
-<main id="Table-Desk" style="display: none;">
+<main id="Table-Desk">
     <h2>Visits of Desk</h2>
     <table border="1">
         <thead>
@@ -126,8 +169,18 @@
         </tr>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item ms-2" th:each="page, status : ${pages}">
+                <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                   th:href="@{visit(section='Table-Desk', page=${status.index})}"
+                   th:text="${status.count}">
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
-<main id="Table-Room" style="display: none;">
+<main id="Table-Room">
     <h2>Visits of Conference Room</h2>
     <table border="1">
         <thead>
@@ -164,15 +217,67 @@
         </tr>
         </tbody>
     </table>
-
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            <li class="page-item ms-2" th:each="page, status : ${pages}">
+                <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                   th:href="@{visit(section='Table-Room', page=${status.index})}"
+                   th:text="${status.count}">
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
+
 <script>
-    function showTable(language) {
-        document.getElementById('Table-Subscribers').style.display = language === 'Subscribers' ? 'block' : 'none';
-        document.getElementById('Table-Non-Subscribers').style.display = language === 'Non-Subscribers' ? 'block' : 'none';
-        document.getElementById('Table-Desk').style.display = language === 'Desk' ? 'block' : 'none';
-        document.getElementById('Table-Room').style.display = language === 'Room' ? 'block' : 'none';
+    function showSection(section) {
+        const sections = ["Table-Subscribers", "Table-Non-Subscribers", "Table-Desk", "Table-Room"];
+
+        // Construire l'URL de redirection
+
+        const pageIndex =  0; // Remplacez par la valeur appropriée côté serveur
+
+        const baseUrl = `/manager/visit?section=${encodeURIComponent(section)}&page=${pageIndex}`;
+
+        // Redirection pour la section appropriée
+        if (sections.includes(section)) {
+            window.location.href = baseUrl;
+        } else {
+            console.log("Section non valide pour la redirection.");
+        }
     }
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const sections = ["Table-Subscribers", "Table-Non-Subscribers", "Table-Desk", "Table-Room"];
+        const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section');
+
+        // Masquer toutes les sections
+        sections.forEach(sec => {
+            const element = document.getElementById(sec);
+            if (element) {
+                element.style.display = "none";
+            }
+        });
+
+        // Afficher la section sélectionnée
+        const selectedSection = document.getElementById(section);
+        if (selectedSection) {
+            selectedSection.style.display = "block";
+        } else {
+            console.error(`La section "${section}" n'existe pas.`);
+            return;
+        }
+
+        // Retirer la classe active de tous les boutons
+        const buttons = document.querySelectorAll('.btn-group .btn');
+        buttons.forEach(button => button.classList.remove('btn-customHov', 'active'));
+
+        // Ajouter la classe active au bouton correspondant
+        document.getElementById(section + 'Btn').classList.add('btn-customHov', 'active');
+
+    });
 </script>
 </body>
 </html>

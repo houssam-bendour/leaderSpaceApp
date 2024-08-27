@@ -2,39 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List of Subscribers</title>
-    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+    <title>Liste des managers</title>
+    <link rel="stylesheet" th:href="@{/css/manager/subscribers.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<header>
-    <h1>List of managers</h1>
-    <div class="header-buttons">
-        <form th:action="@{/}" method="get">
-            <button type="submit">Cancel</button>
-        </form>
-    </div>
-    <!-- Search form -->
-    <div class="search-form">
-        <form th:action="@{/admin/manager-Search}" method="get">
-            <input type="text" name="Name" placeholder="Search by name" />
-            <button type="submit">Search</button>
-        </form>
-    </div>
-</header>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 <main>
-    <div class="main-buttons">
-        <form th:action="@{/admin/add-manager}" method="get">
-            <button type="submit">add</button>
-        </form>
+    <div class="header">
+        <h1>Liste des managers</h1>
+    </div>
+    <div class="search-bar-buttons">
+        <div class="header-buttons">
+            <form th:action="@{/}" method="get">
+                <abbr title="Retourner à la page d'accueil">
+                    <button type="submit"><i class="fa fa-arrow-left"></i></button> <!-- Cancel icon -->
+                </abbr>
+            </form>
+            <form th:action="@{/admin/add-manager}" method="get">
+                <abbr title="Ajouter un manager">
+                    <button type="submit"><i class="fa fa-plus"></i></button> <!-- Add icon -->
+                </abbr>
+            </form>
+        </div>
+        <div class="search-form">
+            <form th:action="@{/admin/manager-Search}" method="get">
+                <input type="text" name="Name" placeholder="Search by name" />
+                <abbr title="Rechercher">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </abbr>
+            </form>
+        </div>
     </div>
     <table border="1">
         <thead>
         <tr>
             <th>CIN</th>
-            <th>First name</th>
-            <th>Last name</th>
+            <th>Prénom</th>
+            <th>Nom</th>
             <th>Email</th>
-            <th>phone</th>
+            <th>Téléphone</th>
             <th>CNSS</th>
             <th>Actions</th>
         </tr>
@@ -48,12 +56,18 @@
             <td th:text="${manager.phone}">phone</td>
             <td th:text="${manager.CNSS_number}">CNSS</td>
             <td>
-                <form th:action="@{/admin/update-manager(managerId=${manager.id})}" method="post">
-                    <button type="submit">modifier</button>
-                </form>
-                <form th:action="@{/admin/delete-manager(managerId=${manager.id})}" method="post">
-                    <button type="submit">supprimer</button>
-                </form>
+                <div class="action-buttons">
+                    <form th:action="@{/admin/update-manager(managerId=${manager.id})}" method="post">
+                        <abbr title="Modifier un manager">
+                            <button type="submit"><i class="fa fa-edit"></i></button>
+                        </abbr>
+                    </form>
+                    <form th:action="@{/admin/delete-manager(managerId=${manager.id})}" method="post">
+                        <abbr title="Supprimer un manager">
+                            <button type="submit"><i class="fa fa-trash"></i></button>
+                        </abbr>
+                    </form>
+                </div>
             </td>
         </tr>
         </tbody>

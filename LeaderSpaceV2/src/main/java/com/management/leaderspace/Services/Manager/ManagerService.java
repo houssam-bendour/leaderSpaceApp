@@ -2,6 +2,8 @@ package com.management.leaderspace.Services.Manager;
 
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.model.DesignationForm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -62,13 +64,13 @@ public interface ManagerService {
     Double calculeSommeOfServicePriceForRoom(List<VisitOfRoom> allVisitsOfRoom);
     Double calculeSommeOfServicePriceForDesk(List<VisitOfDesk> allVisitsOfDesk);
 
-    List<Visit> getVisitsOfSubscribers();
+    Page<Visit> getVisitsOfSubscribers(Pageable pageable);
 
-    List<Visit> getVisitsOfNotSubscribers();
+    Page<Visit> getVisitsOfNotSubscribers(Pageable pageable);
 
-    List<VisitOfRoom> getVisitsOfRoom();
+    Page<VisitOfRoom> getVisitsOfRoom(Pageable pageable);
 
-    List<VisitOfDesk> getVisitsOfDesk();
+    Page<VisitOfDesk> getVisitsOfDesk(Pageable pageable);
 
     Map<LocalDate, Double> totaleVisitsNormaleCharts(LocalDate dateDebut, LocalDate dateFin);
 

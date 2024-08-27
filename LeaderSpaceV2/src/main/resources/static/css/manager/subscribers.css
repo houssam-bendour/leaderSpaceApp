@@ -207,6 +207,29 @@ td .action-buttons button:nth-child(2):hover i {
     color: #29978d;
 }
 
+footer {
+    background-color: #515050;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+}
+
+footer p {
+    margin: 0;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+}
+
+footer p:hover {
+    color: #f39c12;
+    transition: color 0.3s ease-in-out;
+}
+
+
 
 
 

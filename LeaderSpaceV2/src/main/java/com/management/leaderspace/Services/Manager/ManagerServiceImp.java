@@ -6,11 +6,10 @@ import com.management.leaderspace.model.CaisseService;
 import com.management.leaderspace.model.DesignationForm;
 import lombok.AllArgsConstructor;
 
-import org.antlr.v4.runtime.misc.LogManager;
-
 import org.springframework.boot.jdbc.metadata.DataSourcePoolMetadataProvider;
 
-import org.springframework.cglib.core.Local;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +22,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @AllArgsConstructor
@@ -439,23 +437,23 @@ public class ManagerServiceImp implements ManagerService {
     }
 
     @Override
-    public List<Visit> getVisitsOfSubscribers() {
-        return visitRepository.getVisitsOfSubscribers();
+    public Page<Visit> getVisitsOfSubscribers(Pageable pageable) {
+        return visitRepository.getVisitsOfSubscribers(pageable);
     }
 
     @Override
-    public List<Visit> getVisitsOfNotSubscribers() {
-        return visitRepository.getVisitsOfNotSubscribers();
+    public Page<Visit> getVisitsOfNotSubscribers(Pageable pageable) {
+        return visitRepository.getVisitsOfNotSubscribers(pageable);
     }
 
     @Override
-    public List<VisitOfRoom> getVisitsOfRoom() {
-        return visitOfRoomRepository.getVisitOfRoom();
+    public Page<VisitOfRoom> getVisitsOfRoom(Pageable pageable) {
+        return visitOfRoomRepository.getVisitOfRoom(pageable);
     }
 
     @Override
-    public List<VisitOfDesk> getVisitsOfDesk() {
-        return visitOfDeskRepository.getVisitsOfDesk();
+    public Page<VisitOfDesk> getVisitsOfDesk(Pageable pageable) {
+        return visitOfDeskRepository.getVisitsOfDesk(pageable);
     }
 
     public List<VisitOfRoom> findVisitOfRoomByDate(LocalDate dateDebut, LocalDate dateFin) {
