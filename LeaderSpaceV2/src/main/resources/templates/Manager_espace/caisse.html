@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Caisse</title>
-  <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
   <!-- Intégration de Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+
+  <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
   <style>
     /* Styles personnalisés */
 
@@ -83,7 +84,7 @@
   </style>
 
 </head>
-<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+<!--<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>-->
 <body>
 <div class="container my-5">
   <!-- Titre principal -->
@@ -94,14 +95,19 @@
     <form th:action="@{/manager/transfer}" method="post">
       <div class="mb-3">
         <label for="sum" class="form-label">Somme à transférer</label>
-        <div class="input-group">
           <input type="number" class="form-control" id="sum" name="sum" placeholder="Entrez la somme à transférer" min="0" th:max="${FirstCaisse.totale_caisse}" required>
-            <button type="submit" class="btn btn-custom col-md-1">
-              <abbr title="Transférer à la bank">
-                <img src="/image/transfer.png" class="fa fa-money-bill-transfer"/>
-              </abbr>
-            </button>
-        </div>
+      </div>
+      <div class="text-center">
+        <abbr title="Retourner à la page d'accueil">
+          <button type="submit" class="btn btn-custom col-md-1 justify-content-center">
+            <i class="fa fa-arrow-left"></i>
+          </button>
+        </abbr>
+        <abbr title="Transférer à la bank">
+          <button type="submit" class="btn btn-custom col-md-1 justify-content-center">
+            <i class="fa-solid fa-money-bill-transfer"></i>
+          </button>
+        </abbr>
       </div>
     </form>
   </div>
@@ -138,15 +144,16 @@
       <tr>
         <th>Date</th>
         <th>Heure</th>
-        <th>Somme</th>
-        <th>Totale</th>
+        <th>Somme (MAD)</th>
+        <th>Total (MAD)</th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="cs : ${caisse}">
         <td th:text="${cs.date}">Date</td>
         <td th:text="${cs.time}">Heure</td>
-        <td th:text="${cs.somme}">Somme</td>
+        <td th:text="${cs.somme}"
+            th:style="${cs.somme < 0} ? 'color: red;' : ''">Somme</td>
         <td th:text="${cs.totale_caisse}">Totale</td>
       </tr>
       </tbody>
