@@ -2,33 +2,127 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Update Snack</title>
-    <link rel="stylesheet" type="text/css" href="/css/snaksforvisit.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier la quantité de snack</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: rgba(0, 0, 0, 0.62);
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 50px auto;
+        }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #339794;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: rgb(255, 254, 254);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group select {
+            appearance: none;
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            background-color: #339794;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .form-actions a {
+            margin-left: 15px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        input[type="number"] {
+            background: transparent;
+            color: #fff;
+            outline: none;
+        }
+
+        /* Style for the eye icon */
+        .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .eye-icon img {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            right: 50%;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 </head>
 <body>
-<header>
-    <h1>Update Snack</h1>
-    <form th:action="@{/reception/visit-participant-profile}" method="get">
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+
+<div class="form-container">
+    <h1>Modifier la quantité de snack</h1>
+    <form th:action="@{/reception/update-snack-for-participant-of-room}" method="post">
         <input type="hidden" name="visitId" th:value="${visitId}" />
         <input type="hidden" name="participantId" th:value="${participantId}" />
-        <button type="submit">Cancel</button>
+        <input type="hidden" name="snackId" th:value="${snackAndBoisson.id}" />
+        <div class="form-group">
+            <label for="quantity">Quantité:</label>
+            <input type="number" id="quantity" name="quantity" th:value="${quantity}" min="1" th:max="${snack.quantity+quantity}" required />
+        </div>
+        <div class="form-actions">
+            <button type="submit">confirmer</button>
+            <a th:href="@{/reception/visit-participant-profile(visitId=${visitId}, participantId=${participantId})}">Annuler</a>
+        </div>
     </form>
-</header>
-<main>
-    <section>
-        <h2>Update Snack Information</h2>
-        <form th:action="@{/reception/update-snack-for-participant-of-room}" method="post">
-            <input type="hidden" name="visitId" th:value="${visitId}" />
-            <input type="hidden" name="participantId" th:value="${participantId}" />
-            <input type="hidden" name="snackId" th:value="${snackAndBoisson.id}" />
-            <div>
-                <label for="quantity">Quantity:</label>
-                <input type="number" id="quantity" name="quantity" th:value="${quantity}" min="1" th:max="${snack.quantity+quantity}" required />
-            </div>
-            <button type="submit">Save Changes</button>
-        </form>
-    </section>
-</main>
-
+</div>
 </body>
 </html>

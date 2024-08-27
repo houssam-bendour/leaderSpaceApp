@@ -3,7 +3,32 @@
 <head>
     <title>QR Code Scanner</title>
     <script src="/js/qr-scanner.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+
     <style>
+        body {
+
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+        }
+        button {
+            background-color: #339794;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #3d7372;
+        }
         main {
             display: flex;
             justify-content: center;
@@ -19,8 +44,8 @@
     </style>
 </head>
 <body>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
 <input type="hidden" th:value="${visitId}" id="visitId">
-<h1>QR Code Scanner</h1>
 <main>
     <div id="reader"></div>
     <!-- <div id="result"></div> -->
