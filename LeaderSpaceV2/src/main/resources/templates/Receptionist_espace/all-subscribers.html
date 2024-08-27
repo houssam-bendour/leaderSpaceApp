@@ -3,61 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <title>List of Subscribers</title>
-    <link rel="stylesheet" th:href="@{/css/visit-today.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<header>
-    <h1>List of Subscribers</h1>
-    <div class="header-buttons">
-        <form th:action="@{/}" method="get">
-            <button type="submit">Cancel</button>
-        </form>
-    </div>
-    <!-- Search form -->
-    <div class="search-form">
-        <form th:action="@{/reception/subscriber-Search}" method="get">
-            <input type="text" name="Name" placeholder="Search by name" />
-            <button type="submit">Search</button>
-        </form>
-    </div>
-</header>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 <main>
-    <div class="main-buttons">
-        <form th:action="@{/reception/add-subscriber}" method="get">
-            <button type="submit">add</button>
-        </form>
+    <div class="header">
+        <h1>List of Subscribers</h1>
     </div>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>CIN</th>
-            <th>subscription type</th>
-            <th>Quntity</th>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Email</th>
-            <th>phone</th>
-            <th>Start date</th>
-            <th>End date</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="subscriber : ${subscribers}">
-            <td th:text="${subscriber.CIN}">CIN</td>
-            <td th:text="${subscriber.subscription_type.name}">subscription type</td>
-            <td th:text="${subscriber.quantity}">Quantity</td>
-            <td th:text="${subscriber.first_name}">First name</td>
-            <td th:text="${subscriber.last_name}">Last name</td>
-            <td th:text="${subscriber.email}">Email</td>
-            <td th:text="${subscriber.phone}">phone</td>
-            <td th:text="${subscriber.date_debut}">Start date</td>
-            <td th:text="${subscriber.date_fin}">End date</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="search-bar-buttons">
+        <div class="header-buttons">
+            <form th:action="@{/}" method="get">
+                <abbr title="Retourner à la page d'accueil">
+                    <button type="submit"><i class="fa fa-arrow-left"></i></button> <!-- Cancel icon -->
+                </abbr>
+            </form>
+            <form th:action="@{/reception/add-subscriber}" method="get">
+                <abbr title="Ajouter un abonné">
+                    <button type="submit"><i class="fa fa-plus"></i></button> <!-- Add icon -->
+                </abbr>
+            </form>
+        </div>
+        <!-- Search form -->
+        <div class="search-form">
+            <form th:action="@{/reception/subscriber-Search}" method="get">
+                <input type="text" name="Name" placeholder="Search by name" />
+                <abbr title="Rechercher">
+                    <button type="submit"><i class="fa fa-search"></i></button> <!-- Icon only -->
+                </abbr>
+            </form>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table border="1" class="subscriber-table">
+            <thead>
+            <tr>
+                <th>CIN</th>
+                <th>subscription type</th>
+                <th>Quntity</th>
+                <th>First name</th>
+                <th>Last name</th>
+                <th>Email</th>
+                <th>phone</th>
+                <th>Start date</th>
+                <th>End date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="subscriber : ${subscribers}">
+                <td th:text="${subscriber.CIN}">CIN</td>
+                <td th:text="${subscriber.subscription_type.name}">subscription type</td>
+                <td th:text="${subscriber.quantity}">Quantity</td>
+                <td th:text="${subscriber.first_name}">First name</td>
+                <td th:text="${subscriber.last_name}">Last name</td>
+                <td th:text="${subscriber.email}">Email</td>
+                <td th:text="${subscriber.phone}">phone</td>
+                <td th:text="${subscriber.date_debut}">Start date</td>
+                <td th:text="${subscriber.date_fin}">End date</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
-<footer>
-    <p>© 2024 Leader Space. All Rights Reserved.</p>
-</footer>
+
 </body>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Highlight row on hover
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('mouseover', function () {
+                this.style.backgroundColor = '#e9ecef';
+            });
+
+            row.addEventListener('mouseout', function () {
+                this.style.backgroundColor = '';
+            });
+        });
+
+        // Click effect for buttons
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('mousedown', function () {
+                this.style.transform = 'scale(0.95)';
+            });
+
+            button.addEventListener('mouseup', function () {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.querySelector('.subscriber-table tbody');
+        const rows = table.querySelectorAll('tr');
+
+        if (rows.length >= 6) {
+            table.parentElement.classList.add('subscriber-table-container');
+        }
+    });
+
+
+</script>
 </html>

@@ -649,7 +649,7 @@ public class ManagerController {
                 if (section.equals("normaleVisits")){
 
 
-                    Page<Visit>listNormaleVisitsByDayAndSectionAndPage = visitRepository.listNormaleVisitsByDayAndPage(dateDebut,dateFin, PageRequest.of(page,5));
+                    Page<Visit>listNormaleVisitsByDayAndSectionAndPage = visitRepository.listNormaleVisitsByDayAndPage(dateDebut,dateFin, PageRequest.of(page,50));
                     listNormaleVisitsByDayAndSectionAndPagee = listNormaleVisitsByDayAndSectionAndPage.getContent();
 
 
@@ -688,7 +688,7 @@ public class ManagerController {
 
 
 
-                    Page<VisitOfRoom> allVisitsOfRoomByDateAndPage = visitOfRoomRepository.findVisitsOfRoomByDateAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    Page<VisitOfRoom> allVisitsOfRoomByDateAndPage = visitOfRoomRepository.findVisitsOfRoomByDateAndPage(dateDebut,dateFin,PageRequest.of(page,50));
                     allVisitsOfRoomByDateAndPagee = allVisitsOfRoomByDateAndPage.getContent();
 
 
@@ -736,7 +736,7 @@ public class ManagerController {
 
 
 
-                    Page<VisitOfDesk> visitsOfDeskByDayAndPage  = visitOfDeskRepository.visitsOfDeskByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    Page<VisitOfDesk> visitsOfDeskByDayAndPage  = visitOfDeskRepository.visitsOfDeskByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
                     visitsOfDeskByDayAndPagee  = visitsOfDeskByDayAndPage.getContent();
 
 
@@ -769,7 +769,7 @@ public class ManagerController {
 
                 if (section.equals("teamVisits")){
 
-                    Page<VisitOfTeam> allVisitOfTeamByDayAndPage = visitOfTeamRepository.allVisitOfTeamByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    Page<VisitOfTeam> allVisitOfTeamByDayAndPage = visitOfTeamRepository.allVisitOfTeamByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
                     allVisitOfTeamByDayAndPagee = allVisitOfTeamByDayAndPage.getContent();
 
 
@@ -798,7 +798,7 @@ public class ManagerController {
 
                 if (section.equals("subscriptions")){
 
-                    Page<SubscriptionHistory> subscripitonsByDayAndPage = subscriptionHistoryRepository.subscriptionsByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    Page<SubscriptionHistory> subscripitonsByDayAndPage = subscriptionHistoryRepository.subscriptionsByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
                     subscripitonsByDayAndPagee = subscripitonsByDayAndPage.getContent();
                     model.addAttribute("pages",new int[subscripitonsByDayAndPage.getTotalPages()]);
 
@@ -816,7 +816,7 @@ public class ManagerController {
 
                 if (section.equals("contracts")){
 
-                    Page<Contrat> allContractByDayAndPage = contratRepository.allContractByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
+                    Page<Contrat> allContractByDayAndPage = contratRepository.allContractByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
                     allContractByDayAndPagee = allContractByDayAndPage.getContent();
                     model.addAttribute("pages",new int[allContractByDayAndPage.getTotalPages()]);
 
@@ -1093,7 +1093,7 @@ public class ManagerController {
 
         if (section.equals("Table-Subscribers")){
 
-            Page<Visit> pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,5));
+            Page<Visit> pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,50));
             List<Visit> visitOfSubscribers = pageVisitOfSubscribers.getContent();
 
             model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
@@ -1103,7 +1103,7 @@ public class ManagerController {
 
         if (section.equals("Table-Non-Subscribers")){
 
-            Page<Visit> pageVisitOfNotSubscribers = managerService.getVisitsOfNotSubscribers(PageRequest.of(page,5));
+            Page<Visit> pageVisitOfNotSubscribers = managerService.getVisitsOfNotSubscribers(PageRequest.of(page,50));
 
             List<Visit> visitOfNotSubscribers = pageVisitOfNotSubscribers.getContent();
 
@@ -1116,7 +1116,7 @@ public class ManagerController {
 
         if (section.equals("Table-Room")){
 
-            Page<VisitOfRoom> pageVisitOfSubscribers = managerService.getVisitsOfRoom(PageRequest.of(page,5));
+            Page<VisitOfRoom> pageVisitOfSubscribers = managerService.getVisitsOfRoom(PageRequest.of(page,50));
 
             List<VisitOfRoom> visitOfRooms = pageVisitOfSubscribers.getContent();
 
@@ -1127,7 +1127,7 @@ public class ManagerController {
 
         if (section.equals("Table-Desk")){
 
-            Page<VisitOfDesk> pageVisitOfDesks = managerService.getVisitsOfDesk(PageRequest.of(page,5));
+            Page<VisitOfDesk> pageVisitOfDesks = managerService.getVisitsOfDesk(PageRequest.of(page,50));
 
             List<VisitOfDesk> visitOfDesks = pageVisitOfDesks.getContent();
 
@@ -1287,7 +1287,7 @@ public class ManagerController {
             @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             Model model){
-        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page,5));
+        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page,50));
         List<Caisse> caisse = pageCaisse.getContent();
         Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
         if(startDate==null || endDate==null){
@@ -1295,8 +1295,10 @@ public class ManagerController {
             model.addAttribute("pages",new int[pageCaisse.getTotalPages()]);
 
         }else{
-            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate,PageRequest.of(page,5));
+            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate,PageRequest.of(page,50));
             List<Caisse> filterCaisseByDate = pageFilterCaisseByDate.getContent();
+            model.addAttribute("dateDebut",startDate);
+            model.addAttribute("dateFin",endDate);
             model.addAttribute("pages",new int[pageFilterCaisseByDate.getTotalPages()]);
             model.addAttribute("caisse", filterCaisseByDate);
         }

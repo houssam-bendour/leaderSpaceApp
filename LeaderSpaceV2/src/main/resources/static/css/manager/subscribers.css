@@ -57,6 +57,7 @@ h1 {
     max-width: 600px;
     border-color: #29978d !important;
     outline: none;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgb(41, 152, 143);
 }
 
 .search-form button {

@@ -18,10 +18,10 @@
 
 
     /* Styles pour la table avec défilement */
-    .table-responsive {
+    /*.table-responsive {
       max-height: 500px;
       overflow-y: auto;
-    }
+    }*/
 
     /* Boutons personnalisés */
     .btn-custom {
@@ -81,12 +81,84 @@
       font-weight: bold;
       color: #29978d;
     }
+
+    .btn-pagination-custom {
+      color: #29978d;
+      border-color: #29978d;
+    }
+
+    .btn-pagination-custom:hover {
+      color: white;
+      background-color: #29978d;
+      border-color: #29978d;
+    }
+
+    .btn-pagination-customHov {
+      color: white;
+      background-color: #29978d;
+      border-color: #29978d;
+    }
+    .btn-pagination-customHov:hover {
+      color: white;
+      background-color: #29978d;
+      border-color: #29978d;
+    }
+
+    #ancreTest {
+      max-height: 100vh; /* La hauteur maximale sera la taille de l'écran */
+      /*overflow-y: auto; !* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur maximale *!*/
+    }
+
+    /* Activer le défilement vertical uniquement sur le tbody */
+    table.table tbody {
+      display: block;
+      height: calc(100vh - 120px); /* Ajustez 300px pour la hauteur en-tête et pied de page de la table */
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+
+    /* Fixer la largeur des colonnes pour que le header s'aligne avec le tbody */
+    table.table thead, table.table tbody tr, table.table tfoot {
+      width: 100%;
+      display: table;
+      table-layout: fixed;
+    }
+
+    /* Éviter que les colonnes ne rétrécissent trop */
+    table.table th, table.table td, table.table tfoot td {
+      min-width: 100%;
+      word-wrap: break-word;
+      text-align: left;
+    }
+
+    /* Fixer le pied de page */
+    table.table tfoot {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+      position: sticky;
+      bottom: 0;
+      background-color: #fff;
+      z-index: 1;
+    }
+    table.table {
+      width: 100%;
+    }
   </style>
+  <script>
+    window.addEventListener('load', function() {
+      var section = document.getElementById('ancreTest'); // Identifiez l'élément par son ID
+      if (section) {
+        section.scrollIntoView({ behavior: 'instant' }); // Scrollez vers cet élément
+      }
+    });
+  </script>
 
 </head>
 <!--<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>-->
 <body>
-<div class="container my-5">
+<div class="container my-2">
   <!-- Titre principal -->
   <h2 class="text-center main-title">Caisse</h2>
 
@@ -119,11 +191,11 @@
       <div class="row g-3 align-items-end">
         <div class="col-md-5">
           <label for="dateDebut" class="form-label">De</label>
-          <input type="date" class="form-control" name="dateDebut" id="dateDebut" th:value="${param.dateDebut != null ? param.dateDebut : null}" required>
+          <input type="date" class="form-control" name="dateDebut" id="dateDebut" th:value="${param.dateDebut != null ? param.dateDebut : null}">
         </div>
         <div class="col-md-5">
           <label for="dateFin" class="form-label">À</label>
-          <input type="date" class="form-control" name="dateFin" id="dateFin" th:value="${param.dateFin != null ? param.dateFin : null}" required>
+          <input type="date" class="form-control" name="dateFin" id="dateFin" th:value="${param.dateFin != null ? param.dateFin : null}">
         </div>
         <div class="col-md-2">
           <abbr title="Rechercher">
@@ -138,7 +210,7 @@
 
 
   <!-- Tableau des transactions -->
-  <div class="table-responsive">
+  <div id="ancreTest">
     <table class="table table-striped table-bordered">
       <thead class="table-dark">
       <tr>
@@ -158,6 +230,16 @@
       </tr>
       </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item ms-2" th:each="page, status : ${pages}">
+          <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+             th:href="@{caisse(dateDebut=${dateDebut},dateFin=${dateFin},page=${status.index})}"
+             th:text="${status.count}">
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 </div>
 
@@ -168,10 +250,10 @@
     const dateFinInput = document.getElementById('dateFin').value;
     const dateInMoroccoObj = new Date(); // Remplacez par votre méthode pour obtenir la date actuelle au Maroc
 
-    if (!dateDebutInput || !dateFinInput) {
+    /*if (!dateDebutInput || !dateFinInput) {
       alert("Veuillez saisir les deux dates.");
       return false;
-    }
+    }*/
 
     const dateDebut = new Date(dateDebutInput);
     const dateFin = new Date(dateFinInput);

@@ -32,30 +32,70 @@
             <button type="submit">Search</button>
         </form>
     </div>-->
+    <div class="table-container">
+        <table border="1" class="subscriber-table">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>Type du client</th>
+                <th>ID client</th>
+                <th>Nom du client</th>
+                <th>CIN</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="dev : ${contrats}"
+                th:onclick="window.location.href = '/manager/contrat-pdf?contratId=' + [[${dev.id}]];"
+                style="cursor: pointer;">
 
-    <table border="1">
-        <thead>
-        <tr>
-            <th>Date</th>
-            <th>Type du client</th>
-            <th>ID client</th>
-            <th>Nom du client</th>
-            <th>CIN</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="dev : ${contrats}"
-            th:onclick="window.location.href = '/manager/contrat-pdf?contratId=' + [[${dev.id}]];"
-            style="cursor: pointer;">
-
-            <td th:text="${dev.date}">date</td>
-            <td th:text="${dev.type_client}">client type</td>
-            <td th:text="${dev.business_id!=null?dev.business_id:dev.association_number}">client id</td>
-            <td th:text="${dev.business_name}">client name</td>
-            <td th:text="${dev.cin}">cin</td>
-        </tr>
-        </tbody>
-    </table>
+                <td th:text="${dev.date}">date</td>
+                <td th:text="${dev.type_client}">client type</td>
+                <td th:text="${dev.business_id!=null?dev.business_id:dev.association_number}">client id</td>
+                <td th:text="${dev.business_name}">client name</td>
+                <td th:text="${dev.cin}">cin</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
 </body>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Highlight row on hover
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.addEventListener('mouseover', function () {
+                this.style.backgroundColor = '#e9ecef';
+            });
+
+            row.addEventListener('mouseout', function () {
+                this.style.backgroundColor = '';
+            });
+        });
+
+        // Click effect for buttons
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('mousedown', function () {
+                this.style.transform = 'scale(0.95)';
+            });
+
+            button.addEventListener('mouseup', function () {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.querySelector('.subscriber-table tbody');
+        const rows = table.querySelectorAll('tr');
+
+        if (rows.length >= 6) {
+            table.parentElement.classList.add('subscriber-table-container');
+        }
+    });
+
+
+</script>
 </html>
