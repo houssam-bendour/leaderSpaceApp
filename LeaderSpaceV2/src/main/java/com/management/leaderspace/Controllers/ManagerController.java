@@ -1282,13 +1282,26 @@ public class ManagerController {
     }
 
     @RequestMapping("caisse")
-    String getCaisse(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,Model model){
-        List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
+    String getCaisse(
+            @RequestParam(value = "dateDebut" ,required = false) LocalDate startDate,
+            @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            Model model){
+        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page,5));
+        List<Caisse> caisse = pageCaisse.getContent();
         Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
-        if(startDate==null || endDate==null)
+        if(startDate==null || endDate==null){
             model.addAttribute("caisse", caisse);
-        else
-            model.addAttribute("caisse", caisseRepository.filterCaisseByDate(startDate, endDate));
+            model.addAttribute("pages",new int[pageCaisse.getTotalPages()]);
+
+        }else{
+            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate,PageRequest.of(page,5));
+            List<Caisse> filterCaisseByDate = pageFilterCaisseByDate.getContent();
+            model.addAttribute("pages",new int[pageFilterCaisseByDate.getTotalPages()]);
+            model.addAttribute("caisse", filterCaisseByDate);
+        }
+        model.addAttribute("currentPage",page);
+
         model.addAttribute("FirstCaisse", FirstCaisse);
         return "Manager_espace/caisse";
     }
