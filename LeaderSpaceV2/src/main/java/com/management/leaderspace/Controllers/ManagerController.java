@@ -1287,7 +1287,7 @@ public class ManagerController {
             @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
             Model model){
-        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page,5));
+        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page,50));
         List<Caisse> caisse = pageCaisse.getContent();
         Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
         if(startDate==null || endDate==null){
@@ -1295,8 +1295,10 @@ public class ManagerController {
             model.addAttribute("pages",new int[pageCaisse.getTotalPages()]);
 
         }else{
-            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate,PageRequest.of(page,5));
+            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate,PageRequest.of(page,50));
             List<Caisse> filterCaisseByDate = pageFilterCaisseByDate.getContent();
+            model.addAttribute("dateDebut",startDate);
+            model.addAttribute("dateFin",endDate);
             model.addAttribute("pages",new int[pageFilterCaisseByDate.getTotalPages()]);
             model.addAttribute("caisse", filterCaisseByDate);
         }
