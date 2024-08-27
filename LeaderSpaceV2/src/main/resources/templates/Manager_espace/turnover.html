@@ -20,7 +20,7 @@
 
         #ancreTest {
             max-height: 100vh; /* La hauteur maximale sera la taille de l'écran */
-            overflow-y: auto; /* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur maximale */
+            /*overflow-y: auto; !* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur maximale *!*/
         }
 
         /* Activer le défilement vertical uniquement sur le tbody */
@@ -92,8 +92,21 @@
             background-color: #29978d;
             border-color: #29978d;
         }
+        /* Ajouter une largeur fixe aux labels pour garantir un alignement uniforme */
+        .label-fixed {
+            width: 50px;
+        }
 
+        /* Flexbox pour aligner les boutons sur une seule ligne */
+        .d-flex.justify-content-between {
+            display: flex;
+            justify-content: space-between;
+        }
 
+        /* Assurez-vous que les inputs ne sont pas trop larges */
+        input.form-control {
+            flex-grow: 1;
+        }
 
     </style>
 
@@ -191,25 +204,31 @@
 
 </head>
 <body class="bg-light">
+<div class="container mt-5">
     <div class="container mt-5">
-        <div class="card shadow-lg mx-auto" style="max-width: 500px;">
+        <div class="card shadow-lg mx-auto">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Chiffre d'affaires</h2>
                 <form method="get" th:action="@{/manager/turnover}" onsubmit="return validateDates()">
-                    <div class="mb-3 d-flex align-items-center">
-                        <h4 class="mb-0 me-1">From</h4>
-                        <h4 class="mb-0 me-2">:</h4>
-                        <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
-                    </div>
-                    <div class="mb-3 d-flex align-items-center">
-                        <h4 class="mb-0 me-1">To</h4>
-                        <h4 class="mb-0 me-2">:</h4>
-                        <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
+                    <div class="row mb-3">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h4 class="mb-0 me-1">From</h4>
+                            <h4 class="mb-0 me-2">:</h4>
+                            <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h4 class="mb-0 me-1">To</h4>
+                            <h4 class="mb-0 me-2">:</h4>
+                            <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
+                        </div>
                     </div>
 
-                    <div class="d-grid gap-2">
-                        <button type="submit" name="turnover" value="detail" class="btn btn-customHov">Chercher</button>
-                        <button type="submit" name="turnover" value="chart" class="btn btn-custom">Chart</button>
+                    <div class="d-flex justify-content-center">
+                        <div class="d-flex justify-content-between mt-3" style="width: 50%;">
+                            <button type="submit" name="turnover" value="detail" class="btn btn-customHov me-2 flex-grow-1">Chercher</button>
+                            <button type="submit" name="turnover" value="chart" class="btn btn-custom me-2 flex-grow-1">Chart</button>
+                            <a class="btn btn-custom flex-grow-1" th:href="@{/}">Cancel</a>
+                        </div>
                     </div>
                 </form>
                 <div class="mt-4 text-center">
@@ -217,14 +236,13 @@
                         <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totalPriceByVisits + totaleOfSubscriptions + totaleOfAllVisitsOfRoom +totaleOfVisitsOfDesk +totaleMontantOfContracts + totaleVisitsForTeam}"></h4>
                     </th:block>
                 </div>
-                <div class="text-center mt-3">
-                    <a class="btn btn-custom" th:href="@{/}">Cancel</a>
-                </div>
             </div>
         </div>
+    </div>
 
 
-        <div th:if="${param.date_debut!=null && param.date_fin!=null}">
+
+    <div th:if="${param.date_debut!=null && param.date_fin!=null}">
             <div class="separator"></div>
             <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
             <div class="separator"></div>

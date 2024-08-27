@@ -45,6 +45,21 @@
             border-color: #29978d !important;
         }
 
+        /* Ajoutez cette règle pour aligner les labels et les inputs */
+        .label-fixed {
+            width: 50px; /* Ajustez cette valeur selon vos besoins */
+        }
+
+        .d-flex.align-items-center {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .d-flex.align-items-center input {
+            flex-grow: 1;
+        }
+
     </style>
     <script>
         function validateDates() {
@@ -70,22 +85,28 @@
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-    <div class="card shadow-lg mx-auto" style="max-width: 500px;">
+    <div class="card shadow-lg mx-auto">
         <div class="card-body">
             <h2 class="card-title text-center mb-4">Chiffre d'affaires</h2>
             <form method="get" th:action="@{/manager/charts}" onsubmit="return validateDates()">
-                <div class="mb-3 d-flex align-items-center">
-                    <h4 class="mb-0 me-1">From</h4>
-                    <h4 class="mb-0 me-2">:</h4>
-                    <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
+                <div class="row mb-3">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <h4 class="mb-0 me-1">From</h4>
+                        <h4 class="mb-0 me-2">:</h4>
+                        <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+                        <h4 class="mb-0 me-1">To</h4>
+                        <h4 class="mb-0 me-2">:</h4>
+                        <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
+                    </div>
                 </div>
-                <div class="mb-3 d-flex align-items-center">
-                    <h4 class="mb-0 me-1">To</h4>
-                    <h4 class="mb-0 me-2">:</h4>
-                    <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
-                </div>
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-customHov">Chart</button>
+
+                <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-between mt-3" style="width: 50%;">
+                        <button type="submit" class="btn btn-customHov me-2 flex-grow-1">Chart</button>
+                        <a class="btn btn-custom flex-grow-1" th:href="@{/manager/turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},turnover='detail')}">Cancel</a>
+                    </div>
                 </div>
             </form>
             <div class="mt-4 text-center">
@@ -93,11 +114,9 @@
                     <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totaleTurnoverCherts}"></h4>
                 </th:block>
             </div>
-            <div class="text-center mt-3">
-                <a class="btn btn-custom" th:href="@{/manager/turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},turnover='detail')}">Cancel</a>
-            </div>
         </div>
     </div>
+
 
 
     <div th:if="${!labelsNormale.isEmpty() || !labelsRoom.isEmpty() || !labelsDesk.isEmpty() || !labelsContracts.isEmpty() || !labelsTeam.isEmpty() || !labelsSubscriptions.isEmpty()}">
