@@ -12,15 +12,91 @@
             to { opacity: 1; }
         }
 
-        .grow {
-            transition: transform 0.3s ease-in-out;
-        }
         .separator {
             margin-top: 30px;
             margin-bottom: 30px;
             border-bottom: 2px solid #dee2e6;
         }
+
+        #ancreTest {
+            max-height: 100vh; /* La hauteur maximale sera la taille de l'écran */
+            overflow-y: auto; /* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur maximale */
+        }
+
+        /* Activer le défilement vertical uniquement sur le tbody */
+        table.table tbody {
+            display: block;
+            height: calc(100vh - 300px); /* Ajustez 300px pour la hauteur en-tête et pied de page de la table */
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Fixer la largeur des colonnes pour que le header s'aligne avec le tbody */
+        table.table thead, table.table tbody tr, table.table tfoot {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        /* Éviter que les colonnes ne rétrécissent trop */
+        table.table th, table.table td, table.table tfoot td {
+            word-wrap: break-word;
+            text-align: left;
+        }
+
+        /* Fixer le pied de page */
+        table.table tfoot {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            position: sticky;
+            bottom: 0;
+            background-color: #fff;
+            z-index: 1;
+        }
+
+        .btn-custom {
+            color: #29978d;
+            border-color: #29978d;
+        }
+
+        .btn-custom:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+        .btn-customHov {
+            color: white !important;
+            background-color: #29978d !important;
+            border-color: #29978d !important;
+        }
+
+        .btn-pagination-custom {
+            color: #29978d;
+            border-color: #29978d;
+        }
+
+        .btn-pagination-custom:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+
+        .btn-pagination-customHov {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+        .btn-pagination-customHov:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+
+
+
     </style>
+
     <script>
         function validateDates() {
             const dateDebutInput = document.getElementsByName('date_debut')[0].value;
@@ -57,14 +133,6 @@
         function showSection(section) {
             const sections = ["normaleVisits", "roomVisits", "deskVisits", "teamVisits", "subscriptions", "contracts"];
 
-            // Retirer la classe active de tous les boutons
-            const buttons = document.querySelectorAll('.btn-group .btn');
-            buttons.forEach(button => button.classList.remove('btn-primary', 'active'));
-
-            // Ajouter la classe active au bouton correspondant
-            document.getElementById(section + 'Btn').classList.add('btn-primary', 'active');
-
-
             // Masquer toutes les sections
             sections.forEach(sec => {
                 const element = document.getElementById(sec);
@@ -97,28 +165,51 @@
             }
         }
     </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const section = urlParams.get('section');
+            // Retirer la classe active de tous les boutons
+            const buttons = document.querySelectorAll('.btn-group .btn');
+            buttons.forEach(button => button.classList.remove('btn-customHov', 'active'));
+
+            // Ajouter la classe active au bouton correspondant
+            document.getElementById(section + 'Btn').classList.add('btn-customHov', 'active');
+
+        });
+    </script>
+    <script>
+        window.addEventListener('load', function() {
+            var section = document.getElementById('ancreTest'); // Identifiez l'élément par son ID
+            if (section) {
+                section.scrollIntoView({ behavior: 'instant' }); // Scrollez vers cet élément
+            }
+        });
+    </script>
+
+
 
 </head>
 <body class="bg-light">
     <div class="container mt-5">
-        <div class="card shadow-lg grow">
+        <div class="card shadow-lg mx-auto" style="max-width: 500px;">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">Chiffre d'affaires</h2>
-                <form method="get" th:action="@{/manager/turnover}" onsubmit="return validateDates()" class="row g-3">
-                    <div class="col-md-5">
-<!--                        <h4>Date Debut</h4>-->
+                <form method="get" th:action="@{/manager/turnover}" onsubmit="return validateDates()">
+                    <div class="mb-3 d-flex align-items-center">
+                        <h4 class="mb-0 me-1">From</h4>
+                        <h4 class="mb-0 me-2">:</h4>
                         <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
                     </div>
-                    <div class="col-md-5">
-<!--                        <h4>Date Fin</h4>-->
+                    <div class="mb-3 d-flex align-items-center">
+                        <h4 class="mb-0 me-1">To</h4>
+                        <h4 class="mb-0 me-2">:</h4>
                         <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
+                    </div>
 
-                    </div>
-                    <div class="col-md-2 d-grid">
-                        <button type="submit" name="turnover" value="detail" class="btn btn-primary">Chercher</button>
-                    </div>
-                    <div class="col-md-2 d-grid">
-                        <button type="submit" name="turnover" value="chart" class="btn btn-primary">Chart</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" name="turnover" value="detail" class="btn btn-customHov">Chercher</button>
+                        <button type="submit" name="turnover" value="chart" class="btn btn-custom">Chart</button>
                     </div>
                 </form>
                 <div class="mt-4 text-center">
@@ -127,24 +218,26 @@
                     </th:block>
                 </div>
                 <div class="text-center mt-3">
-                    <a class="btn btn-secondary" th:href="@{/}">Cancel</a>
+                    <a class="btn btn-custom" th:href="@{/}">Cancel</a>
                 </div>
             </div>
         </div>
+
 
         <div th:if="${param.date_debut!=null && param.date_fin!=null}">
             <div class="separator"></div>
             <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
             <div class="separator"></div>
-            <div class="card-body">
+            <div class="card-body" id="ancreTest">
                 <div class="btn-group" role="group" aria-label="Navigation des sections">
-                    <button id="normaleVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('normaleVisits')">Visites Normales</button>
-                    <button id="roomVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('roomVisits')">Visites Salles</button>
-                    <button id="deskVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('deskVisits')">Visites Bureaux</button>
-                    <button id="teamVisitsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('teamVisits')">Visites Équipes</button>
-                    <button id="subscriptionsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('subscriptions')">Abonnements</button>
-                    <button id="contractsBtn" type="button" class="btn btn-outline-primary" onclick="showSection('contracts')">Contrats</button>
+                    <button id="normaleVisitsBtn" type="button" class="btn btn-custom" onclick="showSection('normaleVisits')">Visites Normales</button>
+                    <button id="roomVisitsBtn" type="button" class="btn btn-custom" onclick="showSection('roomVisits')">Visites Salles</button>
+                    <button id="deskVisitsBtn" type="button" class="btn btn-custom" onclick="showSection('deskVisits')">Visites Bureaux</button>
+                    <button id="teamVisitsBtn" type="button" class="btn btn-custom" onclick="showSection('teamVisits')">Visites Équipes</button>
+                    <button id="subscriptionsBtn" type="button" class="btn btn-custom" onclick="showSection('subscriptions')">Abonnements</button>
+                    <button id="contractsBtn" type="button" class="btn btn-custom" onclick="showSection('contracts')">Contrats</button>
                 </div>
+
                 <div th:id="normaleVisits">
                             <div th:if="${!listNormaleVisitsByDayAndSection.isEmpty()}" class="mt-4">
                                 <h4>Les visits normale</h4>
@@ -194,22 +287,26 @@
                                     </tr>
                                     </tbody>
                                     <tfoot>
-                                    <tr>
-                                        <td colspan="4"><h4>Totale</h4></td>
-                                        <td><h4 th:text="${sommeServicePriceOfNormaleVisits}"></h4></td>
-                                        <td><h4 th:text="${sommeServiePriceSupplementaireOfVisits}"></h4></td>
-                                        <td><h4 th:text="${sommeConsommationsNormaleVisits}"></h4></td>
-                                        <td><h4 th:text="${totalPriceByVisits}"></h4></td>
-                                    </tr>
+                                        <tr>
+                                            <td colspan="4"><h4>Totale</h4></td>
+                                            <td><h4 th:text="${sommeServicePriceOfNormaleVisits}"></h4></td>
+                                            <td><h4 th:text="${sommeServiePriceSupplementaireOfVisits}"></h4></td>
+                                            <td><h4 th:text="${sommeConsommationsNormaleVisits}"></h4></td>
+                                            <td><h4 th:text="${totalPriceByVisits}"></h4></td>
+                                        </tr>
                                     </tfoot>
                                 </table>
                                 <nav aria-label="Page navigation example">
-                                    <ul class="pagination">
-                                        <li class="page-item ms-2" th:each="page,status :${pages}">
-                                            <a th:class="${(status.count == (currentPage+1))?'btn btn-info':'btn btn-outline-info' }" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='normaleVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item ms-2" th:each="page, status : ${pages}">
+                                            <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                                               th:href="@{turnover(date_debut=${param.date_debut}, date_fin=${param.date_fin}, section='normaleVisits', page=${status.index}, turnover='detail')}"
+                                               th:text="${status.count}">
+                                            </a>
                                         </li>
                                     </ul>
                                 </nav>
+
                             </div>
                         </div>
                 <div id="roomVisits">
@@ -282,6 +379,9 @@
                                     <h4 th:text="${mapCalculeSommeForVisitOfRoom.get(visitOfRoom.id)}"></h4>
                                 </td>
                             </tr>
+
+                            </tbody>
+                            <tfoot>
                             <tr>
                                 <td colspan="3"><h4>Totale</h4></td>
                                 <td><h4 th:text="${sommeServicePriceForRoomVisits}"></h4></td>
@@ -290,15 +390,20 @@
                                 <td><h4 th:text="${sommeConsommationsForRoomParticipants}"></h4></td>
                                 <td><h4 th:text="${totaleOfAllVisitsOfRoom}"></h4></td>
                             </tr>
-                            </tbody>
+                            </tfoot>
                         </table>
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item ms-2" th:each="page,status :${pages}">
-                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='roomVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ms-2" th:each="page, status : ${pages}">
+                                    <a
+                                       th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                                       th:href="@{turnover(date_debut=${param.date_debut}, date_fin=${param.date_fin}, section='roomVisits', page=${status.index}, turnover='detail')}"
+                                       th:text="${status.count}">
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
+
                     </div>
                 </div>
                 <div id="deskVisits">
@@ -342,6 +447,9 @@
                                             <h4 th:text="${visitOfDesk.service_desk_price+sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)+visitOfDesk.service_suplementaire_price}"></h4>
                                         </td>
                                     </tr>
+
+                                    </tbody>
+                                    <tfoot>
                                     <tr>
                                         <td colspan="3"><h4>Totale</h4></td>
                                         <td><h4 th:text="${sommeServicePriceForDeskVisits}"></h4></td>
@@ -349,16 +457,20 @@
                                         <td><h4 th:text="${sommeConsommationsForDesk}"></h4></td>
                                         <td><h4 th:text="${totaleOfVisitsOfDesk}"></h4></td>
                                     </tr>
-                                    </tbody>
+                                    </tfoot>
                                 </table>
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item ms-2" th:each="page,status :${pages}">
-                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='deskVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ms-2" th:each="page, status : ${pages}">
+                                    <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                                       th:href="@{turnover(date_debut=${param.date_debut}, date_fin=${param.date_fin}, section='deskVisits', page=${status.index}, turnover='detail')}"
+                                       th:text="${status.count}">
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
-                </div>
+
+                    </div>
 
                 </div>
                 <div id="teamVisits">
@@ -400,21 +512,28 @@
                                             <h4 th:text="${visiTeam.service_suplementaire_price+sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h4>
                                         </td>
                                     </tr>
+
+                                    </tbody>
+                                    <tfoot>
                                     <tr>
                                         <td colspan="3"><h4>Totale</h4></td>
                                         <td><h4 th:text="${sommeServiceSupplimentairePriceOfTeam}"></h4></td>
                                         <td><h4 th:text="${sommeSnacksAndBoissonsForVisitsTeam}"></h4></td>
                                         <td><h4 th:text="${totaleVisitsForTeam}"></h4></td>
                                     </tr>
-                                    </tbody>
+                                    </tfoot>
                                 </table>
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination">
-                                    <li class="page-item ms-2" th:each="page,status :${pages}">
-                                        <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='teamVisits',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
-                                    </li>
-                                </ul>
-                            </nav>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ms-2" th:each="page, status : ${pages}">
+                                    <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                                       th:href="@{turnover(date_debut=${param.date_debut}, date_fin=${param.date_fin}, section='teamVisits', page=${status.index}, turnover='detail')}"
+                                       th:text="${status.count}">
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
                     </div>
 
                 </div>
@@ -449,19 +568,26 @@
                                         <td th:text="${subscription.quantity}"></td>
                                         <td th:text="${subscription.price}"></td>
                                     </tr>
+
+                                    </tbody>
+                                    <tfoot>
                                     <tr>
                                         <td colspan="9"><h4>Totale</h4></td>
                                         <td><h4 th:text="${totaleOfSubscriptions}"></h4></td>
                                     </tr>
-                                    </tbody>
+                                    </tfoot>
                                 </table>
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item ms-2" th:each="page,status :${pages}">
-                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='subscriptions',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ms-2" th:each="page, status : ${pages}">
+                                    <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                                       th:href="@{turnover(date_debut=${param.date_debut}, date_fin=${param.date_fin}, section='subscriptions', page=${status.index}, turnover='detail')}"
+                                       th:text="${status.count}">
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
+
                     </div>
 
                 </div>
@@ -486,19 +612,26 @@
                                         <td th:text="${contract.duree}"></td>
                                         <td th:text="${contract.montant_de_location_chiffre}"></td>
                                     </tr>
+
+                                    </tbody>
+                                    <tfoot>
                                     <tr>
                                         <td colspan="4"><h4>Totale</h4></td>
                                         <td><h4 th:text="${totaleMontantOfContracts}"></h4></td>
                                     </tr>
-                                    </tbody>
+                                    </tfoot>
                                 </table>
                         <nav aria-label="Page navigation example">
-                            <ul class="pagination">
-                                <li class="page-item ms-2" th:each="page,status :${pages}">
-                                    <a class="page-link" th:href="@{turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},section='contracts',page=${status.index},turnover='detail')}" th:text="${status.count}"></a>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item ms-2" th:each="page, status : ${pages}">
+                                    <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+                                       th:href="@{turnover(date_debut=${param.date_debut}, date_fin=${param.date_fin}, section='contracts', page=${status.index}, turnover='detail')}"
+                                       th:text="${status.count}">
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
+
                     </div>
 
                 </div>

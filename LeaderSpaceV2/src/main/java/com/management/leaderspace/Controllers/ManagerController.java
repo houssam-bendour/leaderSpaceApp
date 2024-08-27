@@ -712,8 +712,10 @@ public class ManagerController {
 
                     model.addAttribute("sommeConsommationsForRoomParticipants",sommeConsommationsForRoomParticipants);
 
-
                     model.addAttribute("pages",new int[allVisitsOfRoomByDateAndPage.getTotalPages()]);
+
+                    model.addAttribute("currentPage",page);
+
                 }
 
                 model.addAttribute("allVisitsOfRoomByDate",allVisitsOfRoomByDateAndPagee);
@@ -751,6 +753,8 @@ public class ManagerController {
 
                     model.addAttribute("pages",new int[visitsOfDeskByDayAndPage.getTotalPages()]);
 
+                    model.addAttribute("currentPage",page);
+
                 }
                 model.addAttribute("allvisitsOfDeskByDate",visitsOfDeskByDayAndPagee);
 
@@ -779,6 +783,9 @@ public class ManagerController {
 
                     model.addAttribute("pages",new int[allVisitOfTeamByDayAndPage.getTotalPages()]);
 
+                    model.addAttribute("currentPage",page);
+
+
                 }
                 model.addAttribute("allVisitsOfTeamByDate",allVisitOfTeamByDayAndPagee);
 
@@ -794,6 +801,9 @@ public class ManagerController {
                     Page<SubscriptionHistory> subscripitonsByDayAndPage = subscriptionHistoryRepository.subscriptionsByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
                     subscripitonsByDayAndPagee = subscripitonsByDayAndPage.getContent();
                     model.addAttribute("pages",new int[subscripitonsByDayAndPage.getTotalPages()]);
+
+                    model.addAttribute("currentPage",page);
+
                 }
                 model.addAttribute("allSubscriptionsByDateDebutBetweenStartDayAndEndDay", subscripitonsByDayAndPagee);
 
@@ -809,6 +819,9 @@ public class ManagerController {
                     Page<Contrat> allContractByDayAndPage = contratRepository.allContractByDayAndPage(dateDebut,dateFin,PageRequest.of(page,5));
                     allContractByDayAndPagee = allContractByDayAndPage.getContent();
                     model.addAttribute("pages",new int[allContractByDayAndPage.getTotalPages()]);
+
+                    model.addAttribute("currentPage",page);
+
 
                 }
 

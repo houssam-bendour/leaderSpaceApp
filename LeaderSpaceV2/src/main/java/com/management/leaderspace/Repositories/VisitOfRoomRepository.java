@@ -34,13 +34,13 @@ public interface VisitOfRoomRepository extends JpaRepository<VisitOfRoom, UUID> 
     @Query("select vr from VisitOfRoom vr where vr.day>= :dateDebut and vr.day<= :dateFin order by vr.day desc ,vr.StartTime desc ")
     Page<VisitOfRoom> findVisitsOfRoomByDateAndPage(@Param("dateDebut")LocalDate dateDebut, @Param("dateFin")LocalDate dateFin, Pageable pageable);
 
-    @Query("select sum(vr.service_room_price) from VisitOfRoom vr where vr.day >= :dateDebut and vr.day <= :dateFin")
+    @Query("select coalesce(sum(vr.service_room_price),0.0) from VisitOfRoom vr where vr.day >= :dateDebut and vr.day <= :dateFin")
     double sumServicePriceRoomVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
-    @Query("select sum(sbv.selling_price*sbv.quantity) from SnacksAndBoissonsOfVisit sbv , VisitOfRoom vr where sbv.visitOfRoom=vr and vr.day >= :dateDebut and vr.day <= :dateFin")
+    @Query("select coalesce(sum(sbv.selling_price*sbv.quantity),0.0) from SnacksAndBoissonsOfVisit sbv , VisitOfRoom vr where sbv.visitOfRoom=vr and vr.day >= :dateDebut and vr.day <= :dateFin")
     double sumSnacksAndBoissonsOfVisitsForVisitsRoom(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
-    @Query("select sum(sbv.selling_price * sbv.quantity) + sum(distinct pr.service_suplementaire_price) " +
+    @Query("select coalesce(sum(sbv.selling_price * sbv.quantity) + sum(distinct pr.service_suplementaire_price),0.0) " +
             "from VisitOfRoom vr " +
             "join ParticipantOfvisitRoom pr on pr.visitOfRoom = vr " +
             "left join SnacksAndBoissonsOfVisit sbv on sbv.participant = pr " +

@@ -24,7 +24,7 @@ public interface SubscriptionHistoryRepository extends JpaRepository<Subscriptio
     @Query("select sh from SubscriptionHistory sh WHERE sh.startDate>= :start and sh.startDate<= :end order by sh.startDate desc")
     Page<SubscriptionHistory> subscriptionsByDayAndPage(@Param("start") LocalDate start, @Param("end") LocalDate end, Pageable pageable);
 
-    @Query("select sum(sh.price) from SubscriptionHistory sh where sh.startDate >= :dateDebut and sh.startDate <= :dateFin")
+    @Query("select coalesce(sum(sh.price),0.0) from SubscriptionHistory sh where sh.startDate >= :dateDebut and sh.startDate <= :dateFin")
     double sumPriceOfSubscriptions (@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
 }

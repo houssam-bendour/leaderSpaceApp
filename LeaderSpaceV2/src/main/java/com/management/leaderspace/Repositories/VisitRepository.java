@@ -49,10 +49,10 @@ public interface VisitRepository extends JpaRepository<Visit, UUID> {
     @Query("select v from Visit v where v.day >= :dateDebut and v.day <= :dateFin and (v.service_suplementaire_price != 0 or v.service_price != 0 or v.snacksAndBoissonsOfVisits is not empty) order by v.day desc , v.StartTime desc ")
     Page<Visit> listNormaleVisitsByDayAndPage(LocalDate dateDebut, LocalDate dateFin, Pageable pageable);
 
-    @Query("select sum(v.service_price) from Visit v where v.day >= :dateDebut and v.day <= :dateFin")
+    @Query("select coalesce(sum(v.service_price),0.0) from Visit v where v.day >= :dateDebut and v.day <= :dateFin")
     double sumServicePriceNormaleVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
-    @Query("select sum(sbv.selling_price*sbv.quantity) from SnacksAndBoissonsOfVisit sbv , Visit v where sbv.visit=v and v.day >= :dateDebut and v.day <= :dateFin")
+    @Query("select coalesce(sum(sbv.selling_price*sbv.quantity),0.0) from SnacksAndBoissonsOfVisit sbv , Visit v where sbv.visit=v and v.day >= :dateDebut and v.day <= :dateFin")
     double sumSnacksAndBoissonsOfVisitsForVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
 }

@@ -28,6 +28,23 @@
             margin-bottom: 30px;
             border-bottom: 2px solid #dee2e6;
         }
+
+        .btn-custom {
+            color: #29978d;
+            border-color: #29978d;
+        }
+
+        .btn-custom:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+        .btn-customHov {
+            color: white !important;
+            background-color: #29978d !important;
+            border-color: #29978d !important;
+        }
+
     </style>
     <script>
         function validateDates() {
@@ -53,30 +70,36 @@
 </head>
 <body class="bg-light">
 <div class="container mt-5">
-    <div class="card shadow-lg grow">
+    <div class="card shadow-lg mx-auto" style="max-width: 500px;">
         <div class="card-body">
             <h2 class="card-title text-center mb-4">Chiffre d'affaires</h2>
-            <form method="get" th:action="@{/manager/charts}" onsubmit="return validateDates()" class="row g-3">
-                <div class="col-md-5">
+            <form method="get" th:action="@{/manager/charts}" onsubmit="return validateDates()">
+                <div class="mb-3 d-flex align-items-center">
+                    <h4 class="mb-0 me-1">From</h4>
+                    <h4 class="mb-0 me-2">:</h4>
                     <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
                 </div>
-                <div class="col-md-5">
+                <div class="mb-3 d-flex align-items-center">
+                    <h4 class="mb-0 me-1">To</h4>
+                    <h4 class="mb-0 me-2">:</h4>
                     <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
                 </div>
-                <div class="col-md-2 d-grid">
-                    <button type="submit" class="btn btn-primary">Chart</button>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-customHov">Chart</button>
                 </div>
             </form>
             <div class="mt-4 text-center">
-                <div class="text-center mt-3">
-                    <a class="btn btn-secondary" th:href="@{/manager/turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},turnover='detail')}">Cancel</a>
-                </div>
                 <th:block th:if="${param.date_debut != null && param.date_fin != null}">
-                    <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = '+${totaleTurnoverCherts}"></h4>
+                    <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totaleTurnoverCherts}"></h4>
                 </th:block>
+            </div>
+            <div class="text-center mt-3">
+                <a class="btn btn-custom" th:href="@{/manager/turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},turnover='detail')}">Cancel</a>
             </div>
         </div>
     </div>
+
+
     <div th:if="${!labelsNormale.isEmpty() || !labelsRoom.isEmpty() || !labelsDesk.isEmpty() || !labelsContracts.isEmpty() || !labelsTeam.isEmpty() || !labelsSubscriptions.isEmpty()}">
         <div class="separator"></div>
         <div class="card shadow-lg grow" style="height: 450px;">

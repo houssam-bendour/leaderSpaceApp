@@ -35,10 +35,10 @@ public interface VisitOfDeskRepository extends JpaRepository<VisitOfDesk, UUID> 
     @Query("select vd from VisitOfDesk vd where vd.day>= :dateDebut and vd.day<= :dateFin order by vd.day desc ,vd.StartTime desc ")
     Page<VisitOfDesk> visitsOfDeskByDayAndPage(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin, Pageable pageable);
 
-    @Query("select sum(vd.service_desk_price) from VisitOfDesk vd where vd.day >= :dateDebut and vd.day <= :dateFin")
+    @Query("select coalesce(sum(vd.service_desk_price),0.0) from VisitOfDesk vd where vd.day >= :dateDebut and vd.day <= :dateFin")
     double sumServiceDeskPriceForDeskVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
-    @Query("select sum(sbv.selling_price*sbv.quantity) from SnacksAndBoissonsOfVisit sbv , VisitOfDesk vd where sbv.visitOfDesk=vd  and vd.day >= :dateDebut and vd.day <= :dateFin")
+    @Query("select coalesce(sum(sbv.selling_price*sbv.quantity),0.0) from SnacksAndBoissonsOfVisit sbv , VisitOfDesk vd where sbv.visitOfDesk=vd  and vd.day >= :dateDebut and vd.day <= :dateFin")
     double sumSnacksAndBoissonsOfVisitsForDeskVisits(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
 
