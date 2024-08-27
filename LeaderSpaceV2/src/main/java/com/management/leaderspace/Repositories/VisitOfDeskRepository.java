@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.JpaEntityGraph;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -21,7 +22,7 @@ public interface VisitOfDeskRepository extends JpaRepository<VisitOfDesk, UUID> 
     List<VisitOfDesk> visitsOfTodayOfDesk(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
 
     @Query("select v from VisitOfDesk v order by v.day DESC, v.StartTime DESC")
-    List<VisitOfDesk> getVisitsOfDesk();
+    Page<VisitOfDesk> getVisitsOfDesk(Pageable pageable);
 
     @Query("select v from VisitOfDesk v where (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime> :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime< :dateFin) or (v.day = :day and v.StartTime> :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime< :dateFin) or (v.day = :day and v.StartTime= :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.EndTime= :dateFin) or (v.day = :day and v.StartTime= :dateDebut and v.EndTime= :dateFin)")
     List<VisitOfDesk> getVisitByDayAndStartTime(@Param("day") LocalDate day, @Param("dateDebut") LocalTime startTime, @Param("dateFin") LocalTime endTime);

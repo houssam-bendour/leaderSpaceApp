@@ -1086,23 +1086,55 @@ public class ManagerController {
     //==============================VISIT CRUD============================
 
     @GetMapping("visit")
-    public String VisitsToday(Model model) {
+    public String VisitsToday(
+            @RequestParam(name = "section", defaultValue = "") String section,
+            @RequestParam(name = "page", required = false) Integer page,
+            Model model) {
 
-        List<Visit> visitOfSubscribers = managerService.getVisitsOfSubscribers();
+        if (section.equals("Table-Subscribers")){
 
-        model.addAttribute("visitOfSubscribers", visitOfSubscribers);
+            Page<Visit> pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,5));
+            List<Visit> visitOfSubscribers = pageVisitOfSubscribers.getContent();
 
-        List<Visit> visitOfNotSubscribers = managerService.getVisitsOfNotSubscribers();
+            model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage",page);
+            model.addAttribute("visitOfSubscribers", visitOfSubscribers);
+        }
 
-        model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
+        if (section.equals("Table-Non-Subscribers")){
 
-        List<VisitOfRoom> visitOfRooms = managerService.getVisitsOfRoom();
+            Page<Visit> pageVisitOfNotSubscribers = managerService.getVisitsOfNotSubscribers(PageRequest.of(page,5));
 
-        model.addAttribute("visitOfRooms", visitOfRooms);
+            List<Visit> visitOfNotSubscribers = pageVisitOfNotSubscribers.getContent();
 
-        List<VisitOfDesk> visitOfDesks = managerService.getVisitsOfDesk();
+            model.addAttribute("pages",new int[pageVisitOfNotSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage",page);
 
-        model.addAttribute("visitOfDesks", visitOfDesks);
+            model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
+
+        }
+
+        if (section.equals("Table-Room")){
+
+            Page<VisitOfRoom> pageVisitOfSubscribers = managerService.getVisitsOfRoom(PageRequest.of(page,5));
+
+            List<VisitOfRoom> visitOfRooms = pageVisitOfSubscribers.getContent();
+
+            model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage",page);
+            model.addAttribute("visitOfRooms", visitOfRooms);
+        }
+
+        if (section.equals("Table-Desk")){
+
+            Page<VisitOfDesk> pageVisitOfDesks = managerService.getVisitsOfDesk(PageRequest.of(page,5));
+
+            List<VisitOfDesk> visitOfDesks = pageVisitOfDesks.getContent();
+
+            model.addAttribute("pages",new int[pageVisitOfDesks.getTotalPages()]);
+            model.addAttribute("currentPage",page);
+            model.addAttribute("visitOfDesks", visitOfDesks);
+        }
 
         ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
         model.addAttribute("nowInMorocco", nowInMorocco);

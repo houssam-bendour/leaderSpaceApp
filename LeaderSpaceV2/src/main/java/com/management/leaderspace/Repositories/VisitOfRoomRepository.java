@@ -18,7 +18,9 @@ public interface VisitOfRoomRepository extends JpaRepository<VisitOfRoom, UUID> 
     List<VisitOfRoom> getVisitsTodayOfRoom(@Param("day") LocalDate localDate);
 
     @Query("select v from VisitOfRoom v order by v.day DESC, v.StartTime DESC")
-    List<VisitOfRoom> getVisitOfRoom();                                                                                                                                                                                           //>=
+    Page<VisitOfRoom> getVisitOfRoom(Pageable pageable);
+
+    //>=
     @Query("select v from VisitOfRoom v where (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime> :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime< :dateFin) or (v.day = :day and v.StartTime> :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.StartTime< :dateFin and v.EndTime< :dateFin) or (v.day = :day and v.StartTime= :dateDebut and v.StartTime< :dateFin and v.EndTime> :dateFin) or (v.day = :day and v.StartTime< :dateDebut and v.EndTime> :dateDebut and v.EndTime= :dateFin) or (v.day = :day and v.StartTime= :dateDebut and v.EndTime= :dateFin)")
     List<VisitOfRoom> getVisitByDayAndStartTime(@Param("day") LocalDate day,@Param("dateDebut") LocalTime startTime,@Param("dateFin") LocalTime endTime);
 
