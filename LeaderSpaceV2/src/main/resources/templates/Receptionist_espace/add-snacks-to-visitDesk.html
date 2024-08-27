@@ -3,38 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <title>Receptionist Home</title>
-    <link rel="stylesheet" type="text/css" href="/css/addsnaksforvisit.css">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+        }
+
+        section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 2px solid #000;
+            background-color: rgba(0, 0, 0, 0.44);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1abdbc;
+        }
+
+        /* CSS pour fixer les boutons */
+        .fixed-buttons {
+            position: fixed;
+            top: 70px; /* Ajustez selon vos besoins */
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.44);
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-container button {
+            padding: 4px 20px;
+            margin: 0 10px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .button-container .cancel-btn {
+            border-color: red;
+            background-color: transparent;
+            color: red;
+            font-size: 20px;
+        }
+        .button-container .cancel-btn:hover {
+            border-color: #a10101;
+            background-color: #a10101;
+            color: #ffffff;
+        }
+        .button-container .save-btn {
+            border-color: green;
+            background-color: transparent;
+            color: green;
+            font-size: 20px;
+        }
+        .button-container .save-btn:hover {
+            border-color: green;
+            background-color: green;
+            color: #ffffff;
+        }
+        .snacks-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            justify-items: center;
+        }
+
+        span {
+            color: white;
+        }
+
+        .snack-item {
+            text-align: center;
+            border: 2px solid #000;
+            padding: 10px;
+            background-color: transparent;
+            width: 150px;
+        }
+
+        .snack-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .snack-item input {
+            display: block;
+            width: 100%;
+            height: 30px;
+            text-align: center;
+            background-color: transparent;
+            color: white;
+        }
+
+    </style>
 </head>
 <body>
-<header>
-    <h1>Welcome to the Receptionist Home Page</h1>
-    <!--<form th:action="@{/reception/visit-subscriber-profile(visitId=${visit_id})}" method="post">
-        <button type="submit">cancel</button>
-    </form>-->
-    <form th:action="@{/reception/visit-of-desk}" method="get">
-        <input type="hidden" name="visitId" th:value="${visitDesk_id}" />
-        <button type="submit">Cancel</button>
-    </form>
-</header>
+<div th:replace="Admin_espace/fragments/navbar :: navbar"></div>
 
-<main>
-    <section>
-        <h2>Choose Snacks</h2>
-        <form th:action="@{/reception/save-snacks-to-visitDesk(visitId=${visitDesk_id})}" th:object="${snaks}" method="post">
-            <div th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <span>
-                     <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="QR Code" width="50"/>
-                </span>
+<form id="cancel" th:action="@{/reception/visit-of-desk}" method="get" style="display:none;">
+    <input type="hidden" name="visitId" th:value="${visitDesk_id}"/>
+</form>
+
+<!-- Section avec les boutons fixes -->
+<section class="fixed-buttons">
+    <div class="button-container">
+        <button type="submit" class="cancel-btn" onclick="document.getElementById('cancel').submit();">Annuler</button>
+        <button type="submit" class="save-btn" onclick="document.getElementById('snackForm').submit();">Ajouter</button>
+    </div>
+</section>
+
+<section style="margin-top: 70px;">
+    <h2>Choisissez des snacks en fonction de leur quantité</h2>
+    <form id="snackForm" th:action="@{/reception/save-snacks-to-visitDesk(visitId=${visitDesk_id})}"
+          th:object="${snaks}" method="post">
+        <div class="snacks-container">
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
                 <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}" value="0"/>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
             </div>
-            <button type="submit">Save Snacks</button>
-        </form>
-    </section>
-</main>
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
+            </div>
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
+            </div>
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
+            </div>
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
+            </div><div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+            <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+            <span th:text="${snack.name}"></span>
+            <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                   value="0"/>
+        </div><div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+            <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+            <span th:text="${snack.name}"></span>
+            <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                   value="0"/>
+        </div>
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
+            </div>
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
+            </div>
+            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
+                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
+                <span th:text="${snack.name}"></span>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
+                       value="0"/>
+            </div>
 
-<footer>
-    <p>© 2024 leader space. All Rights Reserved.</p>
-</footer>
+
+
+            <!-- Répétez les éléments snack ici -->
+
+        </div>
+    </form>
+</section>
 </body>
 </html>

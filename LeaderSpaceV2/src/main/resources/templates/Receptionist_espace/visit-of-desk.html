@@ -1,103 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .form-container div {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        input[type="text"],
-        input[type="number"],
-        input[type="date"],
-        textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .form-actions {
-            text-align: center;
-        }
-        .button-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .button-container button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .button-container button:hover {
-            background-color: #0056b3;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+    <title>Ajouter une visite</title>
+    <link rel="stylesheet" th:href="@{/css/visit-of-room.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+
 </head>
 <body>
-<div class="form-container" id="form-particulier" >
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+</div>
+<div class="form-container">
+    <h1>Ajouter une visite pour le bureau</h1>
     <h4 th:text="${message}" style="color: #f31414"></h4>
-    <form id="particulier" th:action="@{/reception/save-visit-of-desk}" th:object="${newVisitDesk}" method="post">
+    <form th:action="@{/reception/save-visit-of-desk}" method="post" th:object="${newVisitDesk}">
         <input type="hidden" th:field="*{id}" th:value="${newVisitDesk.id}"/>
-        <div>
-            <label for="date">date of visit</label>
+
+        <div class="form-group">
+            <label for="date">date de réservation</label>
             <input type="date" id="date" th:field="*{day}" required>
         </div>
-        <div>
-            <label for="starttime">start time</label>
+
+        <div class="form-group">
+            <label for="starttime">heure de début</label>
             <input type="time" id="starttime" th:field="*{startTime}" required>
         </div>
-        <div>
-            <label for="endtime">End time</label>
+
+        <div class="form-group">
+            <label for="endtime">heure de fin</label>
             <input type="time" id="endtime" th:field="*{endTime}" required>
         </div>
-        <div>
-            <label for="price">price </label>
+
+        <div class="form-group">
+            <label for="price">prix</label>
             <input type="number" step="0.01" id="price" th:field="*{service_desk_price}" required>
         </div>
+
         <div class="form-actions">
-            <button type="submit">save</button>
-            <a class="btn btn-secondary" th:href="@{/}">Cancel</a>
+            <button type="submit">Enregistrer</button>
+            <a class="cancel-link" th:href="@{/}">Annuler</a>
         </div>
     </form>
 </div>
