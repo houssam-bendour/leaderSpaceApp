@@ -1,0 +1,368 @@
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+body {
+    background-image: url('/image/ls.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    margin: 3rem auto;
+    max-width: 1200px;
+    padding: 1rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.main-title {
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Formulaires personnalisés */
+.transfer-form, .search-form {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: .5rem;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.form-control:focus, .form-transfer:focus {
+    border-color: #29978d;
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgb(41, 152, 143);
+}
+
+.form-transfer{
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+/* Boutons personnalisés */
+.btn-custom {
+    display: inline-block;
+    font-weight: 400;
+    color: #29978d;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: transparent;
+    border: 1px solid #29978d;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+}
+
+.btn-custom:hover,
+.btn-custom:focus {
+    color: #fff;
+    background-color: #29978d;
+    border-color: #29978d;
+}
+
+.btn-custom i {
+    margin: 0;
+    padding: 0;
+}
+
+/* Styles pour la disposition des éléments */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.col-md-5 {
+    flex: 0 0 41.666667%;
+    max-width: 41.666667%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.col-md-2 {
+    flex: 0 0 16.666667%;
+    max-width: 16.666667%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.align-items-end {
+    align-items: flex-end;
+}
+
+
+.form-transfer {
+    flex: 1;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.subscriber-table {
+    width: 100%; /* Pour s'assurer que le tableau prend toute la largeur du conteneur */
+    border-collapse: collapse;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: white;
+    border: transparent;
+}
+
+.table-container {
+    max-height: 400px; /* Ajustez cette valeur selon vos besoins */
+}
+
+/* Activer le défilement vertical uniquement sur le tbody */
+table.table-fixed {
+    table-layout: fixed;
+    width: calc(100% - 17px);
+}
+
+table.table-fixed thead {
+    display: table; /* Revenir à l'affichage de table pour garder la structure */
+    width: calc(100%); /* Ajuster pour la largeur de la scrollbar */
+}
+
+table.table-fixed tbody {
+    display: block;
+    height: calc(100vh - 290px); /* Ajustez pour la hauteur en-tête et pied de page de la table */
+    overflow-y: auto;
+}
+
+table.table-fixed th, table.table-fixed td {
+    width: 25%; /* Ajustez selon le nombre de colonnes */
+    text-align: center;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+table.table-fixed thead th {
+    position: sticky;
+    top: 0;
+    background: #29978d;
+    color: white;
+    z-index: 2;
+}
+
+/* S'assurer que chaque ligne du tbody a la même largeur que celle du thead */
+table.table-fixed tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+/* Gérer les survols */
+tr:hover td {
+    background-color: #e9ecef;
+    transform: scale(1.02); /* Apply the scaling only to rows */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: unset;
+}
+
+
+th {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    color: white;
+    background: #29978d;
+    cursor: default; /* Remove pointer cursor on hover */
+
+}
+
+
+td {
+    text-align: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.5s ease;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover td {
+    background-color: #e9ecef;
+    transform: scale(1.02); /* Apply the scaling only to rows */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: unset;
+}
+
+
+/* Action Buttons in Table */
+td .action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+td .action-buttons button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+td .action-buttons button i , .fa-circle-plus, .fa-edit{
+    font-size: 18px;
+    color: #29978d;
+    padding-right: 5px;
+}
+
+td .action-buttons button i:hover, .fa-circle-plus:hover, .fa-edit:hover {
+    transform: scale(1.2); /* Légère augmentation de la taille au survol */
+}
+
+td .action-buttons button:nth-child(1):hover i, .fa-circle-plus:hover, .fa-edit:hover{
+    color: #0056b3;
+}
+
+td .action-buttons button:nth-child(2):hover i {
+    color: #29978d;
+}
+
+main {
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* Pagination container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    list-style: none;
+    margin-top: 7rem;
+}
+
+/* Pagination items */
+.page-item {
+    margin: 0 0.25rem;
+}
+
+/* Default button styles */
+.btn-pagination-custom {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #29978d;
+    background-color: #ffffff;
+    border: 1px solid #29978d;
+    border-radius: 0.375rem; /* Rounded corners */
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 1rem; /* Base font size */
+}
+
+/* Hover effect for pagination buttons */
+.btn-pagination-custom:hover {
+    background-color: #29978d;
+    color: #ffffff;
+    border-color: #29978d;
+    text-decoration: none;
+}
+
+/* Active/current page button */
+.btn-pagination-customHov {
+    background-color: #29978d;
+    color: #ffffff;
+    border-color: #29978d;
+    cursor: default;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    padding: 0.75rem 1.25rem; /* Increased padding */
+    font-size: 1.1rem; /* Larger font size */
+    transform: scale(1.1); /* Slightly enlarge the button */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow for emphasis */
+}
+
+/* Optional: Add a subtle shadow to the buttons */
+.btn-pagination-custom,
+.btn-pagination-customHov {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive: Ensure the pagination is fluid on different screen sizes */
+@media (max-width: 576px) {
+    .pagination {
+        flex-wrap: wrap;
+    }
+
+    .page-item {
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-pagination-custom,
+    .btn-pagination-customHov {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        transform: none; /* Remove scaling on small screens */
+    }
+}
