@@ -121,7 +121,7 @@ main {
     border-radius: 10px;
     margin: 10ex auto;
     overflow: hidden;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
 }
 
 /* Table Styles */
@@ -136,9 +136,10 @@ table {
 }
 
 .table-container {
-    max-height: 400px; /* Ajustez cette valeur selon vos besoins */
+    max-height: 400px; /* Ajustez la hauteur selon vos besoins */
     overflow-y: auto;
 }
+
 
 .subscriber-table {
     width: 100%; /* Pour s'assurer que le tableau prend toute la largeur du conteneur */
@@ -229,8 +230,33 @@ footer p:hover {
     color: #f39c12;
     transition: color 0.3s ease-in-out;
 }
+table.table tbody {
+    display: block;
+    height: calc(100vh - 500px); /* Ajustez 300px pour la hauteur en-tête et pied de page de la table */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
 
+/* Fixer la largeur des colonnes pour que le header s'aligne avec le tbody */
+table.table thead, table.table tbody tr, table.table tfoot {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
 
+/* Éviter que les colonnes ne rétrécissent trop */
+table.table th, table.table td, table.table tfoot td {
+    word-wrap: break-word;
+    text-align: left;
+}
 
-
-
+/* Fixer le pied de page */
+table.table tfoot {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    z-index: 1;
+}

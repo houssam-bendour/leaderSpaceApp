@@ -7,6 +7,35 @@
     <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
     <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        .btn-pagination-custom {
+            color: #29978d;
+            background-color: white;
+            border-color: #29978d;
+        }
+
+        .btn-pagination-custom:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+
+        .btn-pagination-customHov {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+        .btn-pagination-customHov:hover {
+            color: white;
+            background-color: #29978d;
+            border-color: #29978d;
+        }
+
+
+
+
+    </style>
 </head>
 <body>
 <div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
@@ -83,6 +112,18 @@
             </tr>
             </tbody>
         </table>
+        <nav aria-label="Page navigation example">
+            <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+                <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                    <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                       th:href="@{list-subscribers(page=${status.index})}"
+                       th:text="${status.count}"
+                       style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
     </div>
 </main>
 </body>
@@ -125,6 +166,4 @@
             table.parentElement.classList.add('subscriber-table-container');
         }
     });
-
-
 </script>

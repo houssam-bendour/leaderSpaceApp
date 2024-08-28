@@ -1022,8 +1022,13 @@ public class ManagerController {
 
     //==============================SUBSCRIBER CRUD============================
     @GetMapping("list-subscribers")
-    String getAllSubscribers(Model model) {
-        List<Subscriber> subscribers = subscriberRepository.findAll();
+    String getAllSubscribers(
+            @RequestParam(name = "page",defaultValue = "0") int page
+            ,Model model) {
+        Page<Subscriber> pageSubscribers = subscriberRepository.findAll(PageRequest.of(page,50));
+        List<Subscriber> subscribers = pageSubscribers.getContent();
+        model.addAttribute("pages",new int[pageSubscribers.getTotalPages()]);
+        model.addAttribute("currentPage",page);
         model.addAttribute("subscribers", subscribers);
         return "Manager_espace/subscribers";
     }
