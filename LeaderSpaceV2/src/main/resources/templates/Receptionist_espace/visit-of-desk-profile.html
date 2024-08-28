@@ -218,7 +218,7 @@
     <h2>Visit Information</h2>
     <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
-            <label>Day: </label>
+            <label>Date: </label>
             <span th:text="${visitOfDesk.day}"></span>
         </div>
         <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
@@ -238,7 +238,7 @@
 
         </div>
         <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
-            <label>Entry Time: </label>
+            <label>Heure d'entrée: </label>
             <span th:text="${#temporals.format(visitOfDesk.startTime, 'HH:mm')}"></span>
         </div>
         <div class="zone" style="padding: 20px; border: 1px solid #ddd;">

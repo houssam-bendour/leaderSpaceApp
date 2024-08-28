@@ -135,66 +135,8 @@
             <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
                 <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
                 <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
+                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}" value="0"/>
             </div>
-            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-                <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
-            </div>
-            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-                <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
-            </div>
-            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-                <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
-            </div>
-            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-                <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
-            </div><div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-            <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-            <span th:text="${snack.name}"></span>
-            <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                   value="0"/>
-        </div><div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-            <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-            <span th:text="${snack.name}"></span>
-            <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                   value="0"/>
-        </div>
-            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-                <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
-            </div>
-            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-                <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
-            </div>
-            <div class="snack-item" th:each="snack : ${snacksAndBoissan}" th:if="${snack.quantity>0}">
-                <img th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="Snack Image"/>
-                <span th:text="${snack.name}"></span>
-                <input type="number" th:field="*{snackQuantities[__${snack.id}__]}" min="0" th:max="${snack.quantity}"
-                       value="0"/>
-            </div>
-
-
-
-            <!-- Répétez les éléments snack ici -->
-
         </div>
     </form>
 </section>

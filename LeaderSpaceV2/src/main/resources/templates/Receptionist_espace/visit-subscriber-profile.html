@@ -3,152 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <title>Visit Home</title>
-    <link rel="stylesheet" type="text/css" href="/css/visitor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
+        }
+
+        .header-buttons {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .header-buttons form {
+            margin-left: 10px;
+
+        }
+
+        .header-buttons button {
+            background-color: #29978d;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .header-buttons button:hover {
+            background-color: #238073;
+        }
+
+        section {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            width: 80%;
+        }
+
+        section h2 {
+            color: #29978d;
+            border-bottom: 2px solid #29978d;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        section h1 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        section div {
+            margin-bottom: 15px;
+        }
+
+        section div label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px;
+        }
+
+        section div span {
+            font-weight: normal;
+        }
+
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 18px;
+            text-align: left;
+            border: 1px solid white;
+        }
+
+        tbody {
+            background-color: rgba(0, 0, 0, 0.44);
+        }
+
+        .styled-table thead tr {
+            background-color: rgba(253, 253, 253, 0.82);
+            color: #000000;
+            text-align: left;
+        }
+
+        .styled-table th {
+            padding: 12px 15px;
+            border-right: 1px solid #000000;
+            text-align: center;
+        }
+
+        .styled-table td {
+            padding: 12px 15px;
+            border-right: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .styled-table th:last-child,
+        .styled-table td:last-child {
+            border-right: none; /* Remove border from the last column */
+        }
+
+        .styled-table tbody tr {
+
+        }
+
+
+        @media screen and (max-width: 600px) {
+            .styled-table {
+                font-size: 16px;
+            }
+        }
+
+
+        table img {
+            border-radius: 5px;
+        }
+
+
+
+
+        form {
+            display: inline;
+        }
+
+        button {
+            transition: background-color 0.3s ease;
+        }
+
+        .total {
+            text-align: center;
+            color: #5bffa5;
+        }
+        button.icon {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        button.icon:focus {
+            outline: none;
+        }
+
+        button.icon i {
+            color: #29978d; /* Adjust the color as needed */
+            /* Adjust the size as needed */
+        }
+
+        button.icon:hover i {
+            color: #1c6661; /* Optional: Change color on hover */
+        }
+
+        button i {
+
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 28px;
+            color: #29978d;
+            padding-right: 5px;
+
+        }
+        .icon{
+            background-color: transparent;
+
+        }
+        .fa{
+            font-size: 20px;
+        }
+    </style>
 </head>
 <body>
-<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+<div th:replace="Admin_espace/fragments/navbar :: navbar"></div>
 
-<header>
-    <h1>Welcome to the Visit Page</h1>
+
+
+
+<section style="background-color: rgba(0, 0, 0, 0.62); color: white;">
     <div class="header-buttons">
         <form th:action="@{/}" method="get">
             <button type="submit">Cancel</button>
         </form>
         <form th:action="@{/reception/add-snacks-to-visitor(visitId=${visit.id})}" method="post">
-            <button type="submit">Add Snacks</button>
+            <button type="submit">Ajouter Snacks</button>
         </form>
         <form th:action="@{/reception/checkout(visitId=${visit.id})}" method="post">
-            <button type="submit">visitor checkout</button>
+            <button type="submit">Fin de visite</button>
         </form>
     </div>
-</header>
-<main>
-    <section>
-        <h2>Visit Information</h2>
-        <div>
-            <label>ID: </label>
-            <span th:text="${visit.id}"></span>
-        </div>
-        <div>
-            <label>Day: </label>
+</section>
+<section style="background-color: rgba(0, 0, 0, 0.62); color: white;">
+    <h2>Visit Information</h2>
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
+            <label>Date: </label>
             <span th:text="${visit.day}"></span>
         </div>
-        <div>
-            <label>Entry Time: </label>
+        <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
+            <label>Heure d'entrée: </label>
             <span th:text="${#temporals.format(visit.startTime, 'HH:mm')}"></span>
         </div>
-        <div>
-            <label>Checkout Time: </label>
-            <span th:text="${visit.endTime}"></span>
+    </div>
+
+</section>
+<section th:if="${visit.subscriber != null}" style="background-color: rgba(0, 0, 0, 0.62); color: white;">
+    <h2>L'abonné</h2>
+    <div class="container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
+            <label style="width: max-content; margin-right: 30px">Nom: </label>
+            <span th:text="${visit.subscriber.first_name}+' '+${visit.subscriber.last_name}"></span>
         </div>
-    </section>
-    <section th:if="${visit.subscriber != null}">
-        <h2>Subscribtion info: </h2>
-        <div>
-            <label>type: </label>
+        <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
+            <label style="width: max-content; margin-right: 30px">Type d'abonnement: </label>
             <span th:text="${visit.subscriber.subscription_type.name}"></span>
         </div>
-        <div>
-            <label>number of days left: </label>
+        <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
+            <label style="width: max-content; margin-right: 30px">Nombre des jours restants: </label>
             <span th:text="${visit.subscriber.number_of_visits}"></span>
         </div>
-        <div>
-            <label>start subscribtion: </label>
-            <span th:text="${visit.subscriber.date_debut}"></span>
-        </div>
-        <div>
-            <label>start subscribtion:: </label>
+        <div class="zone" style="padding: 20px; border: 1px solid #ddd;">
+            <label style="width: max-content; margin-right: 30px">Date de fin d'abonnement: </label>
             <span th:text="${visit.subscriber.date_fin}"></span>
         </div>
-        <div>
-            <label>number of free drinks: </label>
-            <span th:text="${visit.subscriber.subscription_type.number_of_Free_Drinks_of_day}"></span>
-        </div>
-        <h2>Subscriber Information</h2>
-        <div>
-            <label>First Name: </label>
-            <span th:text="${visit.subscriber.first_name}"></span>
-        </div>
-        <div>
-            <label>Last Name: </label>
-            <span th:text="${visit.subscriber.last_name}"></span>
-        </div>
-        <div>
-            <label>CIN: </label>
-            <span th:text="${visit.subscriber.CIN}"></span>
-        </div>
-        <div>
-            <label>Email: </label>
-            <span th:text="${visit.subscriber.email}"></span>
-        </div>
-        <div>
-            <label>Phone: </label>
-            <span th:text="${visit.subscriber.phone}"></span>
-        </div>
-    </section>
-    <section>
-        <h2>Snacks</h2>
-        <table th:if="${!snacks.isEmpty()}">
-            <thead>
-            <tr>
-                <th>Logo</th>
-                <th>Name</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="snack : ${snacks}">
-                <td>
-                    <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.snacksAndBoissons.base64Image}}" alt="QR Code" width="50"/>
-                </td>
-                <td th:text="${snack.snacksAndBoissons.name}"></td>
-                <td th:text="${snack.quantity}"></td>
-                <td th:text="${snack.snacksAndBoissons.selling_price} * ${snack.quantity}"></td>
-                <td>
-                    <div class="action-buttons">
-                        <form th:action="@{/reception/delete-snack}" method="post">
-                            <input type="hidden" name="visitId" th:value="${visit.id}" />
-                            <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}" />
-                            <button type="submit">Delete Snack</button>
-                        </form>
-                        <form th:action="@{/reception/update-snack-form}" method="post">
-                            <input type="hidden" name="visitId" th:value="${visit.id}" />
-                            <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}" />
-                            <button type="submit">Update Snack</button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </section>
-    <section>
-        <h2>Additional service</h2>
-        <div th:if="${visit.service_suplementaire==null || visit.service_suplementaire_price==0}">
-            <form th:action="@{/reception/add-Additional-service-of-visit}" method="post">
-                <input type="hidden" name="visitId" th:value="${visit.id}">
-                <button type="submit">add</button>
-            </form>
-        </div>
-        <div th:if="${visit.service_suplementaire!=null && visit.service_suplementaire_price!=0}">
-            <p th:text="${visit.service_suplementaire}"></p><br>
-            <p th:text="'price :  '+${visit.service_suplementaire_price}+' MAD'"></p><br>
-            <form th:action="@{/reception/update-Additional-service-of-visit}" method="post">
-                <input type="hidden" name="visitId" th:value="${visit.id}">
-                <button type="submit">update</button>
-            </form>
-            <form th:action="@{/reception/delete-Additional-service-of-visit}" method="post">
-                <input type="hidden" name="visitId" th:value="${visit.id}">
-                <button type="submit">delete</button>
-            </form>
-        </div>
-    </section>
-</main>
-<footer>
-    <p>© 2024 Leader Space. All Rights Reserved.</p>
-</footer>
+    </div>
+
+</section>
+<section style="background-color: rgba(0, 0, 0, 0.62); color: white;">
+    <h2>Snacks</h2>
+    <table class="styled-table" th:if="${!snacks.isEmpty()}">
+        <thead>
+        <tr>
+            <th>Logo</th>
+            <th>Nom</th>
+            <th>Quantité</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="snack : ${snacks}">
+            <td>
+                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.snacksAndBoissons.base64Image}}"
+                     alt="QR Code" width="50"/>
+            </td>
+            <td th:text="${snack.snacksAndBoissons.name}"></td>
+            <td th:text="${snack.quantity}"></td>
+            <td th:text="${snack.snacksAndBoissons.selling_price} * ${snack.quantity}"></td>
+            <td>
+                <div class="action-buttons">
+                    <form th:action="@{/reception/update-snack-form}" method="post">
+                        <input type="hidden" name="visitId" th:value="${visit.id}" />
+                        <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}" />
+                        <abbr title="modifier le snack">
+                            <button type="submit" class="icon"><i class="fa fa-edit"></i></button></abbr>
+                    </form>
+                    <form th:action="@{/reception/delete-snack}" method="post">
+                        <input type="hidden" name="visitId" th:value="${visit.id}" />
+                        <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}" />
+                        <abbr title="supprimer le snack">
+                            <button type="submit" class="icon"><i class="fa fa-trash"></i></button></abbr>
+
+                    </form>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+<section style="background-color: rgba(0, 0, 0, 0.62); color: white;">
+    <h2>Service supplémentaire</h2>
+    <div th:if="${visit.service_suplementaire==null || visit.service_suplementaire_price==0}">
+        <form th:action="@{/reception/add-Additional-service-of-visit}" method="post">
+            <input type="hidden" name="visitId" th:value="${visit.id}">
+            <abbr title="Ajouter un service">
+                <button type="submit" class="icon"><i class="fa fa-plus"></i></button>
+            </abbr>
+        </form>
+    </div>
+    <table class="styled-table" th:if="${visit.service_suplementaire!=null && visit.service_suplementaire_price!=0}">
+        <thead>
+        <tr>
+            <th>Description</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${visit.service_suplementaire}"></td>
+            <td th:text="${visit.service_suplementaire_price}+' MAD'"></td>
+            <td>
+                <form th:action="@{/reception/update-Additional-service-of-visit}" method="post">
+                    <input type="hidden" name="visitId" th:value="${visit.id}">
+                    <abbr title="modifier le service">
+                        <button type="submit" class="icon"><i class="fa fa-edit"></i></button></abbr>
+                </form>
+                <form th:action="@{/reception/delete-Additional-service-of-visit}" method="post">
+                    <input type="hidden" name="visitId" th:value="${visit.id}">
+                    <abbr title="supprimer le service">
+                        <button type="submit" class="icon"><i class="fa fa-trash"></i></button>
+                    </abbr>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+
 </body>
 </html>

@@ -204,7 +204,7 @@ public class ReceptionistController {
         visitOfDeskRepository.save(visitOfDesk);
         List<SnacksAndBoissonsOfVisit> snacks = visitOfDesk.getSnacksAndBoissonsOfVisits();
         snacks.sort((s1, s2) -> Double.compare(s2.getSnacksAndBoissons().getSelling_price(), s1.getSnacksAndBoissons().getSelling_price()));
-        double total = visitOfDesk.getService_desk_price();
+        double total = 0;
         Map<UUID, String> msg = new HashMap<>();
         for (SnacksAndBoissonsOfVisit snack : snacks) {
             if (snack.getSnacksAndBoissons().getImage() != null) {
@@ -222,7 +222,8 @@ public class ReceptionistController {
             } else
                 total += snack.getQuantity() * snack.getSelling_price();
         }
-        total += visitOfDesk.getService_suplementaire_price();
+        model.addAttribute("totalSnacks", total);
+        total += visitOfDesk.getService_suplementaire_price()+visitOfDesk.getService_desk_price();
         model.addAttribute("msg", msg);
         model.addAttribute("total", total);
         model.addAttribute("visit", visitOfDesk);
@@ -926,7 +927,7 @@ public class ReceptionistController {
             total += s.getQuantity() * s.getSnacksAndBoissons().getSelling_price();
 
         }
-
+        model.addAttribute("totalSnacks", total);
         total += visit.getService_suplementaire_price();
 
         model.addAttribute("visit", visitRepository.save(visit));
@@ -1061,21 +1062,9 @@ public class ReceptionistController {
         }
         visit.setService_price(priceOfVisit);
 
-
+        model.addAttribute("totalSnacks", total);
         model.addAttribute("visit", visitRepository.save(visit));
-        model.addAttribute("total", total+priceOfVisit);
-
-       /* List<Caisse> cs = caisseRepository.findTopByOrderByDateTimeDesc();
-        Caisse csFirst=null;
-        if (!cs.isEmpty()){
-            csFirst  = cs.getFirst();
-        }*/
-        // System.out.println("last caisse : "+cs);
-        model.addAttribute("visit", visitRepository.save(visit));
-        // System.out.println("total ==="+total);
-        // System.out.println("priceofvisit ==="+priceOfVisit);
-        model.addAttribute("total", total + priceOfVisit);
-
+        model.addAttribute("total", total+priceOfVisit+visit.getService_suplementaire_price());
 
         model.addAttribute("msg", msg);
 
@@ -1083,7 +1072,7 @@ public class ReceptionistController {
 
         caisse.setTime(localTime);
 
-        caisse.setSomme(total + priceOfVisit);
+        caisse.setSomme(total + priceOfVisit+visit.getService_suplementaire_price());
 
         CaisseService caisseService = new CaisseService(caisseRepository);
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, priceOfVisit));
@@ -1579,6 +1568,10 @@ public class ReceptionistController {
             }
             total += snack.getQuantity() * snack.getSelling_price();
         }
+        total=0;
+        for (SnacksAndBoissonsOfVisit snack : snacks){
+            total += snack.getQuantity() * snack.getSelling_price();
+        }
         visitOfTeamRepository.save(visitOfTeam);
         model.addAttribute("msg", msg);
         model.addAttribute("total", total);
@@ -1725,7 +1718,7 @@ public class ReceptionistController {
         model.addAttribute("totaleSnackAndBoissonsForVisitRoom",totaleSnackAndBoissonsForVisitRoom);
         model.addAttribute("totalePriceOfSnacksAndBoissonsForAllParticipantsOfVisitRoom",totalePriceOfSnackAndBoissonsForAllParticipantsOfVisitRoom);
         model.addAttribute("mapOfParticipantAndTotalePaided",mapOfParticipantAndTotalePaided);
-        model.addAttribute("totale",totale);
+        model.addAttribute("totale",totaleSnackAndBoissonsForVisitRoom+visitOfRoom.getService_room_price()+visitOfRoom.getService_suplementaire_price());
 
         ///////////////////////////////////zt
 
