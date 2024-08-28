@@ -12,6 +12,8 @@ import com.management.leaderspace.model.QrCodeGenerator;
 import com.management.leaderspace.model.SnackForm;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -347,9 +349,34 @@ public class ReceptionistController {
     }
 
     @GetMapping("get-subscribers")
-    public String getSubscribers(Model model) {
+    public String getSubscribers(@RequestParam(name = "page",defaultValue = "0") int page,
+                                 Model model) {
 
-        List<Subscriber> subscribers = receptionistService.getSubscribers();
+        Page<Subscriber> pageSubscribers = receptionistService.getSubscribers(PageRequest.of(page,50));
+        List<Subscriber> subscribers = pageSubscribers.getContent();
+        model.addAttribute("pages",new int[pageSubscribers.getTotalPages()]);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("subscribers", subscribers);
+        model.addAttribute("subscribers", subscribers);
+
+        return "/Receptionist_espace/all-subscribers";
+
+    }
+
+    @GetMapping("subscriber-Search")
+    public String subscriberSearch(@RequestParam("Name") String Name,
+                                   @RequestParam(name = "page",defaultValue = "0") int page,
+                                   Model model) {
+
+        Page<Subscriber> pageSubscribers = receptionistService.getSubscribersByName(Name, PageRequest.of(page,50));
+        List<Subscriber> subscribers = pageSubscribers.getContent();
+        if (Name.isEmpty()){
+            return "redirect:get-subscribers";
+        }
+        model.addAttribute("name",Name);
+        model.addAttribute("pages",new int[pageSubscribers.getTotalPages()]);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("subscribers", subscribers);
 
         model.addAttribute("subscribers", subscribers);
 
@@ -379,16 +406,7 @@ public class ReceptionistController {
         return "/Receptionist_espace/visit-today";
     }
 
-    @GetMapping("subscriber-Search")
-    public String subscriberSearch(@RequestParam("Name") String Name, Model model) {
 
-        List<Subscriber> subscribers = receptionistService.getSubscribersByName(Name);
-
-        model.addAttribute("subscribers", subscribers);
-
-        return "/Receptionist_espace/all-subscribers";
-
-    }
 
     @GetMapping("add-subscriber")
     public String addSubscriber(Model model) {
