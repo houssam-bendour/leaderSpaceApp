@@ -2,6 +2,8 @@ package com.management.leaderspace.Services.Receptionist;
 
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.model.SnackForm;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -21,9 +23,9 @@ public interface ReceptionistService {
 
     List<Visit> getVisitsTodayByName(String name);
 
-    List<Subscriber> getSubscribers();
+    Page<Subscriber> getSubscribers(Pageable pageable);
 
-    List<Subscriber> getSubscribersByName(String name);
+    Page<Subscriber> getSubscribersByName(String name, Pageable pageable);
 
     Visit createVisitForNotSubscriber(NotSubscriber notSubscriber);
 

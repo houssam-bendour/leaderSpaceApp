@@ -8,34 +8,6 @@
     <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <style>
-        .btn-pagination-custom {
-            color: #29978d;
-            background-color: white;
-            border-color: #29978d;
-        }
-
-        .btn-pagination-custom:hover {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-
-        .btn-pagination-customHov {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-        .btn-pagination-customHov:hover {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-
-
-
-
-    </style>
 </head>
 <body>
 <div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
@@ -60,16 +32,16 @@
 
         <!-- Search form -->
         <div class="search-form">
-            <form th:action="@{/reception/subscriber-Search}" method="get">
-                <input type="text" name="Name" placeholder="Rechercher par nom"/>
+            <form th:action="@{list-subscribers}" method="get">
+                <input type="text" name="Name" placeholder="Rechercher par nom" th:value="${name}"/>
                 <abbr title="Rechercher">
                     <button type="submit"><i class="fa fa-search"></i></button> <!-- Icon only -->
                 </abbr>
             </form>
         </div>
     </div>
-    <div class="table-container">
-        <table border="1" class="subscriber-table">
+    <div class="table-container cadre-table-scroll">
+        <table border="1" class="subscriber-table table-fixed scroll table-scroll">
             <thead>
             <tr>
                 <th>CIN</th>
@@ -112,19 +84,18 @@
             </tr>
             </tbody>
         </table>
-        <nav aria-label="Page navigation example">
-            <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
-                <li th:each="page, status : ${pages}" style="margin-left: 10px;">
-                    <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
-                       th:href="@{list-subscribers(page=${status.index})}"
-                       th:text="${status.count}"
-                       style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
     </div>
+    <nav aria-label="Page navigation example">
+        <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+            <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                   th:href="@{list-subscribers(Name=${name},page=${status.index})}"
+                   th:text="${status.count}"
+                   style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
 </body>
 </html>
@@ -157,13 +128,13 @@
             });
         });
     });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const table = document.querySelector('.subscriber-table tbody');
-        const rows = table.querySelectorAll('tr');
-
-        if (rows.length >= 6) {
-            table.parentElement.classList.add('subscriber-table-container');
-        }
-    });
+    //
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     const table = document.querySelector('.subscriber-table tbody');
+    //     const rows = table.querySelectorAll('tr');
+    //
+    //     if (rows.length >= 6) {
+    //         table.parentElement.classList.add('subscriber-table-container');
+    //     }
+    // });
 </script>

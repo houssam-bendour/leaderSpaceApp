@@ -4,6 +4,7 @@ import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
 import com.management.leaderspace.Services.Manager.ManagerService;
 import com.management.leaderspace.Services.Manager.ManagerServiceImp;
+import com.management.leaderspace.Services.Receptionist.ReceptionistService;
 import com.management.leaderspace.model.CaisseService;
 import com.management.leaderspace.model.DesignationForm;
 import com.management.leaderspace.model.NumberToWordsService;
@@ -60,6 +61,7 @@ public class ManagerController {
     private CaisseRepository caisseRepository;
     private BankRepository bankRepository;
     private final HttpSession httpSession;
+    private ReceptionistService receptionistService;
 
 
     @GetMapping("/add-snack")
@@ -1022,11 +1024,18 @@ public class ManagerController {
 
     //==============================SUBSCRIBER CRUD============================
     @GetMapping("list-subscribers")
-    String getAllSubscribers(
-            @RequestParam(name = "page",defaultValue = "0") int page
-            ,Model model) {
-        Page<Subscriber> pageSubscribers = subscriberRepository.findAll(PageRequest.of(page,50));
+    String getAllSubscribers(@RequestParam(value = "Name",defaultValue = "") String Name,
+                             @RequestParam(name = "page",defaultValue = "0") int page,
+                             Model model) {
+        Page<Subscriber> pageSubscribers;
+        if (Name.equals("")){
+            pageSubscribers = subscriberRepository.findAll(PageRequest.of(page,50));
+        }else {
+            pageSubscribers = receptionistService.getSubscribersByName(Name,PageRequest.of(page,50));
+        }
+
         List<Subscriber> subscribers = pageSubscribers.getContent();
+        model.addAttribute("name",Name);
         model.addAttribute("pages",new int[pageSubscribers.getTotalPages()]);
         model.addAttribute("currentPage",page);
         model.addAttribute("subscribers", subscribers);

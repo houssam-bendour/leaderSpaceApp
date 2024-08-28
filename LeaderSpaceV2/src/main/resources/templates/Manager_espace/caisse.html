@@ -1,151 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Caisse</title>
-  <!-- Intégration de Bootstrap CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <title>La caisse</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
-
   <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
-  <style>
-    /* Styles personnalisés */
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-
-    /* Styles pour la table avec défilement */
-    /*.table-responsive {
-      max-height: 500px;
-      overflow-y: auto;
-    }*/
-
-    /* Boutons personnalisés */
-    .btn-custom {
-      color: #29978d;
-      border-color: #29978d;
-
-    }
-
-    .btn-custom:hover,
-    .btn-custom:focus {
-      color: #fff;
-      background-color: #29978d;
-      border-color: #29978d;
-    }
-
-    /* Styles pour les labels fixes */
-    .label-fixed {
-      width: 50px;
-      margin-right: 10px;
-    }
-
-    .input-group img{
-      width: 25px;
-      height: 25px;
-      cursor: pointer;
-    }
-
-    /* Styles pour le formulaire de transfert */
-    .transfer-form {
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 5px;
-      margin-bottom: 30px;
-    }
-
-    /* Styles pour le formulaire de recherche */
-    .search-form {
-      background-color: #f8f9fa;
-      padding: 20px;
-      border-radius: 5px;
-      margin-bottom: 30px;
-    }
-
-    .form-control {
-      border-color: #29978d;
-
-    }
-
-    .form-control:focus {
-      border-color: #29978d;
-      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgb(41, 152, 143);
-    }
-
-    /* Style pour le titre principal */
-    .main-title {
-      margin-bottom: 30px;
-      font-weight: bold;
-      color: #29978d;
-    }
-
-    .btn-pagination-custom {
-      color: #29978d;
-      border-color: #29978d;
-    }
-
-    .btn-pagination-custom:hover {
-      color: white;
-      background-color: #29978d;
-      border-color: #29978d;
-    }
-
-    .btn-pagination-customHov {
-      color: white;
-      background-color: #29978d;
-      border-color: #29978d;
-    }
-    .btn-pagination-customHov:hover {
-      color: white;
-      background-color: #29978d;
-      border-color: #29978d;
-    }
-
-    #ancreTest {
-      max-height: 100vh; /* La hauteur maximale sera la taille de l'écran */
-      /*overflow-y: auto; !* Ajoute une barre de défilement verticale si le contenu dépasse la hauteur maximale *!*/
-    }
-
-    /* Activer le défilement vertical uniquement sur le tbody */
-    table.table tbody {
-      display: block;
-      height: calc(100vh - 120px); /* Ajustez 300px pour la hauteur en-tête et pied de page de la table */
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-
-    /* Fixer la largeur des colonnes pour que le header s'aligne avec le tbody */
-    table.table thead, table.table tbody tr, table.table tfoot {
-      width: 100%;
-      display: table;
-      table-layout: fixed;
-    }
-
-    /* Éviter que les colonnes ne rétrécissent trop */
-    table.table th, table.table td, table.table tfoot td {
-      min-width: 100%;
-      word-wrap: break-word;
-      text-align: left;
-    }
-
-    /* Fixer le pied de page */
-    table.table tfoot {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-      position: sticky;
-      bottom: 0;
-      background-color: #fff;
-      z-index: 1;
-    }
-    table.table {
-      width: 100%;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="/css/manager/caisse.css">
   <script>
     window.addEventListener('load', function() {
       var section = document.getElementById('ancreTest'); // Identifiez l'élément par son ID
@@ -156,33 +16,36 @@
   </script>
 
 </head>
-<!--<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>-->
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 <body>
 <div class="container my-2">
   <!-- Titre principal -->
-  <h2 class="text-center main-title">Caisse</h2>
+  <h1 class="text-center main-title">La caisse</h1>
 
   <!-- Formulaire de transfert -->
   <div class="transfer-form">
     <form th:action="@{/manager/transfer}" method="post">
-      <div class="mb-3">
-        <label for="sum" class="form-label">Somme à transférer</label>
-          <input type="number" class="form-control" id="sum" name="sum" placeholder="Entrez la somme à transférer" min="0" th:max="${FirstCaisse.totale_caisse}" required>
-      </div>
-      <div class="text-center">
-        <abbr title="Retourner à la page d'accueil">
-          <button type="submit" class="btn btn-custom col-md-1 justify-content-center">
-            <i class="fa fa-arrow-left"></i>
-          </button>
-        </abbr>
-        <abbr title="Transférer à la bank">
-          <button type="submit" class="btn btn-custom col-md-1 justify-content-center">
-            <i class="fa-solid fa-money-bill-transfer"></i>
-          </button>
-        </abbr>
+      <label for="sum" class="form-label me-2">Somme à transférer</label>
+      <div class="mb-3 row g-3 align-items-end">
+        <input type="number" class="form-control form-transfer me-2" id="sum" name="sum" placeholder="Entrez la somme à transférer" min="0" th:max="${FirstCaisse.totale_caisse}" required>
+        <div class="col-md-2">
+          <abbr title="Transférer à la bank">
+            <button type="submit" class="btn btn-custom w-100" style="width: 100%">
+              <i class="fa-solid fa-money-bill-transfer"></i>
+            </button>
+          </abbr>
+        </div>
       </div>
     </form>
+    <form th:action="@{/}" method="get">
+      <abbr title="Retourner à la page d'accueil">
+        <button type="submit" class="btn btn-custom col-md-1">
+          <i class="fa fa-arrow-left"></i>
+        </button>
+      </abbr>
+    </form>
   </div>
+
 
 
   <!-- Formulaire de recherche -->
@@ -199,7 +62,7 @@
         </div>
         <div class="col-md-2">
           <abbr title="Rechercher">
-            <button type="submit" class="btn btn-custom w-100">
+            <button type="submit" class="btn btn-custom w-100" style="width: 100%">
               <i class="fa fa-search"></i>
             </button>
           </abbr>
@@ -210,39 +73,43 @@
 
 
   <!-- Tableau des transactions -->
-  <div id="ancreTest">
-    <table class="table table-striped table-bordered">
-      <thead class="table-dark">
-      <tr>
-        <th>Date</th>
-        <th>Heure</th>
-        <th>Somme (MAD)</th>
-        <th>Total (MAD)</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr th:each="cs : ${caisse}">
-        <td th:text="${cs.date}">Date</td>
-        <td th:text="${cs.time}">Heure</td>
-        <td th:text="${cs.somme}"
-            th:style="${cs.somme < 0} ? 'color: red;' : ''">Somme</td>
-        <td th:text="${cs.totale_caisse}">Totale</td>
-      </tr>
-      </tbody>
-    </table>
-    <nav aria-label="Page navigation example">
-      <ul class="pagination justify-content-center">
-        <li class="page-item ms-2" th:each="page, status : ${pages}">
-          <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
-             th:href="@{caisse(dateDebut=${dateDebut},dateFin=${dateFin},page=${status.index})}"
-             th:text="${status.count}">
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </div>
+  <main>
+    <div id="ancreTest">
+      <div class="table-container">
+        <table border="1" class="subscriber-table table-fixed">
+          <thead class="table-dark">
+            <tr>
+              <th>Date</th>
+              <th>Heure</th>
+              <th>Somme (MAD)</th>
+              <th>Total (MAD)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="cs : ${caisse}">
+              <td th:text="${cs.date}">Date</td>
+              <td th:text="${cs.time}">Heure</td>
+              <td th:text="${cs.somme > 0} ? '+' + ${cs.somme} : ${cs.somme}"
+                  th:style="${cs.somme < 0} ? 'color: red;' : 'color: green;'">
+              </td>
+              <td th:text="${cs.totale_caisse}">Totale</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item ms-2" th:each="page, status : ${pages}">
+            <a th:class="${(status.count == (currentPage+1)) ? 'btn btn-pagination-customHov' : 'btn btn-pagination-custom'}"
+               th:href="@{caisse(dateDebut=${dateDebut},dateFin=${dateFin},page=${status.index})}"
+               th:text="${status.count}">
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+</main>
 </div>
-
 <!-- Script de validation des dates -->
 <script>
   function validateDates() {
@@ -271,9 +138,12 @@
 
     return true;
   }
+
 </script>
+
 
 <!-- Intégration de Bootstrap JS et de ses dépendances -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

@@ -4,6 +4,8 @@ import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
 import com.management.leaderspace.model.SnackForm;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -177,13 +179,13 @@ public class ReceptionistServiceImp implements ReceptionistService {
     }
 
     @Override
-    public List<Subscriber> getSubscribers() {
-        return subscriberRepository.findAll();
+    public Page<Subscriber> getSubscribers(Pageable pageable) {
+        return subscriberRepository.findAll(pageable);
     }
 
     @Override
-    public List<Subscriber> getSubscribersByName(String name) {
-        return subscriberRepository.getSubscribersByName(name);
+    public Page<Subscriber> getSubscribersByName(String name, Pageable pageable) {
+        return subscriberRepository.getSubscribersByName(name,pageable);
     }
 
     @Override
