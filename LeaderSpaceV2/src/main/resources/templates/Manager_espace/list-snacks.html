@@ -38,8 +38,8 @@
             </form>
         </div>
     </div>
-    <div class="table-container">
-        <table border="1" class="subscriber-table">
+    <div class="table-container cadre-table-scroll">
+        <table border="1" class="subscriber-table table-fixed scroll table-scroll">
             <thead>
             <tr>
                 <th>Image</th>
@@ -81,6 +81,17 @@
             </tbody>
         </table>
     </div>
+    <nav aria-label="Page navigation example">
+        <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+            <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                   th:href="@{list-subscribers(Name=${name},page=${status.index})}"
+                   th:text="${status.count}"
+                   style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                </a>
+            </li>
+        </ul>
+    </nav>
 </main>
 <!--<footer>-->
 <!--    <p>© 2024 Leader Space. All Rights Reserved.</p>-->

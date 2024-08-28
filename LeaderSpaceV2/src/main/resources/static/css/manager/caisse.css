@@ -142,16 +142,6 @@ body {
 }
 
 /* Table Styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    background-color: white;
-}
 
 .subscriber-table {
     width: 100%; /* Pour s'assurer que le tableau prend toute la largeur du conteneur */

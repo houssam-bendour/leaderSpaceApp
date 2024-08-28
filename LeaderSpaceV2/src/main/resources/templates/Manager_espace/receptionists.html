@@ -36,44 +36,45 @@
             </div>
 
     </div>
-
-    <table border="1">
-        <thead>
-        <tr>
-            <th>CIN</th>
-            <th>Prénom</th>
-            <th>Nom</th>
-            <th>Email</th>
-            <th>Téléphone</th>
-            <th>CNSS</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="receptionist : ${receptionists}">
-            <td th:text="${receptionist.CIN}">CIN</td>
-            <td th:text="${receptionist.first_name}">First name</td>
-            <td th:text="${receptionist.last_name}">Last name</td>
-            <td th:text="${receptionist.email}">Email</td>
-            <td th:text="${receptionist.phone}">phone</td>
-            <td th:text="${receptionist.CNSS_number}">CNSS</td>
-            <td>
-                <div class="action-buttons">
-                    <form th:action="@{/manager/update-receptionist(receptionistId=${receptionist.id})}" method="post">
-                        <abbr title="Modifier un réceptioniste">
-                            <button type="submit"><i class="fa fa-edit"></i></button>
-                        </abbr>
-                    </form>
-                    <form th:action="@{/manager/delete-receptionist(receptionistId=${receptionist.id})}" method="post">
-                        <abbr title="Supprimer un réceptioniste">
-                            <button type="submit"><i class="fa fa-trash"></i></button>
-                        </abbr>
-                    </form>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="table-container cadre-table-scroll">
+        <table border="1" class="subscriber-table table-fixed scroll table-scroll">
+            <thead>
+            <tr>
+                <th>CIN</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>CNSS</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="receptionist : ${receptionists}">
+                <td th:text="${receptionist.CIN}">CIN</td>
+                <td th:text="${receptionist.first_name}">First name</td>
+                <td th:text="${receptionist.last_name}">Last name</td>
+                <td th:text="${receptionist.email}">Email</td>
+                <td th:text="${receptionist.phone}">phone</td>
+                <td th:text="${receptionist.CNSS_number}">CNSS</td>
+                <td>
+                    <div class="action-buttons">
+                        <form th:action="@{/manager/update-receptionist(receptionistId=${receptionist.id})}" method="post">
+                            <abbr title="Modifier un réceptioniste">
+                                <button type="submit"><i class="fa fa-edit"></i></button>
+                            </abbr>
+                        </form>
+                        <form th:action="@{/manager/delete-receptionist(receptionistId=${receptionist.id})}" method="post">
+                            <abbr title="Supprimer un réceptioniste">
+                                <button type="submit"><i class="fa fa-trash"></i></button>
+                            </abbr>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </main>
 </body>
 </html>
