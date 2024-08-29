@@ -78,22 +78,22 @@
       <div class="table-container">
         <table border="1" class="subscriber-table table-fixed">
           <thead class="table-dark">
-            <tr>
-              <th>Date</th>
-              <th>Heure</th>
-              <th>Somme (MAD)</th>
-              <th>Total (MAD)</th>
-            </tr>
+          <tr>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Somme (MAD)</th>
+            <th>Total (MAD)</th>
+          </tr>
           </thead>
           <tbody>
-            <tr th:each="cs : ${caisse}">
-              <td th:text="${cs.date}">Date</td>
-              <td th:text="${cs.time}">Heure</td>
-              <td th:text="${cs.somme > 0} ? '+' + ${cs.somme} : ${cs.somme}"
-                  th:style="${cs.somme < 0} ? 'color: red;' : 'color: green;'">
-              </td>
-              <td th:text="${cs.totale_caisse}">Totale</td>
-            </tr>
+          <tr th:each="cs : ${caisse}">
+            <td th:text="${cs.date}">Date</td>
+            <td th:text="${cs.time}">Heure</td>
+            <td th:text="${cs.somme > 0} ? '+' + ${cs.somme} : ${cs.somme}"
+                th:style="${cs.somme < 0} ? 'color: red;' : 'color: green;'">
+            </td>
+            <td th:text="${cs.totale_caisse}">Totale</td>
+          </tr>
           </tbody>
         </table>
       </div>
@@ -108,7 +108,7 @@
         </ul>
       </nav>
     </div>
-</main>
+  </main>
 </div>
 <!-- Script de validation des dates -->
 <script>
