@@ -828,11 +828,11 @@ public class ManagerController {
                 }
 
                 model.addAttribute("allContractsByDate",allContractByDayAndPagee);
-
             }
             ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
 
             model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+
 
         }
         return "Manager_espace/turnover";
@@ -1102,14 +1102,21 @@ public class ManagerController {
     @GetMapping("visit")
     public String VisitsToday(
             @RequestParam(name = "section", defaultValue = "") String section,
-            @RequestParam(name = "page", required = false) Integer page,
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "name", defaultValue = "") String name,
             Model model) {
 
         if (section.equals("Table-Subscribers")){
+            Page<Visit> pageVisitOfSubscribers;
+            if (name.isEmpty()){
+                pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,4));
+            }else{
+                pageVisitOfSubscribers = visitRepository.listVisitsOfSubscribersByNameLike(name,PageRequest.of(page,50));
+                System.out.println("vitissubscriberbynamelike ===="+pageVisitOfSubscribers.getTotalPages());
+            }
 
-            Page<Visit> pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,50));
             List<Visit> visitOfSubscribers = pageVisitOfSubscribers.getContent();
-
+            model.addAttribute("name",name);
             model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
             model.addAttribute("currentPage",page);
             model.addAttribute("visitOfSubscribers", visitOfSubscribers);
@@ -1409,15 +1416,17 @@ public class ManagerController {
     }
 
     @GetMapping("delete-reservation-of-desk")
-    public String deleteReservationOfDesk(@RequestParam UUID reservation_id){
+    public String deleteReservationOfDesk(@RequestParam UUID reservation_id,
+                                          @RequestParam String section){
         visitOfDeskRepository.deleteById(reservation_id);
-        return "redirect:/manager/visit";
+        return "redirect:/manager/visit?section=" + section;
     }
 
     @GetMapping("delete-visit-of-room")
-    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id){
+    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id,
+                                    @RequestParam String section){
         visitOfRoomRepository.deleteById(visit_room_id);
-        return "redirect:/manager/visit";
+        return "redirect:/manager/visit?section="+section;
     }
 
 

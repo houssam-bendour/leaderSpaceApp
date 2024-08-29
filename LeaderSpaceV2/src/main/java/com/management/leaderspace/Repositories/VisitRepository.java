@@ -22,8 +22,13 @@ public interface VisitRepository extends JpaRepository<Visit, UUID> {
     List<Visit> getByDateAndSubscriberAndEndCheckoutTime(@Param("id") UUID id, @Param("day") LocalDate day);
     @Query("select v from Visit v where v.day = :day order by v.StartTime")
     List<Visit> getVisitsToday(@Param("day") LocalDate localDate);
+
     @Query("select v from Visit v where v.day = :day and (v.subscriber.last_name like concat('%',:n,'%') or v.subscriber.first_name like concat('%',:n,'%')) order by v.StartTime")
     List<Visit> getVisitsTodayByName(@Param("day") LocalDate localDate,@Param("n") String name);
+
+    @Query("select v from Visit v where v.subscriber.last_name like concat('%',:name,'%') or v.subscriber.first_name like concat('%',:name,'%') order by v.day desc , v.StartTime desc")
+    Page<Visit> listVisitsOfSubscribersByNameLike(@Param("name") String name,Pageable pageable);
+
     @Query("select v from Visit v where v.notSubscriber.id = :id and v.day = :day and v.EndTime is null")
     Visit getByDateAndNotSubscriberAndEndTime(@Param("id") UUID id,@Param("day") LocalDate localDate);
     @Query("select v from Visit v where v.day = :day and v.notSubscriber is null order by v.StartTime DESC")

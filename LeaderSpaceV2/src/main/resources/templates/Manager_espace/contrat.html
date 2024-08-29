@@ -32,8 +32,10 @@
             <button type="submit">Search</button>
         </form>
     </div>-->
+
     <div class="table-container cadre-table-scroll">
         <table border="1" class="subscriber-table table-fixed scroll table-scroll">
+
             <thead>
             <tr>
                 <th>Date</th>
@@ -57,6 +59,7 @@
             </tbody>
         </table>
     </div>
+
     <nav aria-label="Page navigation example">
         <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
             <li th:each="page, status : ${pages}" style="margin-left: 10px;">
@@ -68,6 +71,7 @@
             </li>
         </ul>
     </nav>
+
 </main>
 </body>
 <script>

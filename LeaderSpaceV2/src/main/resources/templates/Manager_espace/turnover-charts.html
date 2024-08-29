@@ -74,7 +74,7 @@
                 return false;
             }
             if (dateFinObj>dateInMoroccoObj){
-                alert("la date n'est pas disponible.");
+                alert("La date n'est pas disponible.");
                 window.location.replace("/manager/turnover");
                 return false;
             }
@@ -87,16 +87,16 @@
 <div class="container mt-5">
     <div class="card shadow-lg mx-auto">
         <div class="card-body">
-            <h2 class="card-title text-center mb-4">Chiffre d'affaires</h2>
+            <h2 class="card-title text-center mb-4" style="color: #29978d;">Chiffre d'affaires</h2>
             <form method="get" th:action="@{/manager/charts}" onsubmit="return validateDates()">
                 <div class="row mb-3">
                     <div class="col-md-6 d-flex align-items-center">
-                        <h4 class="mb-0 me-1">From</h4>
+                        <h4 class="mb-0 me-1">De</h4>
                         <h4 class="mb-0 me-2">:</h4>
                         <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
                     </div>
                     <div class="col-md-6 d-flex align-items-center">
-                        <h4 class="mb-0 me-1">To</h4>
+                        <h4 class="mb-0 me-1">À</h4>
                         <h4 class="mb-0 me-2">:</h4>
                         <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
                     </div>
@@ -104,14 +104,14 @@
 
                 <div class="d-flex justify-content-center">
                     <div class="d-flex justify-content-between mt-3" style="width: 50%;">
-                        <button type="submit" class="btn btn-customHov me-2 flex-grow-1">Chart</button>
-                        <a class="btn btn-custom flex-grow-1" th:href="@{/manager/turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},turnover='detail')}">Cancel</a>
+                        <button type="submit" class="btn btn-customHov me-2 flex-grow-1"><h5>Graphiques</h5></button>
+                        <a class="btn btn-custom flex-grow-1" th:href="@{/manager/turnover(date_debut=${param.date_debut},date_fin=${param.date_fin},turnover='detail')}"><h5>Cancel</h5></a>
                     </div>
                 </div>
             </form>
             <div class="mt-4 text-center">
                 <th:block th:if="${param.date_debut != null && param.date_fin != null}">
-                    <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totaleTurnoverCherts}"></h4>
+                    <h4 class="text-success" th:text="'Total du chiffre d\'affaires = ' + ${totaleTurnoverCherts}"></h4>
                 </th:block>
             </div>
         </div>
@@ -123,7 +123,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow" style="height: 450px;">
             <div class="card-body" style="height: 100%;">
-                <h4>Chiffre d'affaires Total</h4>
+                <h4>Chiffre d'affaires total</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverTotalChart" style="height: 100%;"></canvas>
                 </div>
@@ -131,11 +131,11 @@
         </div>
 
         <div class="separator"></div>
-        <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
+        <h3 class="card-title" th:text="'Détails du chiffre d\'affaires du ' + ${param.date_debut} + ' au ' + ${param.date_fin}"></h3>
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsTurnover.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Les Visits Normale</h4>
+                <h4>Les Visites Normales</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverChart" style="height: 100%;"></canvas>
                 </div>
@@ -144,7 +144,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsRoom.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Visits Of Room</h4>
+                <h4>Visites de Salle</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverVisitRoomChart" style="height: 100%;"></canvas>
                 </div>
@@ -154,7 +154,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsDesk.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>visites Of Desk</h4>
+                <h4>Visites de Bureau</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverVisitDeskChart" style="height: 100%;"></canvas>
                 </div>
@@ -164,7 +164,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsTeam.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Visits Of Team</h4>
+                <h4>Visites d'Équipe</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverVisitsTeamChart" style="height: 100%;"></canvas>
                 </div>
@@ -174,7 +174,7 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsSubscriptions.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Les Abonnements</h4>
+                <h4>Abonnements</h4>
                 <div style="height: 95%;">
                     <canvas id="turnoverSubscriptionsChart" style="height: 100%;"></canvas>
                 </div>
@@ -183,12 +183,13 @@
         <div class="separator"></div>
         <div class="card shadow-lg grow mb-4" style="height: 450px;" th:if="${!labelsContracts.isEmpty()}">
             <div class="card-body" style="height: 100%;">
-                <h4>Contrats Totals</h4>
+                <h4>Contrats</h4>
                 <div style="height: 95%;">
                     <canvas id="contractsTotalChart" style="height: 100%;"></canvas>
                 </div>
             </div>
         </div>
+
         <div class="separator"></div>
         <div class="separator"></div>
     </div>
@@ -264,7 +265,7 @@
             data: {
                 labels: labelsNormale,
                 datasets: [{
-                    label: 'Chiffre d\'affaires Normal',
+                    label: 'Chiffre d\'affaires des visites normales',
                     data: dataNormale,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -346,7 +347,7 @@
             data: {
                 labels: labelsDesk,
                 datasets: [{
-                    label: 'Visites de bureau',
+                        label: 'Visites de bureau',
                     data: dataDesk,
                     borderColor: 'rgba(255, 206, 86, 1)',
                     backgroundColor: 'rgba(255, 206, 86, 0.2)',
@@ -387,7 +388,7 @@
             data: {
                 labels: labelsTeam,
                 datasets: [{
-                    label: 'Visites Of Team',
+                    label: 'Visites d\'équipe',
                     data: dataTeam,
                     borderColor: 'rgba(153, 102, 255, 1)',
                     backgroundColor: 'rgba(153, 102, 255, 0.2)',
@@ -428,7 +429,7 @@
             data: {
                 labels: labelsSubscriptions,
                 datasets: [{
-                    label: 'Subscriptions',
+                    label: 'Abonnements',
                     data: dataSubscriptions,
                     borderColor: 'rgba(75, 192, 192, 1)',
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -469,7 +470,7 @@
             data: {
                 labels: labelsContracts,
                 datasets: [{
-                    label: 'Contrats Totals',
+                    label: 'Contrats',
                     data: dataContracts,
                     borderColor: 'rgba(153, 102, 255, 1)',
                     backgroundColor: 'rgba(153, 102, 255, 0.2)',

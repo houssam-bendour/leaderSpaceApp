@@ -320,35 +320,37 @@ public class ReceptionistController {
 
         return "redirect:/reception/visit-of-desk?visitId=" + visitId;
     }
-
     @GetMapping("visit-today")
-    public String VisitsToday(Model model) {
+    public String VisitsToday(@RequestParam(value = "section",defaultValue = "") String section,
+                              Model model) {
 
-        List<Visit> visitOfSubscribers = receptionistService.getVisitsOfSubscribersToday();
+        if (section.equals("Table-Subscribers")){
+            List<Visit> visitOfSubscribers = receptionistService.getVisitsOfSubscribersToday();
 
-        model.addAttribute("visitOfSubscribers", visitOfSubscribers);
+            model.addAttribute("visitOfSubscribers", visitOfSubscribers);
+        }
+        if (section.equals("Table-Subscribers")){
+            List<Visit> visitOfNotSubscribers = receptionistService.getVisitsOfNotSubscribersToday();
 
-        List<Visit> visitOfNotSubscribers = receptionistService.getVisitsOfNotSubscribersToday();
+            model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
+        }
+        if (section.equals("Table-Desk")){
+            List<VisitOfDesk> visitOfDesks = receptionistService.getVisitsOfDeskToday();
 
-        model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
+            model.addAttribute("visitOfDesks", visitOfDesks);
+        }
+        if (section.equals("Table-Room")){
+            List<VisitOfRoom> visitOfRooms = receptionistService.getVisitsOfRoomToday();
 
-        List<VisitOfRoom> visitOfRooms = receptionistService.getVisitsOfRoomToday();
-
-        model.addAttribute("visitOfRooms", visitOfRooms);
-
-        List<VisitOfDesk> visitOfDesks = receptionistService.getVisitsOfDeskToday();
-
-        model.addAttribute("visitOfDesks", visitOfDesks);
-
+            model.addAttribute("visitOfRooms", visitOfRooms);
+        }
         ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
         model.addAttribute("nowInMorocco", nowInMorocco);
         System.out.println("nowInMorocco========" + nowInMorocco);
 
-
         return "/Receptionist_espace/visit-today";
 
     }
-
     @GetMapping("get-subscribers")
     public String getSubscribers(@RequestParam(name = "page",defaultValue = "0") int page,
                                  Model model) {
@@ -386,7 +388,8 @@ public class ReceptionistController {
     }
 
     @GetMapping("visit-Search")
-    public String VisitsSearchToday(@RequestParam("Name") String Name, Model model) {
+    public String VisitsSearchToday(
+            @RequestParam("Name") String Name, Model model) {
 
         List<Visit> visits = receptionistService.getVisitsTodayByName(Name);
 
@@ -1694,15 +1697,18 @@ public class ReceptionistController {
     }
 
     @GetMapping("delete-reservation-of-desk")
-    public String deleteReservationOfDesk(@RequestParam UUID reservation_id) {
+    public String deleteReservationOfDesk(@RequestParam UUID reservation_id,
+                                          @RequestParam String section) {
         visitOfDeskRepository.deleteById(reservation_id);
-        return "redirect:/reception/visit-today";
+        return "redirect:/reception/visit-today?section=" + section;
     }
 
     @GetMapping("delete-visit-of-room")
-    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id) {
+    public String deleteVisitOfRoom(@RequestParam UUID visit_room_id,
+                                    @RequestParam String section
+                                    ) {
         visitOfRoomRepository.deleteById(visit_room_id);
-        return "redirect:/reception/visit-today";
+        return "redirect:/reception/visit-today?section=" + section;
     }
     @PostMapping("check-out-of-visit-room")
     public String checkOutOfVisitRoom(@RequestParam UUID visit_id, Model model){

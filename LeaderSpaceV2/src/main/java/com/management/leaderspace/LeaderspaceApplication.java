@@ -41,7 +41,7 @@ public class LeaderspaceApplication {
                           FactureRepository factureRepository) {
         return args -> {
 
-            /*Admin receptionist = new Admin();
+           /* Admin receptionist = new Admin();
             receptionist.setEmail("admin@admin.com");
             receptionist.setPassword(passwordEncoder.encode("1234"));
             receptionist.setCIN("Z144421");

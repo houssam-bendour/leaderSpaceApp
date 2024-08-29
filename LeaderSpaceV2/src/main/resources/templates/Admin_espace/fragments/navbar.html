@@ -54,8 +54,8 @@
                 <div class="dropdown-content">
                     <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')" href="#" onclick="document.getElementById('subscribersForm').submit();">Les abonnés</a>
                     <a sec:authorize="hasRole('ROLE_RECEPTIONIST')" href="#" onclick="document.getElementById('subscribersFormForReceptionist').submit();">Les abonnés</a>
-                    <a sec:authorize="hasRole('ROLE_RECEPTIONIST')" href="#" onclick="document.getElementById('visitFormForReceptionist').submit();">Les visites des abonnés</a>
-                    <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')" href="#" onclick="document.getElementById('visitForm').submit();">Les visites des abonnés</a>
+                    <a sec:authorize="hasRole('ROLE_RECEPTIONIST')" href="#" onclick="document.getElementById('visitFormForReceptionist').submit();">Les visites</a>
+                    <a sec:authorize="hasRole('ROLE_ADMIN') or hasRole('ROLE_MANAGER')" href="#" onclick="document.getElementById('visitForm').submit();">Les visites</a>
                     <a  href="#" onclick="document.getElementById('resubscribeForm').submit();">Renouvler l'abonnement</a>
                 </div>
             <li  sec:authorize="hasRole('ROLE_RECEPTIONIST')"><a href="#" onclick="document.getElementById('snacksFormForReceptionist').submit();">Stock</a></li>
