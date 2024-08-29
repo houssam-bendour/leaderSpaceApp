@@ -10,6 +10,7 @@
 <div class="main-header">
     <div class="button-container">
         <button id="download-btn" onclick="downloadPDF()">Télécharger en PDF</button>
+        <span style="width: 20px"></span>
         <form th:action="@{/manager/annulation-du-facture(factureId=${facture.id})}" method="post">
             <button type="submit">Annuler</button>
         </form>
