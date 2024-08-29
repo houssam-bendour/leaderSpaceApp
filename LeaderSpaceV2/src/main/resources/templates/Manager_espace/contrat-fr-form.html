@@ -2,26 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Formulaire de Devis</title>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
         }
+
         .form-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
+            padding: 21px;
+            border: 1px solid rgba(204, 204, 204, 0);
+            border-radius: 0 0 10px 10px;
+            background-color: rgba(0, 0, 0, 0.44);
         }
+
         .form-container div {
             margin-bottom: 15px;
         }
+
         label {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
+            color: white;
         }
+
         input[type="text"],
         input[type="number"],
         input[type="date"],
@@ -30,34 +45,135 @@
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            background-color: transparent;
+            color: white;
         }
+
         .form-actions {
             text-align: center;
         }
+
         .language-buttons {
-            text-align: center;
-            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
+
         .rtl {
             direction: rtl;
             text-align: right;
         }
+
         .rtl label {
             text-align: right;
+        }
+        .grid-visit-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-top: 10px;
+            max-width: 600px;
+            border-radius: 10px 10px 0 0;
+        }
+        ::placeholder{
+            color: #b6b6b6;
+        }
+        .grid-visit-info3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            margin-top: 10px;
+            max-width: 600px;
+        }
+        .grid-visit-info .half-width {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .grid-visit-info3 .half-width {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .half-width button{
+            width: 300px;
+            height: 60px;
+            border: transparent;
+        }
+        .grid-visit-info3 .half-width button{
+            width: 185px;
+            height: 40px;
+            border: transparent;
+        }
+        .half-width .fr{
+            border-radius: 10px 0 0 0;
+            font-size: 20px;
+            background-color: #ffffff;
+        }
+        .half-width .ar{
+            border-radius: 0 10px 0 0 ;
+            font-size: 25px;
+            background-color: #ffffff;
+
+        }
+        .half-width .entreprise-btn{
+            border-radius: 10px 0 0 10px;
+
+            background-color: #ffffff;
+        }
+        .half-width .cooperative-btn{
+            border-radius: 0 10px 10px 0 ;
+
+            background-color: #ffffff;
+
+        }
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            background-color: #339794;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .form-actions a {
+            margin-left: 15px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
+<div th:replace="Admin_espace/fragments/navbar :: navbar"></div>
 <div class="language-buttons">
-    <button onclick="showForm('fr')">Français</button>
-    <button onclick="showForm('ar')">Arabe</button>
+    <div class="grid-visit-info">
+        <div class="half-width">
+            <button id="fr_btn" class="fr" onclick="showForm('fr')">Français</button>
+        </div>
+        <div class="half-width">
+                <button id="ar_btn" class="ar" onclick="showForm('ar')">عربي</button>
+        </div>
+    </div>
 </div>
 
 <div id="form-fr" class="form-container" style="display: none;">
-    <div>
-        <button onclick="showType('entreprise', 'Entreprise')">Entreprise</button>
-        <button onclick="showType('association', 'Association')">Association</button>
-        <button onclick="showType('cooperative', 'cooperative')">cooperative</button>
+    <div class="grid-visit-info3">
+        <div class="half-width">
+        <button style="background-color: #249389" id="entreprise-btn" class="entreprise-btn" onclick="showType('entreprise', 'Entreprise')">Entreprise</button>
+        </div>
+        <div class="half-width">
+        <button id="association-btn" onclick="showType('association', 'Association')">Association</button>
+        </div>
+        <div class="half-width">
+        <button id="cooperative-btn" class="cooperative-btn" onclick="showType('cooperative', 'cooperative')">cooperative</button>
+        </div>
     </div>
     <div id="entreprise" style="display: block;">
         <form th:action="@{/manager/submit-contrat-fr}" th:object="${contrat}" method="post">
@@ -65,38 +181,47 @@
             <input type="hidden" th:field="*{type_client}" id="type_client_entreprise"/>
             <div>
                 <label for="name-entreprise">Nom de l’entreprise :</label>
-                <input type="text" id="name-entreprise" th:field="*{business_name}" placeholder="Entrez le Nom de l’entreprise" required>
+                <input type="text" id="name-entreprise" th:field="*{business_name}"
+                       placeholder="Entrez le Nom de l’entreprise" required>
             </div>
             <div>
                 <label for="number-entreprise">Numéro d'identifiant commun de l’entreprise</label>
-                <input type="text" id="number-entreprise" th:field="*{business_id}" placeholder="Entrez le ICE" required>
+                <input type="text" id="number-entreprise" th:field="*{business_id}" placeholder="Entrez le ICE"
+                       required>
             </div>
             <div>
                 <label for="person-entreprise">la personne qui le représente</label>
-                <input type="text" id="person-entreprise" th:field="*{the_person_who_represents_him}" placeholder="Exemple: président" required>
+                <input type="text" id="person-entreprise" th:field="*{the_person_who_represents_him}"
+                       placeholder="Exemple: président" required>
             </div>
             <div>
                 <label for="cin-entreprise">Numéro d'identification national de la personne qui le représente</label>
                 <input type="text" id="cin-entreprise" th:field="*{cin}" placeholder="Entrez le CIN" required>
             </div>
             <div>
-                <label for="montant-entreprise-chiffre">Montant de location  <span style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
-                <input type="number" id="montant-entreprise-chiffre" th:field="*{montant_de_location_chiffre}" placeholder="Entrez le montant" required>
+                <label for="montant-entreprise-chiffre">Montant de location <span
+                        style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
+                <input type="number" id="montant-entreprise-chiffre" th:field="*{montant_de_location_chiffre}"
+                       placeholder="Entrez le montant" required>
             </div>
             <div>
-                <label for="montant-entreprise">Montant de location  <span style="font-family: 'Candara Light',serif ">(En lettres)</span></label>
-                <input type="text" id="montant-entreprise" th:field="*{montant_de_location}" placeholder="Entrez le montant" required>
+                <label for="montant-entreprise">Montant de location <span style="font-family: 'Candara Light',serif ">(En lettres)</span></label>
+                <input type="text" id="montant-entreprise" th:field="*{montant_de_location}"
+                       placeholder="Entrez le montant" required>
             </div>
             <div>
-                <label for="duree-entreprise-chiffre">Durée de location  <span style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
-                <input type="number" id="duree-entreprise-chiffre" th:field="*{duree_par_moi_chifre}"  required>
+                <label for="duree-entreprise-chiffre">Durée de location <span
+                        style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
+                <input type="number" id="duree-entreprise-chiffre" th:field="*{duree_par_moi_chifre}" required>
             </div>
             <div>
-                <label for="duree-entreprise">Durée de location  <span style="font-family: 'Candara Light',serif ">(En lettres et chiffres)</span></label>
-                <input type="text" id="duree-entreprise" th:field="*{duree}" placeholder="Exemple: six mois (6 mois)" required>
+                <label for="duree-entreprise">Durée de location <span style="font-family: 'Candara Light',serif ">(En lettres et chiffres)</span></label>
+                <input type="text" id="duree-entreprise" th:field="*{duree}" placeholder="Exemple: six mois (6 mois)"
+                       required>
             </div>
             <div class="form-actions">
                 <button type="submit">Générer contrat</button>
+                <a th:href="@{/manager/list-contrat}">Annuler</a>
             </div>
         </form>
     </div>
@@ -106,38 +231,47 @@
             <input type="hidden" th:field="*{type_client}" id="type_client_association"/>
             <div>
                 <label for="name-association">Nom de l’association :</label>
-                <input type="text" id="name-association" th:field="*{business_name}" placeholder="Entrez le Nom de l’association" required>
+                <input type="text" id="name-association" th:field="*{business_name}"
+                       placeholder="Entrez le Nom de l’association" required>
             </div>
             <div>
                 <label for="Numero-enregistrement-association">Numéro d’enregistrement ordinal :</label>
-                <input type="text" id="Numero-enregistrement-association" th:field="*{association_number}" placeholder="Entrez le Numéro" required>
+                <input type="text" id="Numero-enregistrement-association" th:field="*{association_number}"
+                       placeholder="Entrez le Numéro" required>
             </div>
             <div>
                 <label for="person-association">la personne qui le représente</label>
-                <input type="text" id="person-association" th:field="*{the_person_who_represents_him}" placeholder="Exemple: président" required>
+                <input type="text" id="person-association" th:field="*{the_person_who_represents_him}"
+                       placeholder="Exemple: président" required>
             </div>
             <div>
                 <label for="cin-association">Numéro d'identification national de la personne qui le représente</label>
                 <input type="text" id="cin-association" th:field="*{cin}" placeholder="Entrez le CIN" required>
             </div>
             <div>
-                <label for="montant-association-chiffre">Montant de location  <span style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
-                <input type="number" id="montant-association-chiffre" th:field="*{montant_de_location_chiffre}" placeholder="Entrez le montant" required>
+                <label for="montant-association-chiffre">Montant de location <span
+                        style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
+                <input type="number" id="montant-association-chiffre" th:field="*{montant_de_location_chiffre}"
+                       placeholder="Entrez le montant" required>
             </div>
             <div>
-                <label for="montant-association">Montant de location  <span style="font-family: 'Candara Light',serif ">(En lettres)</span></label>
-                <input type="text" id="montant-association" th:field="*{montant_de_location}" placeholder="Entrez le montant" required>
+                <label for="montant-association">Montant de location <span style="font-family: 'Candara Light',serif ">(En lettres)</span></label>
+                <input type="text" id="montant-association" th:field="*{montant_de_location}"
+                       placeholder="Entrez le montant" required>
             </div>
             <div>
-                <label for="duree-association-chiffre">Durée de location  <span style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
-                <input type="number" id="duree-association-chiffre" th:field="*{duree_par_moi_chifre}"  required>
+                <label for="duree-association-chiffre">Durée de location <span
+                        style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
+                <input type="number" id="duree-association-chiffre" th:field="*{duree_par_moi_chifre}" required>
             </div>
             <div>
-                <label for="duree-association">Durée de location  <span style="font-family: 'Candara Light',serif ">(En lettres et chiffres)</span></label>
-                <input type="text" id="duree-association" th:field="*{duree}" placeholder="Exemple: six mois (6 mois)" required>
+                <label for="duree-association">Durée de location <span style="font-family: 'Candara Light',serif ">(En lettres et chiffres)</span></label>
+                <input type="text" id="duree-association" th:field="*{duree}" placeholder="Exemple: six mois (6 mois)"
+                       required>
             </div>
             <div class="form-actions">
                 <button type="submit">Générer contrat</button>
+                <a th:href="@{/manager/list-contrat}">Annuler</a>
             </div>
         </form>
     </div>
@@ -147,48 +281,63 @@
             <input type="hidden" th:field="*{type_client}" id="type_client_cooperative"/>
             <div>
                 <label for="name-cooperative">Nom de la cooperative :</label>
-                <input type="text" id="name-cooperative" th:field="*{business_name}" placeholder="Entrez le Nom de la cooperative" required>
+                <input type="text" id="name-cooperative" th:field="*{business_name}"
+                       placeholder="Entrez le Nom de la cooperative" required>
             </div>
             <div>
                 <label for="Numero-enregistrement-cooperative">Numéro d’enregistrement ordinal :</label>
-                <input type="text" id="Numero-enregistrement-cooperative" th:field="*{association_number}" placeholder="Entrez le Numéro" required>
+                <input type="text" id="Numero-enregistrement-cooperative" th:field="*{association_number}"
+                       placeholder="Entrez le Numéro" required>
             </div>
             <div>
                 <label for="person-cooperative">la personne qui le représente</label>
-                <input type="text" id="person-cooperative" th:field="*{the_person_who_represents_him}" placeholder="Exemple: président" required>
+                <input type="text" id="person-cooperative" th:field="*{the_person_who_represents_him}"
+                       placeholder="Exemple: président" required>
             </div>
             <div>
                 <label for="cin-cooperative">Numéro d'identification national de la personne qui le représente</label>
                 <input type="text" id="cin-cooperative" th:field="*{cin}" placeholder="Entrez le CIN" required>
             </div>
             <div>
-                <label for="montant-cooperative-chiffre">Montant de location  <span style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
-                <input type="number" id="montant-cooperative-chiffre" th:field="*{montant_de_location_chiffre}" placeholder="Entrez le montant" required>
+                <label for="montant-cooperative-chiffre">Montant de location <span
+                        style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
+                <input type="number" id="montant-cooperative-chiffre" th:field="*{montant_de_location_chiffre}"
+                       placeholder="Entrez le montant" required>
             </div>
             <div>
-                <label for="montant-cooperative">Montant de location  <span style="font-family: 'Candara Light',serif ">(En lettres)</span></label>
-                <input type="text" id="montant-cooperative" th:field="*{montant_de_location}" placeholder="Entrez le montant" required>
+                <label for="montant-cooperative">Montant de location <span style="font-family: 'Candara Light',serif ">(En lettres)</span></label>
+                <input type="text" id="montant-cooperative" th:field="*{montant_de_location}"
+                       placeholder="Entrez le montant" required>
             </div>
             <div>
-                <label for="duree-cooperative-chiffre">Durée de location  <span style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
-                <input type="number" id="duree-cooperative-chiffre" th:field="*{duree_par_moi_chifre}"  required>
+                <label for="duree-cooperative-chiffre">Durée de location <span
+                        style="font-family: 'Candara Light',serif ">(Par mois)</span></label>
+                <input type="number" id="duree-cooperative-chiffre" th:field="*{duree_par_moi_chifre}" required>
             </div>
             <div>
-                <label for="duree-cooperative">Durée de location  <span style="font-family: 'Candara Light',serif ">(En lettres et chiffres)</span></label>
-                <input type="text" id="duree-cooperative" th:field="*{duree}" placeholder="Exemple: six mois (6 mois)" required>
+                <label for="duree-cooperative">Durée de location <span style="font-family: 'Candara Light',serif ">(En lettres et chiffres)</span></label>
+                <input type="text" id="duree-cooperative" th:field="*{duree}" placeholder="Exemple: six mois (6 mois)"
+                       required>
             </div>
             <div class="form-actions">
                 <button type="submit">Générer contrat</button>
+                <a th:href="@{/manager/list-contrat}">Annuler</a>
             </div>
         </form>
     </div>
 </div>
 
 <div id="form-ar" class="form-container rtl" style="display: none;">
-    <div>
-        <button onclick="showType('entrepriseAr', 'Entreprise')">شركة</button>
-        <button onclick="showType('associationAr', 'Association')">جمعية</button>
-        <button onclick="showType('cooperativeAr', 'cooperative')">تعاونية</button>
+    <div class="grid-visit-info3">
+        <div class="half-width">
+        <button style="background-color: #249389" id="entrepriseAr-btn" class="cooperative-btn" onclick="showType('entrepriseAr', 'Entreprise')">شركة</button>
+        </div>
+        <div class="half-width">
+            <button id="associationAr-btn" onclick="showType('associationAr', 'Association')">جمعية</button>
+        </div>
+        <div class="half-width">
+        <button id="cooperativeAr-btn" class="entreprise-btn" onclick="showType('cooperativeAr', 'cooperative')">تعاونية</button>
+        </div>
     </div>
     <div id="entrepriseAr" style="display: block;">
         <form th:action="@{/manager/submit-contrat-ar}" th:object="${contrat}" method="post">
@@ -196,39 +345,49 @@
             <input type="hidden" th:field="*{type_client}" id="type_client_entrepriseAr"/>
             <div>
                 <label for="name-entrepriseAr">اسم الشركة:</label>
-                <input type="text" id="name-entrepriseAr" th:field="*{business_name}" placeholder="أدخل اسم الشركة" required>
+                <input type="text" id="name-entrepriseAr" th:field="*{business_name}" placeholder="أدخل اسم الشركة"
+                       required>
             </div>
             <div>
                 <label for="number-entrepriseAr">رقم التعريف الموحد للشركة</label>
-                <input type="text" id="number-entrepriseAr" th:field="*{business_id}" placeholder="أدخل رقم التعريف الموحد" required>
+                <input type="text" id="number-entrepriseAr" th:field="*{business_id}"
+                       placeholder="أدخل رقم التعريف الموحد" required>
             </div>
 
             <div>
                 <label for="person-entrepriseAr">الشخص الذي يمثلها</label>
-                <input type="text" id="person-entrepriseAr" th:field="*{the_person_who_represents_him}" placeholder="مثال: رئيسها" required>
+                <input type="text" id="person-entrepriseAr" th:field="*{the_person_who_represents_him}"
+                       placeholder="مثال: رئيسها" required>
             </div>
             <div>
                 <label for="cin-entrepriseAr">رقم التعريف الوطني للشخص الذي يمثلها</label>
-                <input type="text" id="cin-entrepriseAr" th:field="*{cin}" placeholder="أدخل رقم التعريف الوطني" required>
+                <input type="text" id="cin-entrepriseAr" th:field="*{cin}" placeholder="أدخل رقم التعريف الوطني"
+                       required>
             </div>
             <div>
-                <label for="montant-entrepriseAr-chiffre">مبلغ الإيجار  <span style="font-family: 'Candara Light',serif ">(للشهر)</span></label>
-                <input type="number" id="montant-entrepriseAr-chiffre" th:field="*{montant_de_location_chiffre}" placeholder="أدخل المبلغ" required>
+                <label for="montant-entrepriseAr-chiffre">مبلغ الإيجار <span
+                        style="font-family: 'Candara Light',serif ">(للشهر)</span></label>
+                <input type="number" id="montant-entrepriseAr-chiffre" th:field="*{montant_de_location_chiffre}"
+                       placeholder="أدخل المبلغ" required>
             </div>
             <div>
-                <label for="montant-entrepriseAr">مبلغ الإيجار  <span style="font-family: 'Candara Light',serif ">(بالحروف)</span></label>
-                <input type="text" id="montant-entrepriseAr" th:field="*{montant_de_location}" placeholder="أدخل المبلغ" required>
+                <label for="montant-entrepriseAr">مبلغ الإيجار <span style="font-family: 'Candara Light',serif ">(بالحروف)</span></label>
+                <input type="text" id="montant-entrepriseAr" th:field="*{montant_de_location}" placeholder="أدخل المبلغ"
+                       required>
             </div>
             <div>
                 <label for="duree-entrepriseAr-chiffre">مدة الإيجار <span style="font-family: 'Candara Light',serif ">(بلأشهر)</span></label>
-                <input type="number" id="duree-entrepriseAr-chiffre" th:field="*{duree_par_moi_chifre}"  required>
+                <input type="number" id="duree-entrepriseAr-chiffre" th:field="*{duree_par_moi_chifre}" required>
             </div>
             <div>
                 <label for="duree-entrepriseAr">مدة الإيجار <span style="font-family: 'Candara Light',serif ">(بالحروف والأرقام)</span></label>
-                <input type="text" id="duree-entrepriseAr" th:field="*{duree}" placeholder="مثال: ستة أشهر (6 أشهر)" required>
+                <input type="text" id="duree-entrepriseAr" th:field="*{duree}" placeholder="مثال: ستة أشهر (6 أشهر)"
+                       required>
             </div>
             <div class="form-actions">
                 <button type="submit">إنشاء عقد</button>
+                <a th:href="@{/manager/list-contrat}">إلغاء</a>
+
             </div>
         </form>
     </div>
@@ -238,38 +397,47 @@
             <input type="hidden" th:field="*{type_client}" id="type_client_associationAr"/>
             <div>
                 <label for="name-associationAr">اسم الجمعية:</label>
-                <input type="text" id="name-associationAr" th:field="*{business_name}" placeholder="أدخل اسم الجمعية" required>
+                <input type="text" id="name-associationAr" th:field="*{business_name}" placeholder="أدخل اسم الجمعية"
+                       required>
             </div>
             <div>
                 <label for="Numero-enregistrement-associationAr">رقم التسجيل الترتيبي</label>
-                <input type="text" id="Numero-enregistrement-associationAr" th:field="*{association_number}" placeholder="أدخل رقم التسجيل" required>
+                <input type="text" id="Numero-enregistrement-associationAr" th:field="*{association_number}"
+                       placeholder="أدخل رقم التسجيل" required>
             </div>
             <div>
                 <label for="person-associationAr">الشخص الذي يمثلها</label>
-                <input type="text" id="person-associationAr" th:field="*{the_person_who_represents_him}" placeholder="مثال: رئيسها" required>
+                <input type="text" id="person-associationAr" th:field="*{the_person_who_represents_him}"
+                       placeholder="مثال: رئيسها" required>
             </div>
             <div>
                 <label for="cin-associationAr">رقم التعريف الوطني للشخص الذي يمثلها</label>
-                <input type="text" id="cin-associationAr" th:field="*{cin}" placeholder="أدخل رقم التعريف الوطني" required>
+                <input type="text" id="cin-associationAr" th:field="*{cin}" placeholder="أدخل رقم التعريف الوطني"
+                       required>
             </div>
             <div>
-                <label for="montant-associationAr-chiffre">مبلغ الإيجار  <span style="font-family: 'Candara Light',serif ">(للشهر)</span></label>
-                <input type="number" id="montant-associationAr-chiffre" th:field="*{montant_de_location_chiffre}" placeholder="أدخل المبلغ" required>
+                <label for="montant-associationAr-chiffre">مبلغ الإيجار <span
+                        style="font-family: 'Candara Light',serif ">(للشهر)</span></label>
+                <input type="number" id="montant-associationAr-chiffre" th:field="*{montant_de_location_chiffre}"
+                       placeholder="أدخل المبلغ" required>
             </div>
             <div>
-                <label for="montant-associationAr">مبلغ الإيجار  <span style="font-family: 'Candara Light',serif ">(بالحروف)</span></label>
-                <input type="text" id="montant-associationAr" th:field="*{montant_de_location}" placeholder="أدخل المبلغ" required>
+                <label for="montant-associationAr">مبلغ الإيجار <span style="font-family: 'Candara Light',serif ">(بالحروف)</span></label>
+                <input type="text" id="montant-associationAr" th:field="*{montant_de_location}"
+                       placeholder="أدخل المبلغ" required>
             </div>
             <div>
                 <label for="duree-associationAr-chiffre">مدة الإيجار <span style="font-family: 'Candara Light',serif ">(بلأشهر)</span></label>
-                <input type="number" id="duree-associationAr-chiffre" th:field="*{duree_par_moi_chifre}"  required>
+                <input type="number" id="duree-associationAr-chiffre" th:field="*{duree_par_moi_chifre}" required>
             </div>
             <div>
                 <label for="duree-associationAr">مدة الإيجار <span style="font-family: 'Candara Light',serif ">(بالحروف والأرقام)</span></label>
-                <input type="text" id="duree-associationAr" th:field="*{duree}" placeholder="مثال: ستة أشهر (6 أشهر)" required>
+                <input type="text" id="duree-associationAr" th:field="*{duree}" placeholder="مثال: ستة أشهر (6 أشهر)"
+                       required>
             </div>
             <div class="form-actions">
                 <button type="submit">إنشاء عقد</button>
+                <a th:href="@{/manager/list-contrat}">إلغاء</a>
             </div>
         </form>
     </div>
@@ -279,38 +447,47 @@
             <input type="hidden" th:field="*{type_client}" id="type_client_cooperativeAr"/>
             <div>
                 <label for="name-cooperativeAr">اسم التعاونية:</label>
-                <input type="text" id="name-cooperativeAr" th:field="*{business_name}" placeholder="أدخل اسم التعاونية" required>
+                <input type="text" id="name-cooperativeAr" th:field="*{business_name}" placeholder="أدخل اسم التعاونية"
+                       required>
             </div>
             <div>
                 <label for="Numero-enregistrement-cooperativeAr">رقم التسجيل الترتيبي</label>
-                <input type="text" id="Numero-enregistrement-cooperativeAr" th:field="*{association_number}" placeholder="أدخل رقم التسجيل" required>
+                <input type="text" id="Numero-enregistrement-cooperativeAr" th:field="*{association_number}"
+                       placeholder="أدخل رقم التسجيل" required>
             </div>
             <div>
                 <label for="person-cooperativeAr">الشخص الذي يمثلها</label>
-                <input type="text" id="person-cooperativeAr" th:field="*{the_person_who_represents_him}" placeholder="مثال: رئيسها" required>
+                <input type="text" id="person-cooperativeAr" th:field="*{the_person_who_represents_him}"
+                       placeholder="مثال: رئيسها" required>
             </div>
             <div>
                 <label for="cin-cooperativeAr">رقم التعريف الوطني للشخص الذي يمثلها</label>
-                <input type="text" id="cin-cooperativeAr" th:field="*{cin}" placeholder="أدخل رقم التعريف الوطني" required>
+                <input type="text" id="cin-cooperativeAr" th:field="*{cin}" placeholder="أدخل رقم التعريف الوطني"
+                       required>
             </div>
             <div>
-                <label for="montant-cooperativeAr-chiffre">مبلغ الإيجار  <span style="font-family: 'Candara Light',serif ">(للشهر)</span></label>
-                <input type="number" id="montant-cooperativeAr-chiffre" th:field="*{montant_de_location_chiffre}" placeholder="أدخل المبلغ" required>
+                <label for="montant-cooperativeAr-chiffre">مبلغ الإيجار <span
+                        style="font-family: 'Candara Light',serif ">(للشهر)</span></label>
+                <input type="number" id="montant-cooperativeAr-chiffre" th:field="*{montant_de_location_chiffre}"
+                       placeholder="أدخل المبلغ" required>
             </div>
             <div>
-                <label for="montant-cooperativeAr">مبلغ الإيجار  <span style="font-family: 'Candara Light',serif ">(بالحروف)</span></label>
-                <input type="text" id="montant-cooperativeAr" th:field="*{montant_de_location}" placeholder="أدخل المبلغ" required>
+                <label for="montant-cooperativeAr">مبلغ الإيجار <span style="font-family: 'Candara Light',serif ">(بالحروف)</span></label>
+                <input type="text" id="montant-cooperativeAr" th:field="*{montant_de_location}"
+                       placeholder="أدخل المبلغ" required>
             </div>
             <div>
                 <label for="duree-cooperativeAr-chiffre">مدة الإيجار <span style="font-family: 'Candara Light',serif ">(بلأشهر)</span></label>
-                <input type="number" id="duree-cooperativeAr-chiffre" th:field="*{duree_par_moi_chifre}"  required>
+                <input type="number" id="duree-cooperativeAr-chiffre" th:field="*{duree_par_moi_chifre}" required>
             </div>
             <div>
                 <label for="duree-cooperativeAr">مدة الإيجار <span style="font-family: 'Candara Light',serif ">(بالحروف والأرقام)</span></label>
-                <input type="text" id="duree-cooperativeAr" th:field="*{duree}" placeholder="مثال: ستة أشهر (6 أشهر)" required>
+                <input type="text" id="duree-cooperativeAr" th:field="*{duree}" placeholder="مثال: ستة أشهر (6 أشهر)"
+                       required>
             </div>
             <div class="form-actions">
                 <button type="submit">إنشاء عقد</button>
+                <a th:href="@{/manager/list-contrat}">إلغاء</a>
             </div>
         </form>
     </div>
@@ -320,14 +497,19 @@
     function showForm(language) {
         document.getElementById('form-fr').style.display = language === 'fr' ? 'block' : 'none';
         document.getElementById('form-ar').style.display = language === 'ar' ? 'block' : 'none';
+        document.getElementById('fr_btn').style.backgroundColor = language === 'fr' ? '#249389' : 'white';
+        document.getElementById('ar_btn').style.backgroundColor = language === 'ar' ? '#249389' : 'white';
     }
 
     function showType(type, typeText) {
         var types = ['entreprise', 'association', 'cooperative', 'entrepriseAr', 'associationAr', 'cooperativeAr'];
-        types.forEach(function(t) {
+        types.forEach(function (t) {
             document.getElementById(t).style.display = 'none';
+            document.getElementById(t+'-btn').style.backgroundColor ='white';
+
         });
         document.getElementById(type).style.display = 'block';
+        document.getElementById(type+'-btn').style.backgroundColor ='#249389';
         if (type.includes('Ar')) {
             document.getElementById('type_client_' + type).value = typeText;
         } else {

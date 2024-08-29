@@ -10,15 +10,21 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-image: url('/image/ls.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .main-header {
     width: 100%;
     display: flex;
     justify-content: center;
-    background-color: #f8f9fa;
     padding: 10px 0;
-    border-bottom: 1px solid #ddd;
 }
 
 .button-container {
@@ -29,7 +35,7 @@ body {
 #download-btn {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007BFF;
+    background-color: rgba(21, 170, 166, 0.69);
     color: white;
     border: none;
     border-radius: 5px;
@@ -37,9 +43,21 @@ body {
 }
 
 #download-btn:hover {
-    background-color: #0056b3;
+    background-color: rgba(16, 110, 107, 0.69);
 }
-
+form button{
+    height: 100%;
+    font-size: 16px;
+    background-color: rgba(21, 170, 166, 0.69);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 200px;
+}
+form button:hover{
+    background-color: rgba(16, 110, 107, 0.69);
+}
 .container {
     width: 216mm; /* Adjusted width to A4 */
     height: 279mm; /* Adjusted height to A4 */
@@ -49,6 +67,7 @@ body {
     padding: 10mm;
     border: 1px solid #000;
     box-sizing: border-box;
+    background-color: white;
 }
 
 .content-header, .client-info, .services, .totals, .additional-info {

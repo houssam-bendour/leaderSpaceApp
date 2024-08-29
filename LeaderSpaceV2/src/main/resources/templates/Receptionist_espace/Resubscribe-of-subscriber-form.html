@@ -2,47 +2,159 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Subscriber</title>
-    <link rel="stylesheet" th:href="@{/css/add-subscriber.css}">
+    <title>Réabonnement d'un Abonné</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+        }
+
+        .container {
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            margin: 50px auto;
+            background-color: rgba(0, 0, 0, 0.44);
+            overflow: hidden;
+            color: white;
+        }
+
+        h1 {
+            color: rgb(1, 179, 181);
+            margin-bottom: 20px;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: none;
+            border-top: 2px solid #29978d;
+        }
+
+        h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .info label {
+            font-weight: bold;
+            color: #ffffff;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .info span {
+            display: block;
+            color: #ffffff;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: rgba(0, 0, 0, 0.44);
+            border-radius: 5px;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.66);
+        }
+
+        button, .btn {
+            background-color: #29978d;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover, .btn:hover {
+            background-color: #267b72;
+        }
+
+        .btn {
+            background-color: #999;
+            margin-left: 10px;
+        }
+
+        .btn:hover {
+            background-color: #777;
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 </head>
 <body>
-<h1>Resubscribe of Subscriber</h1>
-<hr>
-<h2>Profile Information</h2>
+<div th:replace="Admin_espace/fragments/navbar :: navbar"></div>
 
-<div>
-    <label>CIN: </label>
-    <span th:text="${subscriber.CIN}"></span>
+<div class="container">
+    <h1>Réabonnement d'un Abonné</h1>
+    <hr>
+    <h2>Informations du Profil</h2>
+
+    <div class="info">
+        <label>CIN :</label>
+        <span th:text="${subscriber.CIN}"></span>
+    </div>
+    <div class="info">
+        <label>Prénom :</label>
+        <span th:text="${subscriber.first_name}"></span>
+    </div>
+    <div class="info">
+        <label>Nom :</label>
+        <span th:text="${subscriber.last_name}"></span>
+    </div>
+    <div class="info">
+        <label>Email :</label>
+        <span th:text="${subscriber.email}"></span>
+    </div>
+    <div class="info">
+        <label>Téléphone :</label>
+        <span th:text="${subscriber.phone}"></span>
+    </div>
+
+    <form th:action="@{/reception/save-Resubscribe-of-subscriber}" method="post" th:object="${subscriber}">
+        <input type="hidden" th:field="*{id}" th:value="${subscriber.id}">
+
+        <label for="subscriptionType">Type d'abonnement :</label>
+        <select id="subscriptionType" name="subscriptionType_id">
+            <option value="" disabled selected>Choisissez un type</option>
+            <option th:each="subscriptionType : ${subscriptionTypes}"
+                    th:value="${subscriptionType.id}"
+                    th:text="${subscriptionType.name}"
+                    th:selected="${subscriptionType.id} == ${subscriber.subscription_type.id}">
+            </option>
+        </select>
+        <br>
+
+        <label for="quantity">Quantité :</label>
+        <input type="number" id="quantity" name="quantity" min="1" th:field="*{quantity}" value="1" required>
+        <br>
+
+        <button type="submit">Enregistrer</button>
+        <a class="btn" th:href="@{/}">Annuler</a>
+    </form>
 </div>
-<div>
-    <label>First Name: </label>
-    <span th:text="${subscriber.first_name}"></span>
-</div>
-<div>
-    <label>Last Name: </label>
-    <span th:text="${subscriber.last_name}"></span>
-</div>
-<div>
-    <label>Email: </label>
-    <span th:text="${subscriber.email}"></span>
-</div>
-<div>
-    <label>Phone: </label>
-    <span th:text="${subscriber.phone}"></span>
-</div>
-<form th:action="@{/reception/save-Resubscribe-of-subscriber}" method="post" th:object="${subscriber}">
-    <input type="hidden"  th:field="*{id}" th:value="${subscriber.id}">
-    <label for="subscriptionType">Subscription Type:</label>
-    <select id="subscriptionType" name="subscriptionType_id">
-        <option value="" disabled selected>Choose a type</option>
-        <option th:each="subscriptionType : ${subscriptionTypes}" th:value="${subscriptionType.id}" th:text="${subscriptionType.name}" th:selected="${subscriptionType.id} == ${subscriber.subscription_type.id}"></option>
-    </select>
-    <br>
-    <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" name="quantity" min="1" th:field="*{quantity}" value="1" required>
-    <br>
-    <button type="submit">Save</button>
-    <a class="btn btn-secondary" th:href="@{/}">Cancel</a>
-</form>
 </body>
 </html>

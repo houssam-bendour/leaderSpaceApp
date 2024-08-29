@@ -1,48 +1,125 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Formulaire de Devis</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier le service supplémentaire</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
         }
+
         .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-        }
-        .form-container div {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        input[type="text"],
-        input[type="number"],
-        input[type="date"],
-        textarea {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            max-width: 600px;
+            background-color: rgba(0, 0, 0, 0.62);
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 50px auto;
         }
+
+        .form-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #339794;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: rgb(255, 254, 254);
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-group select {
+            appearance: none;
+        }
+
         .form-actions {
             text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            background-color: #339794;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .form-actions a {
+            margin-left: 15px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        input[type="text"] {
+            background: transparent;
+            color: #fff;
+            outline: none;
+        }
+        textarea {
+            background: transparent;
+            color: #fff;
+            outline: none;
+            resize: none;
+            height: 50px;
+        }
+        /* Style for the eye icon */
+        .eye-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .eye-icon img {
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            right: 50%;
         }
     </style>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 </head>
 <body>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+
 <div class="form-container">
+    <h1>Confirmer le prix en lettre</h1>
     <form th:action="@{/manager/domiciliationFacture(factureId=${facture.id})}" method="post">
-        <div>
+        <div class="form-group">
             <label for="ttc-to-word" th:text="${facture.total_TTC}+' MAD'"></label>
-            <input type="text" id="ttc-to-word" name="total_TTC_to_words" th:value="${facture.total_TTC_to_words}" required>
-        </div>
+            <input type="text" id="ttc-to-word" name="total_TTC_to_words" th:value="${facture.total_TTC_to_words}" required>        </div>
         <div class="form-actions">
             <button type="submit">confirmer</button>
         </div>
