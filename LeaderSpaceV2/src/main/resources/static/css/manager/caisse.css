@@ -206,7 +206,6 @@ table.table-fixed tbody tr {
 /* Gérer les survols */
 tr:hover td {
     background-color: #e9ecef;
-    transform: scale(1.02); /* Apply the scaling only to rows */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     opacity: unset;
 }
@@ -227,7 +226,6 @@ td {
     text-align: center;
     padding: 15px 20px;
     border-bottom: 1px solid #ddd;
-    transition: background-color 0.5s ease;
 }
 
 tr:nth-child(even) {
@@ -236,7 +234,6 @@ tr:nth-child(even) {
 
 tr:hover td {
     background-color: #e9ecef;
-    transform: scale(1.02); /* Apply the scaling only to rows */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     opacity: unset;
 }
@@ -254,7 +251,7 @@ td .action-buttons button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    transition: all 0.5s ease;
+
 }
 
 td .action-buttons button i , .fa-circle-plus, .fa-edit{

@@ -53,7 +53,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="snack : ${snacks}" th:style="${(snack.quantity!=null && snack.quantity <= snack.requiredQuantity) ? 'background-color: #d45f6a; color: white;' : ''}" th:rowspan="2px">
+            <tr th:each="snack : ${snacks}" th:style="${(snack.quantity!=null && snack.quantity <= snack.requiredQuantity) ? 'background-color: #d45f6a; color: #f4d03f; font-weight: bold' : ''}" th:rowspan="2px">
                 <td>
                     <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${snack.base64Image}}" alt="QR Code" width="50"/>
                 </td>

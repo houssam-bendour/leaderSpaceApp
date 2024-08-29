@@ -11,6 +11,7 @@
 <div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 <div class="form-container">
     <h1>Ajouter abonné</h1>
+    <hr/>
     <form th:action="@{/manager/save-subscriber}" method="post" th:object="${subscriber}">
         <div class="form-group">
             <label for="subscriptionType">Type d'abonnement:</label>
@@ -57,7 +58,6 @@
                 <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
                     <img src="/image/closed_icon.png" alt="eye icon">
                 </span>
-            </span>
             </div>
         </div>
 

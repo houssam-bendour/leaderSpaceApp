@@ -6,69 +6,9 @@
     <title>List of Subscribers</title>
     <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
     <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
+    <link rel="stylesheet" type="text/css" href="/css/manager/visit.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <style>
-        .btn-pagination-custom {
-            color: #29978d;
-            background-color: white;
-            border-color: #29978d;
-        }
-
-        .btn-pagination-custom:hover {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-
-        .btn-pagination-customHov {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-        .btn-pagination-customHov:hover {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-
-        .btn-custom {
-            color: #29978d;
-            border: 1px solid #29978d;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            text-align: center;
-            background-color: transparent;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .btn-custom:hover, .btn-customHov {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-
-        .btn-custom {
-            color: #29978d;
-            border: 1px solid #29978d;
-            padding: 0.375rem 0.75rem;
-            font-size: 1rem;
-            line-height: 1.5;
-            text-align: center;
-            background-color: transparent;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .btn-custom:hover, .btn-customHov {
-            color: white;
-            background-color: #29978d;
-            border-color: #29978d;
-        }
-
-    </style>
     <script>
         window.addEventListener('load', function() {
             var section = document.getElementById('ancreTest'); // Identifiez l'élément par son ID
@@ -82,16 +22,16 @@
 <body>
 <div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 
-<main id="ancreTest">
+<main id="ancreTest" >
     <div class="btn-group-custom" role="group" aria-label="Navigation des sections">
-        <button id="Table-SubscribersBtn" type="button" class="btn-custom" onclick="showSection('Table-Subscribers')">Visits of Subscribers</button>
-        <button id="Table-Non-SubscribersBtn" type="button" class="btn-custom" onclick="showSection('Table-Non-Subscribers')">Visits of Non-Subscribers</button>
-        <button id="Table-DeskBtn" type="button" class="btn-custom" onclick="showSection('Table-Desk')">Visits of Desk</button>
-        <button id="Table-RoomBtn" type="button" class="btn-custom" onclick="showSection('Table-Room')">Visits of Conference Room</button>
+        <button id="Table-SubscribersBtn" type="button" class="btn-custom" onclick="showSection('Table-Subscribers')">Visites des abonnés</button>
+        <button id="Table-Non-SubscribersBtn" type="button" class="btn-custom" onclick="showSection('Table-Non-Subscribers')">Visites des visiteurs</button>
+        <button id="Table-DeskBtn" type="button" class="btn-custom" onclick="showSection('Table-Desk')">Visites de bureau</button>
+        <button id="Table-RoomBtn" type="button" class="btn-custom" onclick="showSection('Table-Room')">Visites de salle de réunion</button>
     </div>
     <div id="Table-Subscribers">
         <div class="header">
-            <h1>Visits of Subscribers</h1>
+            <h1>Visites des abonnés</h1>
         </div>
         <div class="search-bar-buttons">
             <div class="header-buttons">
@@ -111,25 +51,25 @@
             <div class="search-form">
                 <form th:action="@{visit}" method="get">
                     <input type="hidden" name="section" value="Table-Subscribers">
-                    <input type="text" name="Name" placeholder="Search by name" th:value="${name}" />
+                    <input type="text" name="Name" placeholder="Rechercher par nom" th:value="${name}" />
                     <abbr title="Rechercher">
                         <button type="submit"><i class="fa fa-search"></i></button> <!-- Icon only -->
                     </abbr>
                 </form>
             </div>
         </div>
-        <div class="table-container">
-            <table border="1" class="subscriber-table">
+        <div class="table-container cadre-table-scroll">
+            <table border="1" class="subscriber-table table-fixed scroll table-scroll">
                 <thead>
                 <tr>
                     <th>CIN</th>
-                    <th>subscription type</th>
-                    <th>First name</th>
-                    <th>Last name</th>
+                    <th>Type d'abonnement</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
                     <th>Email</th>
-                    <th>Day</th>
-                    <th>Start time</th>
-                    <th>End time</th>
+                    <th>Date</th>
+                    <th>Heure de début</th>
+                    <th>Heure de fin</th>
                     <th>Snacks</th>
                 </tr>
                 </thead>
@@ -145,31 +85,35 @@
                     <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
                     <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
                     <td>
-                        <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                        <ul th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) > 1}"
+                            th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
                             <li th:text="${snack.snacksAndBoissons.name}"></li>
                         </ul>
+                        <div th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) == 1}"
+                             th:each="snack : ${visit.snacksAndBoissonsOfVisits}"
+                             th:text="${snack.snacksAndBoissons.name}">
+                        </div>
                     </td>
                 </tr>
                 </tbody>
             </table>
-
-            <nav aria-label="Page navigation example">
-                <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
-                    <li th:each="page, status : ${pages}" style="margin-left: 10px;">
-                        <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
-                           th:href="@{visit(section='Table-Subscribers', page=${status.index},name=${name})}"
-                           th:text="${status.count}"
-                           style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
+        <nav aria-label="Page navigation example">
+            <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+                <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                    <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                       th:href="@{visit(section='Table-Subscribers', page=${status.index},name=${name})}"
+                       th:text="${status.count}"
+                       style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <div id="Table-Non-Subscribers">
         <div class="header">
-            <h1>Visits of Non-Subscribers</h1>
+            <h1>Visites des visiteurs</h1>
         </div>
         <div class="search-bar-buttons">
             <div class="header-buttons">
@@ -180,13 +124,13 @@
                 </form>
             </div>
         </div>
-        <div class="table-container">
-            <table border="1" class="subscriber-table">
+        <div class="table-container cadre-table-scroll">
+            <table border="1" class="subscriber-table table-fixed scroll table-scroll">
                 <thead>
                 <tr>
-                    <th>Day</th>
-                    <th>Start time</th>
-                    <th>End time</th>
+                    <th>Date</th>
+                    <th>Heure de début</th>
+                    <th>Heure de Fin</th>
                     <th>Snacks</th>
                 </tr>
                 </thead>
@@ -196,31 +140,36 @@
                     <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
                     <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
                     <td>
-                        <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                        <ul th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) > 1}"
+                            th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
                             <li th:text="${snack.snacksAndBoissons.name}"></li>
                         </ul>
+                        <div th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) == 1}"
+                             th:each="snack : ${visit.snacksAndBoissonsOfVisits}"
+                             th:text="${snack.snacksAndBoissons.name}">
+                        </div>
                     </td>
                 </tr>
                 </tbody>
 
             </table>
-            <nav aria-label="Page navigation example">
-                <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
-                    <li th:each="page, status : ${pages}" style="margin-left: 10px;">
-                        <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
-                           th:href="@{visit(section='Table-Non-Subscribers', page=${status.index})}"
-                           th:text="${status.count}"
-                           style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
+        <nav aria-label="Page navigation example">
+            <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+                <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                    <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                       th:href="@{visit(section='Table-Non-Subscribers', page=${status.index})}"
+                       th:text="${status.count}"
+                       style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <div id="Table-Desk">
         <div class="header">
-            <h1>Visits of Desk</h1>
+            <h1>Visites du bureau</h1>
         </div>
         <div class="search-bar-buttons">
             <div class="header-buttons">
@@ -231,13 +180,13 @@
                 </form>
             </div>
         </div>
-        <div class="table-container">
-            <table border="1" class="subscriber-table">
+        <div class="table-container cadre-table-scroll">
+            <table border="1" class="subscriber-table table-fixed scroll table-scroll">
                 <thead>
                 <tr>
-                    <th>Day</th>
-                    <th>Start time</th>
-                    <th>End time</th>
+                    <th>Date</th>
+                    <th>Heure de début</th>
+                    <th>Heure de fin</th>
                     <th>Snacks</th>
                     <th>Aciton</th>
                 </tr>
@@ -250,9 +199,14 @@
                     <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
                     <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
                     <td>
-                        <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
+                        <ul th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) > 1}"
+                            th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
                             <li th:text="${snack.snacksAndBoissons.name}"></li>
                         </ul>
+                        <div th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) == 1}"
+                             th:each="snack : ${visit.snacksAndBoissonsOfVisits}"
+                             th:text="${snack.snacksAndBoissons.name}">
+                        </div>
                     </td>
                     <td>
                         <div class="action-buttons" th:if="${nowInMorocco.toLocalDate().isBefore(visit.day)||(nowInMorocco.toLocalDate().isEqual(visit.day)&&nowInMorocco.toLocalTime().isBefore(visit.startTime))}">
@@ -266,23 +220,23 @@
                 </tr>
                 </tbody>
             </table>
-            <nav aria-label="Page navigation example">
-                <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
-                    <li th:each="page, status : ${pages}" style="margin-left: 10px;">
-                        <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
-                           th:href="@{visit(section='Table-Desk', page=${status.index})}"
-                           th:text="${status.count}"
-                           style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
+        <nav aria-label="Page navigation example">
+            <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+                <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                    <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                       th:href="@{visit(section='Table-Desk', page=${status.index})}"
+                       th:text="${status.count}"
+                       style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 
     <div id="Table-Room">
         <div class="header">
-            <h1>Visits of Conference Room</h1>
+            <h1>Visites de salle de réunion</h1>
         </div>
         <div class="search-bar-buttons">
             <div class="header-buttons">
@@ -293,13 +247,13 @@
                 </form>
             </div>
         </div>
-        <div class="table-container">
-            <table border="1" class="subscriber-table">
+        <div class="table-container cadre-table-scroll">
+            <table border="1" class="subscriber-table table-fixed scroll table-scroll">
                 <thead>
                 <tr>
-                    <th>Day</th>
-                    <th>Start time</th>
-                    <th>End time</th>
+                    <th>Date</th>
+                    <th>Heure de début</th>
+                    <th>Heure de fin</th>
                     <th>Snacks</th>
                     <th>Aciton</th>
                 </tr>
@@ -314,9 +268,14 @@
                     <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
                     <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
                     <td>
-                        <ul th:each="snack : ${visit.snacksAndBoissonsOfVisitRoom}">
+                        <ul th:if="${#lists.size(visit.snacksAndBoissonsOfVisitRoom) > 1}"
+                            th:each="snack : ${visit.snacksAndBoissonsOfVisitRoom}">
                             <li th:text="${snack.snacksAndBoissons.name}"></li>
                         </ul>
+                        <div th:if="${#lists.size(visit.snacksAndBoissonsOfVisitRoom) == 1}"
+                             th:each="snack : ${visit.snacksAndBoissonsOfVisitRoom}"
+                             th:text="${snack.snacksAndBoissons.name}">
+                        </div>
                     </td>
                     <td>
                         <div class="action-buttons" th:if="${nowInMorocco.toLocalDate().isBefore(visit.day)||(nowInMorocco.toLocalDate().isEqual(visit.day)&&nowInMorocco.toLocalTime().isBefore(visit.startTime))}">
@@ -328,19 +287,18 @@
                 </tr>
                 </tbody>
             </table>
-
-            <nav aria-label="Page navigation example">
-                <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
-                    <li th:each="page, status : ${pages}" style="margin-left: 10px;">
-                        <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
-                           th:href="@{visit(section='Table-Room', page=${status.index})}"
-                           th:text="${status.count}"
-                           style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
-                        </a>
-                    </li>
-                </ul>
-            </nav>
         </div>
+        <nav aria-label="Page navigation example">
+            <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+                <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                    <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                       th:href="@{visit(section='Table-Room', page=${status.index})}"
+                       th:text="${status.count}"
+                       style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </main>
 </body>

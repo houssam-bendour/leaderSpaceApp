@@ -118,7 +118,7 @@ main {
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    margin: 2rem 5rem;
+    margin: 1rem 5rem;
     /*overflow-y: auto;*/
 }
 
@@ -168,7 +168,6 @@ tr:nth-child(even) {
 
 tr:hover td {
     background-color: #e9ecef;
-    transform: scale(1.02); /* Apply the scaling only to rows */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     opacity: unset;
 }
@@ -258,9 +257,7 @@ footer p:hover {
 
 .table-scroll tbody tr:hover td {
     background-color: #e9ecef;
-    transform: scale(1.02); /* Slightly enlarges row on hover */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Adds shadow effect on hover */
-    transition: all 0.2s ease-in-out; /* Smooth transition effect */
 }
 
 .table-scroll {
@@ -324,7 +321,7 @@ footer p:hover {
     font-size: 1.1rem; /* Larger font size */
     transform: scale(1.1); /* Slightly enlarge the button */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Enhanced shadow for emphasis */
-    margin-top: 2rem;
+    margin-top: 1rem;
 }
 
 /* Optional: Add a subtle shadow to the buttons */
