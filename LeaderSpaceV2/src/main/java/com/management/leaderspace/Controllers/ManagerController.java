@@ -828,11 +828,11 @@ public class ManagerController {
                 }
 
                 model.addAttribute("allContractsByDate",allContractByDayAndPagee);
-
             }
             ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
 
             model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+
 
         }
         return "Manager_espace/turnover";

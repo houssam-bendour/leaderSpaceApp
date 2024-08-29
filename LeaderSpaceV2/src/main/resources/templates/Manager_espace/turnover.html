@@ -207,26 +207,25 @@
     <div class="container mt-5">
         <div class="card shadow-lg mx-auto">
             <div class="card-body">
-                <h2 class="card-title text-center mb-4">Chiffre d'affaires</h2>
+                <h1 class="card-title text-center mb-4" style="color: #29978d;">Chiffre d'affaires</h1>
                 <form method="get" th:action="@{/manager/turnover}" onsubmit="return validateDates()">
                     <div class="row mb-3">
                         <div class="col-md-6 d-flex align-items-center">
-                            <h4 class="mb-0 me-1">From</h4>
+                            <h4 class="mb-0 me-1">De</h4>
                             <h4 class="mb-0 me-2">:</h4>
                             <input type="date" name="date_debut" class="form-control" th:value="${param.date_debut != null ? param.date_debut : null}">
                         </div>
                         <div class="col-md-6 d-flex align-items-center">
-                            <h4 class="mb-0 me-1">To</h4>
+                            <h4 class="mb-0 me-1">À</h4>
                             <h4 class="mb-0 me-2">:</h4>
                             <input type="date" name="date_fin" class="form-control" th:value="${param.date_fin != null ? param.date_fin : null}">
                         </div>
                     </div>
-
                     <div class="d-flex justify-content-center">
                         <div class="d-flex justify-content-between mt-3" style="width: 50%;">
-                            <button type="submit" name="turnover" value="detail" class="btn btn-customHov me-2 flex-grow-1">Chercher</button>
-                            <button type="submit" name="turnover" value="chart" class="btn btn-custom me-2 flex-grow-1">Chart</button>
-                            <a class="btn btn-custom flex-grow-1" th:href="@{/}">Cancel</a>
+                            <button type="submit" name="turnover" value="detail" class="btn btn-customHov me-2 flex-grow-1"><h5>Calculer</h5></button>
+                            <button type="submit" name="turnover" value="chart" class="btn btn-custom me-2 flex-grow-1"><h5>Graphiques</h5></button>
+                            <a class="btn btn-custom flex-grow-1" th:href="@{/}"><h5>Retour</h5></a>
                         </div>
                     </div>
                 </form>
@@ -238,12 +237,9 @@
             </div>
         </div>
     </div>
-
-
-
     <div th:if="${param.date_debut!=null && param.date_fin!=null}">
         <div class="separator"></div>
-        <h3 class="card-title" th:text="'Détails du chiffre d\'affaires entre ' + ${param.date_debut} + ' et ' + ${param.date_fin}"></h3>
+        <h3 class="card-title" th:text="'Détails du chiffre d\'affaires du ' + ${param.date_debut} + ' au ' + ${param.date_fin}"></h3>
         <div class="separator"></div>
         <div class="card-body" id="ancreTest">
             <div class="btn-group" role="group" aria-label="Navigation des sections">
@@ -254,23 +250,22 @@
                 <button id="subscriptionsBtn" type="button" class="btn btn-custom" onclick="showSection('subscriptions')">Abonnements</button>
                 <button id="contractsBtn" type="button" class="btn btn-custom" onclick="showSection('contracts')">Contrats</button>
             </div>
-
             <div th:id="normaleVisits">
                 <div th:if="${!listNormaleVisitsByDayAndSection.isEmpty()}" class="mt-4">
-                    <h4>Les visits normale</h4>
+                    <h4>Les visites normales</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>
-                            <th >Jour</th>
-                            <th >Heure de début</th>
-                            <th >Heure de fin</th>
-                            <th >Type de visiteur</th>
-                            <!--                            <th>Nom du service</th>-->
-                            <!--                            <th>Durée du service</th>-->
-                            <th >Prix du service</th>
-                            <th >service supplémentaire</th>
-                            <th >Consommations (quantité)</th>
-                            <th >Total payé dans la visite</th>
+                            <th>Jour</th>
+                            <th>Heure de début</th>
+                            <th>Heure de fin</th>
+                            <th>Type de visiteur</th>
+                            <!-- <th>Nom du service</th> -->
+                            <!-- <th>Durée du service</th> -->
+                            <th>Prix du service</th>
+                            <th>Service supplémentaire</th>
+                            <th>Consommations (quantité)</th>
+                            <th>Total payé lors de la visite</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -279,8 +274,8 @@
                             <td th:text="${#temporals.format(visit.startTime,'HH:mm')}"></td>
                             <td th:text="${#temporals.format(visit.endTime,'HH:mm')}"></td>
                             <td th:text="${visit.subscriber != null ? 'Inscrit' : 'Non inscrit'}"></td>
-                            <!--                                <td th:text="${visit.serviceType.name}"></td>-->
-                            <!--                                <td th:text="${visit.serviceType.duration}"></td>-->
+                            <!-- <td th:text="${visit.serviceType.name}"></td> -->
+                            <!-- <td th:text="${visit.serviceType.duration}"></td> -->
                             <td th:text="${visit.subscriber == null ? visit.service_price : 'Inscrit'}"></td>
                             <td th:text="${visit.service_suplementaire_price}"></td>
                             <td>
@@ -294,18 +289,18 @@
                                     </li>
                                 </ul>
                                 <div class="d-flex align-items-center">
-                                    <h6>Totale :</h6>
+                                    <h6>Total :</h6>
                                     <h5 class="ms-2" th:text="${mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)}"></h5>
                                 </div>
                             </td>
                             <td>
-                                <h4 th:text="${visit.subscriber == null ? visit.service_price + mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price : mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id)+visit.service_suplementaire_price}"></h4>
+                                <h4 th:text="${visit.subscriber == null ? visit.service_price + mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id) + visit.service_suplementaire_price : mapTotalPriceOfSnacksAndBoissonsByVisit.get(visit.id) + visit.service_suplementaire_price}"></h4>
                             </td>
                         </tr>
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="4"><h4>Totale</h4></td>
+                            <td colspan="4"><h4>Total</h4></td>
                             <td><h4 th:text="${sommeServicePriceOfNormaleVisits}"></h4></td>
                             <td><h4 th:text="${sommeServiePriceSupplementaireOfVisits}"></h4></td>
                             <td><h4 th:text="${sommeConsommationsNormaleVisits}"></h4></td>
@@ -323,12 +318,11 @@
                             </li>
                         </ul>
                     </nav>
-
                 </div>
             </div>
             <div id="roomVisits">
-                <div th:if="${!allVisitsOfRoomByDate.isEmpty()}" class="mt-4" >
-                    <h4>Visits de la salle de conférence</h4>
+                <div th:if="${!allVisitsOfRoomByDate.isEmpty()}" class="mt-4">
+                    <h4>Visites de la salle de conférence</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -336,7 +330,7 @@
                             <th>Heure de début</th>
                             <th>Heure de fin</th>
                             <th>Prix du service</th>
-                            <th>service supplémentaire</th>
+                            <th>Service supplémentaire</th>
                             <th>Consommations (quantité)</th>
                             <th>Consommation des participants</th>
                             <th>Total payé par la réservation</th>
@@ -345,8 +339,8 @@
                         <tbody>
                         <tr th:each="visitOfRoom : ${allVisitsOfRoomByDate}">
                             <td th:text="${visitOfRoom.day}"></td>
-                            <td th:text="${visitOfRoom.startTime}"></td>
-                            <td th:text="${visitOfRoom.endTime}"></td>
+                            <td th:text="${#temporals.format(visitOfRoom.startTime,'HH:mm')}"></td>
+                            <td th:text="${#temporals.format(visitOfRoom.endTime,'HH:mm')}"></td>
                             <td th:text="${visitOfRoom.service_room_price}"></td>
                             <td th:text="${visitOfRoom.service_suplementaire_price}"></td>
                             <td>
@@ -360,7 +354,7 @@
                                     </li>
                                 </ul>
                                 <div class="d-flex align-items-center">
-                                    <h6>Totale :</h6>
+                                    <h6>Total :</h6>
                                     <h5 class="ms-2" th:text="${sommeOfSnacksAndBoissonsOfRoom.get(visitOfRoom.id)}"></h5>
                                 </div>
                             </td>
@@ -375,19 +369,19 @@
                                             <label th:text="${snacksAndBoissonsOfVisit.selling_price * snacksAndBoissonsOfVisit.quantity}"></label>
                                         </li>
                                     </ul>
-                                    <div th:if="${participant.service_suplementaire_price!=0}" class="d-flex align-items-center">
-                                        <h6>Service supplimentaire : </h6>
+                                    <div th:if="${participant.service_suplementaire_price != 0}" class="d-flex align-items-center">
+                                        <h6>Service supplémentaire :</h6>
                                         <h5 class="ms-2" th:text="${participant.service_suplementaire_price}"></h5>
                                     </div>
                                     <div class="d-flex align-items-center">
-                                        <h6>Totale : </h6>
+                                        <h6>Total :</h6>
                                         <h5 class="ms-2" th:text="${mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom.get(visitOfRoom.id).get(participant.id)}"></h5>
                                     </div>
-                                    <hr th:if="${participant!=visitOfRoom.participant.last}">
+                                    <hr th:if="${participant != visitOfRoom.participant.last}">
                                 </div>
                                 <div th:if="${visitOfRoom.participant.isEmpty()}">
                                     <div class="d-flex align-items-center">
-                                        <h6>Totale :</h6>
+                                        <h6>Total :</h6>
                                         <h5 class="ms-2" th:text="0.0"></h5>
                                     </div>
                                 </div>
@@ -396,11 +390,10 @@
                                 <h4 th:text="${mapCalculeSommeForVisitOfRoom.get(visitOfRoom.id)}"></h4>
                             </td>
                         </tr>
-
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="3"><h4>Totale</h4></td>
+                            <td colspan="3"><h4>Total</h4></td>
                             <td><h4 th:text="${sommeServicePriceForRoomVisits}"></h4></td>
                             <td><h4 th:text="${sommeServiceSuplimentaireOfVisitRoom}"></h4></td>
                             <td><h4 th:text="${sommeConsommationsForRoom}"></h4></td>
@@ -420,12 +413,11 @@
                             </li>
                         </ul>
                     </nav>
-
                 </div>
             </div>
             <div id="deskVisits">
                 <div th:if="${!allvisitsOfDeskByDate.isEmpty()}" class="mt-4">
-                    <h4>Visits bureau</h4>
+                    <h4>Visites de bureau</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -433,16 +425,16 @@
                             <th>Heure de début</th>
                             <th>Heure de fin</th>
                             <th>Prix du service</th>
-                            <th>service supplémentaire</th>
+                            <th>Service supplémentaire</th>
                             <th>Consommations (quantité)</th>
-                            <th>Total payé dans la résirvation</th>
+                            <th>Total payé dans la réservation</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="visitOfDesk : ${allvisitsOfDeskByDate}">
                             <td th:text="${visitOfDesk.day}"></td>
-                            <td th:text="${visitOfDesk.startTime}"></td>
-                            <td th:text="${visitOfDesk.endTime}"></td>
+                            <td th:text="${#temporals.format(visitOfDesk.startTime,'HH:mm')}"></td>
+                            <td th:text="${#temporals.format(visitOfDesk.endTime,'HH:mm')}"></td>
                             <td th:text="${visitOfDesk.service_desk_price}"></td>
                             <td th:text="${visitOfDesk.service_suplementaire_price}"></td>
                             <td>
@@ -456,21 +448,20 @@
                                     </li>
                                 </ul>
                                 <div class="d-flex align-items-center">
-                                    <h6>Totale :</h6>
+                                    <h6>Total :</h6>
                                     <h5 class="ms-2" th:text="${sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)}"></h5>
                                 </div>
                             </td>
                             <td>
-                                <h4 th:text="${visitOfDesk.service_desk_price+sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id)+visitOfDesk.service_suplementaire_price}"></h4>
+                                <h4 th:text="${visitOfDesk.service_desk_price + sommeOfsnacksAndBoissonsByVisit.get(visitOfDesk.id) + visitOfDesk.service_suplementaire_price}"></h4>
                             </td>
                         </tr>
-
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="3"><h4>Totale</h4></td>
+                            <td colspan="3"><h4>Total</h4></td>
                             <td><h4 th:text="${sommeServicePriceForDeskVisits}"></h4></td>
-                            <td><h4 th:text="${sommeServiceSupplimentaiePriceOfDisk}"></h4></td>
+                            <td><h4 th:text="${sommeServiceSupplimentairePriceOfDesk}"></h4></td>
                             <td><h4 th:text="${sommeConsommationsForDesk}"></h4></td>
                             <td><h4 th:text="${totaleOfVisitsOfDesk}"></h4></td>
                         </tr>
@@ -486,22 +477,20 @@
                             </li>
                         </ul>
                     </nav>
-
                 </div>
-
             </div>
             <div id="teamVisits">
-                <div th:if="${!allVisitsOfTeamByDate.isEmpty()}" class="mt-4" >
-                    <h4>Visits Of Team</h4>
+                <div th:if="${!allVisitsOfTeamByDate.isEmpty()}" class="mt-4">
+                    <h4>Visites d'équipe</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>
                             <th>Jour</th>
                             <th>Heure de début</th>
                             <th>Heure de fin</th>
-                            <th>service supplémentaire</th>
+                            <th>Service supplémentaire</th>
                             <th>Consommations (quantité)</th>
-                            <th>Total payé dans la visit</th>
+                            <th>Total payé dans la visite</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -521,19 +510,18 @@
                                     </li>
                                 </ul>
                                 <div class="d-flex align-items-center">
-                                    <h6>Totale :</h6>
+                                    <h6>Total :</h6>
                                     <h5 class="ms-2" th:text="${sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h5>
                                 </div>
                             </td>
                             <td>
-                                <h4 th:text="${visiTeam.service_suplementaire_price+sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h4>
+                                <h4 th:text="${visiTeam.service_suplementaire_price + sommeSnacksAndBoissonsByVisitForTeam.get(visiTeam.id)}"></h4>
                             </td>
                         </tr>
-
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="3"><h4>Totale</h4></td>
+                            <td colspan="3"><h4>Total</h4></td>
                             <td><h4 th:text="${sommeServiceSupplimentairePriceOfTeam}"></h4></td>
                             <td><h4 th:text="${sommeSnacksAndBoissonsForVisitsTeam}"></h4></td>
                             <td><h4 th:text="${totaleVisitsForTeam}"></h4></td>
@@ -550,9 +538,7 @@
                             </li>
                         </ul>
                     </nav>
-
                 </div>
-
             </div>
             <div id="subscriptions">
                 <div th:if="${!allSubscriptionsByDateDebutBetweenStartDayAndEndDay.isEmpty()}" class="mt-4">
@@ -566,8 +552,8 @@
                             <th>E-mail</th>
                             <th>Téléphone</th>
                             <th>Date d'inscription</th>
-                            <th>Date fin</th>
-                            <th>Nom d'inscription</th>
+                            <th>Date de fin</th>
+                            <th>Nom de l'inscription</th>
                             <th>Quantité</th>
                             <th>Prix</th>
                         </tr>
@@ -585,11 +571,10 @@
                             <td th:text="${subscription.quantity}"></td>
                             <td th:text="${subscription.price}"></td>
                         </tr>
-
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="9"><h4>Totale</h4></td>
+                            <td colspan="9"><h4>Total</h4></td>
                             <td><h4 th:text="${totaleOfSubscriptions}"></h4></td>
                         </tr>
                         </tfoot>
@@ -604,18 +589,16 @@
                             </li>
                         </ul>
                     </nav>
-
                 </div>
-
             </div>
             <div id="contracts">
                 <div th:if="${!allContractsByDate.isEmpty()}" class="mt-4">
-                    <h4>Contracts</h4>
+                    <h4>Contrats</h4>
                     <table class="table table-striped">
                         <thead>
                         <tr>
                             <th>Jour</th>
-                            <th>Nom du business</th>
+                            <th>Nom de l'entreprise</th>
                             <th>Représentant</th>
                             <th>Durée</th>
                             <th>Prix</th>
@@ -629,11 +612,10 @@
                             <td th:text="${contract.duree}"></td>
                             <td th:text="${contract.montant_de_location_chiffre}"></td>
                         </tr>
-
                         </tbody>
                         <tfoot>
                         <tr>
-                            <td colspan="4"><h4>Totale</h4></td>
+                            <td colspan="4"><h4>Total</h4></td>
                             <td><h4 th:text="${totaleMontantOfContracts}"></h4></td>
                         </tr>
                         </tfoot>
@@ -648,9 +630,7 @@
                             </li>
                         </ul>
                     </nav>
-
                 </div>
-
             </div>
         </div>
     </div>
