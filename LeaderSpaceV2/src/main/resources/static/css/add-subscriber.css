@@ -122,3 +122,8 @@ input[type="password"] {
     position: absolute;
     right: 50%;
 }
+
+.form-group select {
+    color: #636363;
+}
+

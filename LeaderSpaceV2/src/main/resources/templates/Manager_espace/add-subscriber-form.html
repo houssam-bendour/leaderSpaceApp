@@ -15,7 +15,7 @@
     <form th:action="@{/manager/save-subscriber}" method="post" th:object="${subscriber}">
         <div class="form-group">
             <label for="subscriptionType">Type d'abonnement:</label>
-            <select id="subscriptionType" name="subscriptionType_id">
+            <select id="subscriptionType" name="subscriptionType_id" class="select-menu">
                 <option value="" disabled selected>Choisir un type</option>
                 <option th:each="subscriptionType : ${subscriptionTypes}" th:value="${subscriptionType.id}" th:text="${subscriptionType.name}"></option>
             </select>

@@ -3,88 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <title>Bank</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <link rel="stylesheet" type="text/css" href="/css/manager/caisse.css">
+    <script>
+        window.addEventListener('load', function() {
+            var section = document.getElementById('ancreTest'); // Identifiez l'élément par son ID
+            var btn = document.getElementById('from-bank-btn');
+            if (section) {
+                section.scrollIntoView({ behavior: 'instant' }); // Scrollez vers cet élément
+                btn.style.color = '#ffffff';
+                btn.style.background = '#29978d';
+                btn.style.borderColor = '#29978d';
+            }
+
+        });
+    </script>
 </head>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
 <body>
 
-<main id="" style="display: block;">
-    <h2>Bank</h2>
+<div class="container my-2">
+    <h1 class="text-center main-title">La banque</h1>
     <div class="transfer-form">
         <form th:action="@{/manager/transferFromBank}" method="post">
-            <input type="number" name="sumBank" placeholder="Enter sum to transfer" min="0" th:max="${FirstBank.totale_bank}" required/></td><br>
-            <textarea id="motif" name="motif" rows="4" cols="50" placeholder="Motif for transfer" required></textarea></td><br>
-            <button type="submit">Transfer</button>
-        </form>
-    </div>
-    <div class="form-container" id="form-particulier" >
-        <form id="particulier" th:action="@{/manager/bank}" method="post">
-            <div>
-                <label for="date">From</label>
-                <input type="date" name="dateDebut" id="date1" th:value="${param.dateDebut != null ? param.dateDebut : null}" required>
-                <label for="date">To</label>
-                <input type="date" name="dateFin" id="date" th:value="${param.dateFin != null ? param.dateFin : null}" required>
-            </div>
-            <div class="form-actions">
-                <button type="submit">search</button>
-                <a class="cancel-link" th:href="@{/}">Cancel</a>
+            <label for="sumBank" class="form-label me-2">Somme à transférer</label>
+            <div class="mb-3 row g-3 align-items-end">
+                <input type="number" name="sumBank" class="form-control form-transfer me-2" id="sumBank" placeholder="Entrez la somme à transférer" min="0" th:max="${FirstBank.totale_bank}" required/></td><br>
+                <textarea id="motif" name="motif" class="form-control form-transfer me-2" rows="1" cols="50" placeholder="Motif pour transférer" required></textarea></td>
+                <div class="col-md-2">
+                    <abbr title="Transférer">
+                        <button type="submit" class="btn btn-custom w-100" style="width: 100%">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                        </button>
+                    </abbr>
+                </div>
             </div>
         </form>
+        <form th:action="@{/}" method="get">
+            <abbr title="Retourner à la page d'accueil">
+                <button type="submit" class="btn btn-custom col-md-1">
+                    <i class="fa fa-arrow-left"></i>
+                </button>
+            </abbr>
+        </form>
     </div>
-    <div class="visitType-buttons">
-        <button onclick="showTable('FromBank')">From Bank</button>
-        <button onclick="showTable('ToBank')">To Bank</button>
+    <!-- Formulaire de recherche -->
+    <div class="search-form">
+        <form id="particulier" th:action="@{/manager/bank}" method="post" onsubmit="return validateDates();">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="dateDebut" class="form-label">De</label>
+                    <input type="date" class="form-control" name="dateDebut" id="dateDebut" th:value="${param.dateDebut != null ? param.dateDebut : null}">
+                </div>
+                <div class="col-md-5">
+                    <label for="dateFin" class="form-label">À</label>
+                    <input type="date" class="form-control" name="dateFin" id="dateFin" th:value="${param.dateFin != null ? param.dateFin : null}">
+                </div>
+                <div class="col-md-2">
+                    <abbr title="Rechercher">
+                        <button type="submit" class="btn btn-custom w-100" style="width: 100%">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </abbr>
+                </div>
+            </div>
+        </form>
     </div>
-    <div id="Table-From-Bank" style="display: none;">
-        <h2>From Bank</h2>
-        <table border="1">
+    <main id="ancreTest" >
+        <div class="btn-group-custom" role="group" aria-label="Navigation des sections">
+            <div class="visitType-buttons">
+                <button class="btn-custom" onclick="showTable('FromBank')" id="from-bank-btn">De la banque</button>
+                <button class="btn-custom" onclick="showTable('ToBank')">À la banque</button>
+            </div>
+            <div id="Table-From-Bank" style="display: block;">
+                <table border="1" class="subscriber-table table-fixed">
 
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Somme</th>
-                <th>Totale</th>
-                <th>Motif</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="bk : ${FromBank}">
-                <td th:text="${bk.date}">Date</td>
-                <td th:text="${bk.time}">Time</td>
-                <td th:text="${bk.somme}">Somme</td>
-                <td th:text="${bk.totale_bank}">Totale</td>
-                <td th:text="${bk.motif}">Motif</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-    <div id="Table-To-Bank" style="display: none;">
-        <h2>To Bank</h2>
-        <table border="1">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Somme</th>
+                        <th>Totale</th>
+                        <th>Motif</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="bk : ${FromBank}">
+                        <td th:text="${bk.date}">Date</td>
+                        <td th:text="${bk.time}">Time</td>
+                        <td th:text="${bk.somme}" th:style="'color:red'">Somme</td>
+                        <td th:text="${bk.totale_bank}">Totale</td>
+                        <td th:text="${bk.motif}">Motif</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <nav aria-label="Page navigation example">
+                    <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+                        <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                            <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                               th:href="@{visit(section='Table-Subscribers', page=${status.index},Name=${name})}"
+                               th:text="${status.count}"
+                               style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <div id="Table-To-Bank" style="display: none;">
+                    <table border="1" class="subscriber-table table-fixed">
 
-            <thead>
-            <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Somme</th>
-                <th>Totale</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="bk : ${ToBank}">
-                <td th:text="${bk.date}">Date</td>
-                <td th:text="${bk.time}">Time</td>
-                <td th:text="${bk.somme}">Somme</td>
-                <td th:text="${bk.totale_bank}">Totale</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</main>
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Somme</th>
+                            <th>Totale</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="bk : ${ToBank}">
+                            <td th:text="${bk.date}">Date</td>
+                            <td th:text="${bk.time}">Time</td>
+                            <td th:text="${'+'+bk.somme}" th:style="'color:green'">Somme</td>
+                            <td th:text="${bk.totale_bank}">Totale</td>
+                        </tr>
+                        </tbody>
+                    </table>
+            </div>
+            <nav aria-label="Page navigation example">
+                <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
+                    <li th:each="page, status : ${pages}" style="margin-left: 10px;">
+                        <a th:class="${(status.count == (currentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
+                           th:href="@{visit(section='Table-Subscribers', page=${status.index},Name=${name})}"
+                           th:text="${status.count}"
+                           style="display: inline-block; padding: 10px 15px; text-decoration: none; border: 1px solid #2997AA; border-radius: 4px;">
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        </main>
+</div>
+
 <script>
     function showTable(table) {
         document.getElementById('Table-From-Bank').style.display = table === 'FromBank' ? 'block' : 'none';
         document.getElementById('Table-To-Bank').style.display = table === 'ToBank' ? 'block' : 'none';
+
+        var btn = document.getElementById('from-bank-btn');
+        if (table === 'ToBank') {
+            btn.style.color = '#29978d';
+            btn.style.background = '#ffffff';
+            btn.style.borderColor = '#29978d';
+        } else {
+            btn.style.color = '#ffffff';
+            btn.style.background = '#29978d';
+            btn.style.borderColor = '#29978d';
+        }
     }
+</script>
+
+
+<script>
+    function validateDates() {
+        const dateDebutInput = document.getElementById('dateDebut').value;
+        const dateFinInput = document.getElementById('dateFin').value;
+        const dateInMoroccoObj = new Date(); // Remplacez par votre méthode pour obtenir la date actuelle au Maroc
+
+        /*if (!dateDebutInput || !dateFinInput) {
+          alert("Veuillez saisir les deux dates.");
+          return false;
+        }*/
+
+        const dateDebut = new Date(dateDebutInput);
+        const dateFin = new Date(dateFinInput);
+        const currentDate = new Date(dateInMoroccoObj);
+
+        if (dateDebut > dateFin) {
+            alert("La date de début doit être antérieure ou égale à la date de fin.");
+            return false;
+        }
+
+        if (dateFin > currentDate) {
+            alert("La date de fin ne peut pas être future.");
+            return false;
+        }
+
+        return true;
+    }
+
 </script>
 </body>
 </html>
