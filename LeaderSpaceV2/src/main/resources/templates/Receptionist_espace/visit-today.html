@@ -7,7 +7,6 @@
     <link rel="stylesheet" type="text/css" href="/css/manager/subscribers.css">
     <link rel="stylesheet" type="text/css" href="/css/manager/visit.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
     <script>
         window.addEventListener('load', function() {
             var section = document.getElementById('ancreTest'); // Identifiez l'élément par son ID
@@ -39,17 +38,13 @@
                         <button type="submit"><i class="fa fa-arrow-left"></i></button> <!-- Cancel icon -->
                     </abbr>
                 </form>
-                <!--<form th:action="@{/manager/add-subscriber}" method="get">
-                    <abbr title="Ajouter un abonné">
-                        <button type="submit"><i class="fa fa-plus"></i></button> &lt;!&ndash; Add icon &ndash;&gt;
-                    </abbr>
-                </form>-->
             </div>
 
             <!-- Search form -->
             <div class="search-form">
                 <form th:action="@{/reception/visit-Search}" method="get">
                     <input type="text" name="Name" placeholder="Rechercher par nom" th:value="${name}" />
+                    <input type="hidden" name="section" value="Table-Subscribers">
                     <abbr title="Rechercher">
                         <button type="submit"><i class="fa fa-search"></i></button> <!-- Icon only -->
                     </abbr>

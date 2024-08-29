@@ -829,12 +829,10 @@ public class ManagerController {
 
                 model.addAttribute("allContractsByDate",allContractByDayAndPagee);
             }
-            ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
-
-            model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
-
-
         }
+        ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+        model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+
         return "Manager_espace/turnover";
     }
     /*
@@ -933,6 +931,10 @@ public class ManagerController {
         model.addAttribute("labelsTeam", labelsTeam);
         model.addAttribute("dataTeam", dataTeam);
         model.addAttribute("totaleTurnoverCherts",managerService.totaleTurnoverCherts(totaleTurnoverForCharts));
+
+        ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+        model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+
         return "Manager_espace/turnover-charts";
 
     }
@@ -1103,13 +1105,13 @@ public class ManagerController {
     public String VisitsToday(
             @RequestParam(name = "section", defaultValue = "") String section,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "name", defaultValue = "") String name,
+            @RequestParam(name = "Name", defaultValue = "") String name,
             Model model) {
 
         if (section.equals("Table-Subscribers")){
             Page<Visit> pageVisitOfSubscribers;
             if (name.isEmpty()){
-                pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,4));
+                pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,50));
             }else{
                 pageVisitOfSubscribers = visitRepository.listVisitsOfSubscribersByNameLike(name,PageRequest.of(page,50));
                 System.out.println("vitissubscriberbynamelike ===="+pageVisitOfSubscribers.getTotalPages());

@@ -23,7 +23,7 @@ public interface VisitRepository extends JpaRepository<Visit, UUID> {
     @Query("select v from Visit v where v.day = :day order by v.StartTime")
     List<Visit> getVisitsToday(@Param("day") LocalDate localDate);
 
-    @Query("select v from Visit v where v.day = :day and (v.subscriber.last_name like concat('%',:n,'%') or v.subscriber.first_name like concat('%',:n,'%')) order by v.StartTime")
+    @Query("select v from Visit v where v.day = :day and (v.subscriber.last_name like concat('%',:n,'%') or v.subscriber.first_name like concat('%',:n,'%')) order by v.StartTime desc ")
     List<Visit> getVisitsTodayByName(@Param("day") LocalDate localDate,@Param("n") String name);
 
     @Query("select v from Visit v where v.subscriber.last_name like concat('%',:name,'%') or v.subscriber.first_name like concat('%',:name,'%') order by v.day desc , v.StartTime desc")
