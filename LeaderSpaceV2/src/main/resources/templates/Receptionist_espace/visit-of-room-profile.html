@@ -213,7 +213,7 @@
             and (visitOfRoom.startTime.isBefore(time)
                  or visitOfRoom.startTime.equals(time))
             and visitOfRoom.checkout==false}"
-              th:action="@{/reception/check-out-of-visit-room(visit_id=${visitOfRoom.id})}" method="post">
+              th:action="@{/reception/check-out-of-visit-room(visit_id=${visitOfRoom.id})}" method="post"onclick="return confirm('Êtes-vous sûr de vouloir terminer la visite ?')">
             <button type="submit">Fin de visite</button>
         </form>
     </div>
@@ -303,7 +303,7 @@
                         <abbr title="modifier le snack">
                             <button type="submit" class="icon"><i class="fa fa-edit"></i></button></abbr>
                     </form>
-                    <form th:action="@{/reception/delete-snack-for-room}" method="post">
+                    <form th:action="@{/reception/delete-snack-for-room}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce snack ?')">
                         <input type="hidden" name="visitId" th:value="${visitOfRoom.id}"/>
                         <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}"/>
                         <abbr title="supprimer le snack">
@@ -355,7 +355,7 @@
                     <abbr title="modifier le service">
                         <button type="submit" class="icon"><i class="fa fa-edit"></i></button></abbr>
                 </form>
-                <form th:action="@{/reception/delete-Additional-service-of-visit-room}" method="post">
+                <form th:action="@{/reception/delete-Additional-service-of-visit-room}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce service supplémentaire ?')">
                     <input type="hidden" name="visitRoomId" th:value="${visitOfRoom.id}">
                     <abbr title="supprimer le service">
                         <button type="submit" class="icon"><i class="fa fa-trash"></i></button>

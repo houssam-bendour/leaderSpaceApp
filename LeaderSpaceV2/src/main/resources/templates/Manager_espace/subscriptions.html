@@ -52,11 +52,12 @@
                             <button type="submit"><i class="fa fa-edit"></i></button>
                         </abbr>
                     </form>
-                    <form th:action="@{/manager/delete-subscription(subscriptionId=${subscription.id})}" method="post">
-                        <abbr title="Supprimer une abonnement">
+                    <form th:action="@{/manager/delete-subscription(subscriptionId=${subscription.id})}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet abonnement ?')">
+                        <abbr title="Supprimer un abonnement">
                             <button type="submit"><i class="fa fa-trash"></i></button>
                         </abbr>
                     </form>
+
                 </div>
             </td>
         </tbody>

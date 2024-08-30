@@ -24,12 +24,12 @@
 
   <!-- Formulaire de transfert -->
   <div class="transfer-form">
-    <form th:action="@{/manager/transfer}" method="post">
+    <form th:action="@{/manager/transfer}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir transférer cette somme ?')">
       <label for="sum" class="form-label me-2">Somme à transférer</label>
       <div class="mb-3 row g-3 align-items-end">
         <input type="number" class="form-control form-transfer me-2" id="sum" name="sum" placeholder="Entrez la somme à transférer" min="0" th:max="${FirstCaisse.totale_caisse}" required>
         <div class="col-md-2">
-          <abbr title="Transférer à la bank">
+          <abbr title="Transférer à la banque">
             <button type="submit" class="btn btn-custom w-100" style="width: 100%">
               <i class="fa-solid fa-money-bill-transfer"></i>
             </button>
@@ -45,9 +45,6 @@
       </abbr>
     </form>
   </div>
-
-
-
   <!-- Formulaire de recherche -->
   <div class="search-form">
     <form id="particulier" th:action="@{/manager/caisse}" method="post" onsubmit="return validateDates();">

@@ -14,7 +14,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +46,7 @@ public class ManagerController {
     private final VisitRepository visitRepository;
     private final VisitOfRoomRepository visitOfRoomRepository;
     private final VisitOfDeskRepository visitOfDeskRepository;
+    private final PageableHandlerMethodArgumentResolverCustomizer pageableCustomizer;
     private SubscriptionTypeRepository subscriptionTypeRepository;
     private final SubscriberRepository subscriberRepository;
     private final SubscriptionHistoryRepository subscriptionHistoryRepository;
@@ -829,12 +832,10 @@ public class ManagerController {
 
                 model.addAttribute("allContractsByDate",allContractByDayAndPagee);
             }
-            ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
-
-            model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
-
-
         }
+        ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+        model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+
         return "Manager_espace/turnover";
     }
     /*
@@ -933,6 +934,10 @@ public class ManagerController {
         model.addAttribute("labelsTeam", labelsTeam);
         model.addAttribute("dataTeam", dataTeam);
         model.addAttribute("totaleTurnoverCherts",managerService.totaleTurnoverCherts(totaleTurnoverForCharts));
+
+        ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
+        model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+
         return "Manager_espace/turnover-charts";
 
     }
@@ -1103,13 +1108,13 @@ public class ManagerController {
     public String VisitsToday(
             @RequestParam(name = "section", defaultValue = "") String section,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "name", defaultValue = "") String name,
+            @RequestParam(name = "Name", defaultValue = "") String name,
             Model model) {
 
         if (section.equals("Table-Subscribers")){
             Page<Visit> pageVisitOfSubscribers;
             if (name.isEmpty()){
-                pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,4));
+                pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,50));
             }else{
                 pageVisitOfSubscribers = visitRepository.listVisitsOfSubscribersByNameLike(name,PageRequest.of(page,50));
                 System.out.println("vitissubscriberbynamelike ===="+pageVisitOfSubscribers.getTotalPages());
@@ -1330,19 +1335,48 @@ public class ManagerController {
     }
 
     @RequestMapping("bank")
-    String getBank(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,Model model){
-        List<Bank> FromBank = bankRepository.findAllFromBank();
-        List<Bank> ToBank = bankRepository.findAllFromCaisseToBank();
+    String getBank(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate,
+                   @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,
+                   @RequestParam(defaultValue = "0") int fromBankPage,
+                   @RequestParam(defaultValue = "0") int toBankPage,
+                   @RequestParam(defaultValue = "") String section,
+                   Model model){
+        Page<Bank> pageFromBank;
+        Page<Bank> pageToBank;
+
         List<Bank> Bank = bankRepository.findTopByOrderByDateTimeDesc();
         Bank FirstBank = Bank.isEmpty() ? null : Bank.getFirst();
         if(startDate==null || endDate==null){
-            model.addAttribute("FromBank", FromBank);
-            model.addAttribute("ToBank", ToBank);
+            pageFromBank = bankRepository.findAllFromBank(PageRequest.of(fromBankPage,50));
+            pageToBank = bankRepository.findAllFromCaisseToBank(PageRequest.of(toBankPage,50));
+
+            List<Bank> fromBank = pageFromBank.getContent();
+            List<Bank> toBank = pageToBank.getContent();
+
+            model.addAttribute("FromBank", fromBank);
+            model.addAttribute("ToBank", toBank);
         }
         else{
-            model.addAttribute("FromBank", bankRepository.filterFromBankByDate(startDate, endDate));
-            model.addAttribute("ToBank", bankRepository.filterToBankByDate(startDate, endDate));
+            pageFromBank = bankRepository.filterFromBankByDate(startDate, endDate, PageRequest.of(fromBankPage,50));
+            pageToBank = bankRepository.filterToBankByDate(startDate, endDate, PageRequest.of(toBankPage,50));
+
+            List<Bank> fromBank = pageFromBank.getContent();
+            List<Bank> toBank = pageToBank.getContent();
+
+            model.addAttribute("FromBank", fromBank);
+            model.addAttribute("ToBank", toBank);
+
+            model.addAttribute("dateDebut",startDate);
+            model.addAttribute("dateFin",endDate);
         }
+        model.addAttribute("fromBankPages",new int[pageFromBank.getTotalPages()]);
+        model.addAttribute("toBankPages",new int[pageToBank.getTotalPages()]);
+
+        model.addAttribute("fromBankCurrentPage",fromBankPage);
+        model.addAttribute("toBankCurrentPage",toBankPage);
+
+        model.addAttribute("section",section);
+
         model.addAttribute("FirstBank", FirstBank);
         return "Manager_espace/bank";
     }

@@ -389,13 +389,20 @@ public class ReceptionistController {
 
     @GetMapping("visit-Search")
     public String VisitsSearchToday(
-            @RequestParam("Name") String Name, Model model) {
+            @RequestParam("Name") String Name,
+            @RequestParam("section") String section,
+            Model model) {
+        if (Name.isEmpty()){
+            return "redirect:visit-today?section=Table-Subscribers";
+        }
 
         List<Visit> visits = receptionistService.getVisitsTodayByName(Name);
 
-        model.addAttribute("visits", visits);
 
-        List<Visit> visitOfNotSubscribers = receptionistService.getVisitsOfNotSubscribersToday();
+        model.addAttribute("visitOfSubscribers", visits);
+
+
+        /*List<Visit> visitOfNotSubscribers = receptionistService.getVisitsOfNotSubscribersToday();
 
         model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
 
@@ -405,7 +412,11 @@ public class ReceptionistController {
 
         List<VisitOfDesk> visitOfDesks = receptionistService.getVisitsOfDeskToday();
 
-        model.addAttribute("visitOfDesks", visitOfDesks);
+        model.addAttribute("visitOfDesks", visitOfDesks);*/
+
+
+        model.addAttribute("name",Name);
+        model.addAttribute("section",section);
 
         return "/Receptionist_espace/visit-today";
     }

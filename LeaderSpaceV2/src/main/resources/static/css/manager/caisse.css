@@ -175,6 +175,11 @@ table.table-fixed thead {
     width: calc(100%); /* Ajuster pour la largeur de la scrollbar */
 }
 
+table.table-fixed thead th{
+    width: 10% /* Ajuster pour la largeur de la scrollbar */
+}
+
+
 table.table-fixed tbody {
     display: block;
     height: calc(100vh - 290px); /* Ajustez pour la hauteur en-tête et pied de page de la table */
@@ -186,6 +191,7 @@ table.table-fixed th, table.table-fixed td {
     text-align: center;
     padding: 15px;
     border-bottom: 1px solid #ddd;
+    word-wrap: break-word;
 }
 
 table.table-fixed thead th {
