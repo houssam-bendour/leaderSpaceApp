@@ -555,6 +555,18 @@ public class ManagerController {
     @PostMapping("annulation-du-contrat")
     public String annulationContrat(@RequestParam("contratId") UUID contratId) {
         Contrat contrat = contratRepository.findById(contratId).get();
+        List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
+        Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
+        double total_caisse = FirstCaisse.getTotale_caisse() - (contrat.getMontant_de_location_chiffre() * contrat.getDuree_par_moi_chifre());
+        Caisse c = new Caisse();
+        c.setSomme(-contrat.getMontant_de_location_chiffre() * contrat.getDuree_par_moi_chifre());
+        c.setTotale_caisse(total_caisse);
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+        c.setDate(moroccoDateTime.toLocalDate());
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+        c.setTime(localTime);
+        caisseRepository.save(c);
         contratRepository.deleteById(contratId);
         domiciliationFactureRepository.deleteById(contrat.getDomiciliationFacture().getId());
         return "redirect:/";
