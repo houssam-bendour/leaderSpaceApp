@@ -30,8 +30,8 @@
         </div>
         <!-- Search form -->
         <div class="search-form">
-            <form th:action="@{/manager/snack-Search}" method="get">
-                <input type="text" name="Name" placeholder="Rechercher par nom" />
+            <form th:action="@{/manager/list-snacks}" method="get">
+                <input type="text" name="name" placeholder="Rechercher par nom" th:value="${name}"/>
                 <abbr title="Rechercher">
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </abbr>

@@ -22,14 +22,17 @@
                 <button type="submit"><i class="fa fa-arrow-left"></i></button>
             </abbr>
         </form>
+        <!-- Search form -->
+        <div class="search-form">
+            <form th:action="@{/reception/list-snacks}" method="get">
+                <input type="text" name="name" placeholder="Search by name" th:value="${name}"/>
+                <abbr title="Rechercher">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </abbr>
+            </form>
+        </div>
+
     </div>
-    <!-- Search form -->
-    <!--<div class="search-form">
-        <form th:action="@{/manager/snack-Search}" method="get">
-            <input type="text" name="Name" placeholder="Search by name" />
-            <button type="submit">Search</button>
-        </form>
-    </div>-->
 
     <!--<div class="main-buttons">
         <form th:action="@{/manager/add-snack}" method="get">

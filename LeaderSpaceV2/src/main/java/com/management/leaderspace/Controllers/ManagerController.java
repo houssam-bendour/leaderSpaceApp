@@ -92,8 +92,16 @@ public class ManagerController {
     }
 
     @GetMapping("list-snacks")
-    public String listSnacks(Model model) {
-        List<SnacksAndBoissons> snacksAndBoissonsList = managerServiceImp.getAllSnacks();
+    public String listSnacks(@RequestParam(defaultValue = "") String name,
+            Model model) {
+        List<SnacksAndBoissons> snacksAndBoissonsList;
+
+        if (name.isEmpty()) {
+            snacksAndBoissonsList = managerService.getAllSnacks();
+        }else {
+            snacksAndBoissonsList = managerService.getSnacksAndBoissonsByName(name);
+        }
+
         // Convertir les images en Base64
         for (SnacksAndBoissons snack : snacksAndBoissonsList) {
             if (snack.getImage() != null) {
@@ -102,6 +110,7 @@ public class ManagerController {
             }
         }
         model.addAttribute("snacks", snacksAndBoissonsList);
+        model.addAttribute("name",name);
         return "/Manager_espace/list-snacks";
     }
 
@@ -557,19 +566,19 @@ public class ManagerController {
         Contrat contrat = contratRepository.findById(contratId).get();
         contratRepository.deleteById(contratId);
         domiciliationFactureRepository.deleteById(contrat.getDomiciliationFacture().getId());
-        return "redirect:/";
+        return "redirect:list-contrat";
     }
 
     @PostMapping("annulation-du-devis")
     public String AnnulationDevis(@RequestParam("devisId") UUID devisId) {
         devisRepository.deleteById(devisId);
-        return "redirect:/";
+        return "redirect:list-devis";
     }
 
     @PostMapping("annulation-du-facture")
     public String AnnulationFacture(@RequestParam("factureId") UUID factureId) {
         factureRepository.deleteById(factureId);
-        return "redirect:/";
+        return "redirect:list-facture";
     }
     /*
     *

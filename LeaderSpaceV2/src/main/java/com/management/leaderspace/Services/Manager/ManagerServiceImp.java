@@ -100,8 +100,10 @@ public class ManagerServiceImp implements ManagerService {
 
     @Override
     public List<SnacksAndBoissons> getAllSnacks() {
-        return snacksAndBoissonsRepository.findAll();
+        return snacksAndBoissonsRepository.getAllByNameOrderByNameAsc();
     }
+
+
 
     @Override
     public ServiceType getServiceById(UUID uuid) {
@@ -756,5 +758,10 @@ public class ManagerServiceImp implements ManagerService {
     @Override
     public double totaleVisitsForTeam(double sommeServiceSupplimentairePriceOfTeam, double sommeSnacksAndBoissonsForVisitsTeam) {
         return sommeServiceSupplimentairePriceOfTeam+sommeSnacksAndBoissonsForVisitsTeam;
+    }
+
+    @Override
+    public List<SnacksAndBoissons> getSnacksAndBoissonsByName(String name) {
+        return snacksAndBoissonsRepository.findByNameContainingIgnoreCaseOrderByNameAsc(name);
     }
 }

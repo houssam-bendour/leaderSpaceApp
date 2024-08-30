@@ -1453,8 +1453,14 @@ public class ReceptionistController {
     //////////////////////////////////////////zt
 
     @GetMapping("list-snacks")
-    public String snackStocke(Model model) {
-        List<SnacksAndBoissons> snacksAndBoissonsList = managerServiceImp.getAllSnacks();
+    public String snackStocke(@RequestParam(defaultValue = "") String name,
+            Model model) {
+        List<SnacksAndBoissons> snacksAndBoissonsList ;
+        if (name.isEmpty()){
+            snacksAndBoissonsList = managerService.getAllSnacks();
+        }else{
+            snacksAndBoissonsList = managerService.getSnacksAndBoissonsByName(name);
+        }
         // Convertir les images en Base64
         for (SnacksAndBoissons snack : snacksAndBoissonsList) {
             if (snack.getImage() != null) {
@@ -1462,6 +1468,7 @@ public class ReceptionistController {
                 snack.setBase64Image(base64Image);
             }
         }
+        model.addAttribute("name", name);
         model.addAttribute("snacks", snacksAndBoissonsList);
         return "Receptionist_espace/list-snacks";
     }

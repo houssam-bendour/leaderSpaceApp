@@ -206,11 +206,11 @@
         <button type="submit">الفاتوره</button>
     </form>
 
-    <form th:action="@{/}"
+    <form th:action="@{list-contrat}"
           method="get">
         <button type="submit">إنهاء</button>
     </form>
-    <form th:action="@{/manager/annulation-du-contrat(contratId=${contrat.id})}" method="post">
+    <form th:action="@{/manager/annulation-du-contrat(contratId=${contrat.id})}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contrat ?')">
         <button class="delete" type="submit">حذف</button>
     </form>
 
