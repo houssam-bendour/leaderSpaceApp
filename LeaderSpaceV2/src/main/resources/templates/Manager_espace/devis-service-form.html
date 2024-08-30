@@ -156,7 +156,7 @@
 <div class="language-buttons">
     <div class="grid-visit-info3">
         <div class="half-width">
-            <button class="particulier" style="background-color: #249389" id="particulier-btn" onclick="showForm('particulier')">Particulier</button>
+            <button class="particulier" style="background-color: rgba(0,0,0,0.44); color: white" id="particulier-btn" onclick="showForm('particulier')">Particulier</button>
         </div>
         <div class="half-width">
             <button id="société-btn" onclick="showForm('société')">Société</button>
@@ -340,10 +340,12 @@
         document.getElementById('form-particulier').style.display = language === 'particulier' ? 'block' : 'none';
         document.getElementById('form-société').style.display = language === 'société' ? 'block' : 'none';
         document.getElementById('form-association-coopérative').style.display = language === 'association/coopérative' ? 'block' : 'none';
-        document.getElementById('particulier-btn').style.backgroundColor = language === 'particulier' ? '#249389' : 'white';
-        document.getElementById('société-btn').style.backgroundColor = language === 'société' ? '#249389' : 'white';
-        document.getElementById('association/coopérative-btn').style.backgroundColor = language === 'association/coopérative' ? '#249389' : 'white';
-
+        document.getElementById('particulier-btn').style.backgroundColor = language === 'particulier' ? 'rgba(0,0,0,0.44)' : 'white';
+        document.getElementById('société-btn').style.backgroundColor = language === 'société' ? 'rgba(0,0,0,0.44)' : 'white';
+        document.getElementById('association/coopérative-btn').style.backgroundColor = language === 'association/coopérative' ? 'rgba(0,0,0,0.44)' : 'white';
+        document.getElementById('particulier-btn').style.color = language === 'particulier' ? 'rgb(255,255,255)' : 'black';
+        document.getElementById('société-btn').style.color = language === 'société' ? 'rgb(255,255,255)' : 'black';
+        document.getElementById('association/coopérative-btn').style.color = language === 'association/coopérative' ? 'rgb(255,255,255)' : 'black';
     }
 </script>
 <script>

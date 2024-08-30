@@ -154,9 +154,9 @@ public class ManagerController {
     @GetMapping("list-NotSubscribers")
     public String listNotSubscribers(Model model) {
         List<NotSubscriber> notSubscribers = notSubscriberRepository.findAll();
-        List<String> notSubscriberQrCode = new ArrayList<>();
+        Map<Integer,String>  notSubscriberQrCode = new HashMap<>();
         for (NotSubscriber notSubscriber : notSubscribers) {
-            notSubscriberQrCode.add(QrCodeGenerator.generateQrCodeBase64(notSubscriber.getId().toString()));
+            notSubscriberQrCode.put(notSubscriber.getCartNumber(),QrCodeGenerator.generateQrCodeBase64(notSubscriber.getId().toString()));
         }
         model.addAttribute("QrCode", notSubscriberQrCode);
         return "/Manager_espace/list-NotSubscribers-QrCode";
@@ -1172,8 +1172,10 @@ public class ManagerController {
 
     @PostMapping("generat-qr-code")
     public String generatQrCode(@RequestParam("numbreQR") int numbreQR) {
+        int existCartNbr= notSubscriberRepository.findAll().size();
         NotSubscriber notSubscriber = new NotSubscriber();
-        for (int i = 0; i < numbreQR; i++) {
+        for (int i = 1; i <= numbreQR; i++) {
+            notSubscriber.setCartNumber(existCartNbr+i);
             notSubscriberRepository.save(notSubscriber);
             notSubscriber = new NotSubscriber();
         }
