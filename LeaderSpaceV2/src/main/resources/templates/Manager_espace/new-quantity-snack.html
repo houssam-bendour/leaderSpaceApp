@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>New Quantity Of Snack</title>
-    <link rel="stylesheet" type="text/css" href="/css/manager/add-snacks-form.css">
-    <link rel="stylesheet" href="/webjars/bootstrap/5.3.3/css/bootstrap.min.css">
+    <link rel="stylesheet" th:href="@{/css/add-subscriber.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
     <script th:src="@{/js/scripts.js}"></script>
 </head>
 <body>
-<header>
-    <h1 th:text="'Ajouter noveau quantité au ' + ${snack.name}"></h1>
-    <a th:href="@{/manager/list-snacks}" class="btn btn-secondary">Cancel</a>
-</header>
-
-<main>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+<div class="form-container">
+    <h1 th:text="'Ajouter novelle quantité du ' + ${snack.name}"></h1>
+    <hr/>
     <form th:action="@{/manager/save-new-quantity-snack}" th:object="${snack}" method="post" >
         <!--<div>
             <label for="name">Nom:</label>
@@ -23,15 +21,15 @@
         <input type="hidden" th:field="*{name}" th:value="${snack.name}">
         <input type="hidden" th:field="*{type}" th:value="${snack.type}">
         <input type="hidden" th:field="*{image}" th:value="${snack.image}">
-        <div>
+        <div class="form-group">
             <label for="quantity">Quantité:</label>
             <input type="number" id="quantity" name="quantity" required>
         </div>
-        <div>
+        <div class="form-group">
             <label for="purchasePrice">Prix d'achat:</label>
             <input type="number" step="0.01" id="purchasePrice" name="purchase_price" required>
         </div>
-        <div>
+        <div class="form-group">
             <label for="sellingPrice">Prix de vente:</label>
             <input type="number" step="0.01" id="sellingPrice" name="selling_price"    required>
         </div>
@@ -46,14 +44,15 @@
             <label for="imageFile">Image:</label>
             <input type="file" id="imageFile" name="imageFile" accept="image/*" required>
         </div>-->
-        <div>
-            <button type="submit">Ajouter nouveau quantité</button>
+        <div class="form-actions">
+            <button type="submit">Ajouter</button>
+            <a class="cancel-link" th:href="@{/manager/list-snacks}">Annuler</a>
         </div>
     </form>
-</main>
+</div>
 
-<footer>
-    <p>© 2024 Leader Space. Tous droits réservés.</p>
-</footer>
+<!--<footer>-->
+<!--    <p>© 2024 Leader Space. Tous droits réservés.</p>-->
+<!--</footer>-->
 </body>
 </html>

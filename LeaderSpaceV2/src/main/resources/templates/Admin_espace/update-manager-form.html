@@ -2,65 +2,78 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add Subscriber</title>
+    <title>Modifier manager</title>
     <link rel="stylesheet" th:href="@{/css/add-subscriber.css}">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 </head>
 <body>
-<h1>Add Receptionist</h1>
-<form th:action="@{/admin/save-update-manager}" method="post" th:object="${manager}">
-    <input type="hidden" th:field="*{id}" th:value="${manager.id}">
-    <label for="cin">CIN:</label>
-    <input type="text" id="cin" name="cin" th:field="*{CIN}" th:value="${manager.CIN}">
-    <br>
-    <label for="first_name">First Name:</label>
-    <input type="text" id="first_name" name="first_name" th:field="*{first_name}" th:value="${manager.first_name}">
-    <br>
-    <label for="last_name">Last Name:</label>
-    <input type="text" id="last_name" name="last_name" th:field="*{last_name}" th:value="${manager.last_name}">
-    <br>
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" th:field="*{email}" th:value="${manager.email}">
-    <br>
-    <label for="phone">Phone:</label>
-    <input type="tel" id="phone" name="phone" placeholder="+123-456-7890" pattern="\+?[0-9\s\-]{7,15}" th:field="*{phone}" th:value="${manager.phone}"/>
-    <br>
-    <label for="cnss">CNSS:</label>
-    <input type="text" id="cnss" name="quantity" th:field="*{CNSS_number}" th:value="${manager.CNSS_number}" required>
-    <br>
-    <label for="password">Password:</label>
-    <div class="password-container">
-        <input id="password" type="password" name="password" placeholder="Enter password" th:field="*{password}" value="">
-        <div class="password-icon">
-            <i data-feather="eye"></i>
-            <i data-feather="eye-off"></i>
+<div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
+<div class="form-container">
+    <h1>Modifier manager</h1>
+    <hr/>
+    <form th:action="@{/admin/save-update-manager}" method="post" th:object="${manager}">
+        <input type="hidden" th:field="*{id}" th:value="${manager.id}">
+        <div class="form-group">
+            <label for="cin">CIN:</label>
+            <input type="text" id="cin" name="cin" th:field="*{CIN}" th:value="${manager.CIN}">
         </div>
-    </div>
-    <br>
-    <button type="submit">Save</button>
-    <a class="cancel-link" th:href="@{/admin/list-managers}">Cancel</a>
-</form>
+        <div class="form-group">
+            <label for="first_name">Prénom:</label>
+            <input type="text" id="first_name" name="first_name" th:field="*{first_name}" th:value="${manager.first_name}">
+        </div>
+        <div class="form-group">
+            <label for="last_name">Nom:</label>
+            <input type="text" id="last_name" name="last_name" th:field="*{last_name}" th:value="${manager.last_name}">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" th:field="*{email}" th:value="${manager.email}">
+        </div>
+        <div class="form-group">
+            <label for="phone">Téléphone:</label>
+            <input type="tel" id="phone" name="phone" placeholder="+123-456-7890" pattern="\+?[0-9\s\-]{7,15}" th:field="*{phone}" th:value="${manager.phone}"/>
+        </div>
+        <div class="form-group">
+            <label for="cnss">CNSS:</label>
+            <input type="text" id="cnss" name="quantity" th:field="*{CNSS_number}" th:value="${manager.CNSS_number}" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe:</label>
+            <div class="password-container">
+                <input id="password" type="password" name="password" placeholder="Entrez le mot de passe" th:field="*{password}" value="">
+                <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
+                    <img src="/image/closed_icon.png" alt="eye icon">
+                </span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Enregistrer</button>
+            <a class="cancel-link" th:href="@{/admin/list-managers}">Annuler</a>
+        </div>
+    </form>
 
 
 
 <!-- ICON SCRIPT -->
 <script src="/js/password.js"></script>
-<script>
-    feather.replace();
+    <script>
+        // Toggle password visibility function
+        function togglePasswordVisibility(inputId, eyeIcon) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = eyeIcon.querySelector('img');
 
-    document.querySelector('.password-icon').addEventListener('click', function() {
-        const passwordField = document.getElementById('password');
-        const eyeIcon = document.querySelector('.feather-eye');
-        const eyeOffIcon = document.querySelector('.feather-eye-off');
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            eyeIcon.style.display = "none";
-            eyeOffIcon.style.display = "block";
-        } else {
-            passwordField.type = "password";
-            eyeIcon.style.display = "block";
-            eyeOffIcon.style.display = "none";
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.src = '/image/open_icon.png'; // Change to open eye icon
+                passwordInput.style.backgroundColor = "#ffffff";
+                passwordInput.style.color = "#000000"
+            } else {
+                passwordInput.type = 'password';
+                icon.src = '/image/closed_icon.png'; // Change to closed eye icon
+                passwordInput.style.backgroundColor = "transparent";
+                passwordInput.style.color = "#ffffff"
+            }
         }
-    });
-</script>
+    </script>
 </body>
 </html>

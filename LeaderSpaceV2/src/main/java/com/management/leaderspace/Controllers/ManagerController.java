@@ -92,8 +92,16 @@ public class ManagerController {
     }
 
     @GetMapping("list-snacks")
-    public String listSnacks(Model model) {
-        List<SnacksAndBoissons> snacksAndBoissonsList = managerServiceImp.getAllSnacks();
+    public String listSnacks(@RequestParam(defaultValue = "") String name,
+            Model model) {
+        List<SnacksAndBoissons> snacksAndBoissonsList;
+
+        if (name.isEmpty()) {
+            snacksAndBoissonsList = managerService.getAllSnacks();
+        }else {
+            snacksAndBoissonsList = managerService.getSnacksAndBoissonsByName(name);
+        }
+
         // Convertir les images en Base64
         for (SnacksAndBoissons snack : snacksAndBoissonsList) {
             if (snack.getImage() != null) {
@@ -102,6 +110,7 @@ public class ManagerController {
             }
         }
         model.addAttribute("snacks", snacksAndBoissonsList);
+        model.addAttribute("name",name);
         return "/Manager_espace/list-snacks";
     }
 
@@ -555,21 +564,33 @@ public class ManagerController {
     @PostMapping("annulation-du-contrat")
     public String annulationContrat(@RequestParam("contratId") UUID contratId) {
         Contrat contrat = contratRepository.findById(contratId).get();
+        List<Caisse> caisse = caisseRepository.findTopByOrderByDateTimeDesc();
+        Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
+        double total_caisse = FirstCaisse.getTotale_caisse() - (contrat.getMontant_de_location_chiffre() * contrat.getDuree_par_moi_chifre());
+        Caisse c = new Caisse();
+        c.setSomme(-contrat.getMontant_de_location_chiffre() * contrat.getDuree_par_moi_chifre());
+        c.setTotale_caisse(total_caisse);
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+        c.setDate(moroccoDateTime.toLocalDate());
+        LocalTime localTime = moroccoDateTime.toLocalTime();
+        c.setTime(localTime);
+        caisseRepository.save(c);
         contratRepository.deleteById(contratId);
         domiciliationFactureRepository.deleteById(contrat.getDomiciliationFacture().getId());
-        return "redirect:/";
+        return "redirect:list-contrat";
     }
 
     @PostMapping("annulation-du-devis")
     public String AnnulationDevis(@RequestParam("devisId") UUID devisId) {
         devisRepository.deleteById(devisId);
-        return "redirect:/";
+        return "redirect:list-devis";
     }
 
     @PostMapping("annulation-du-facture")
     public String AnnulationFacture(@RequestParam("factureId") UUID factureId) {
         factureRepository.deleteById(factureId);
-        return "redirect:/";
+        return "redirect:list-facture";
     }
     /*
     *

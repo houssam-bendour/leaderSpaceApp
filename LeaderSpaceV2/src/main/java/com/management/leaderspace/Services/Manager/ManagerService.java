@@ -17,6 +17,7 @@ public interface ManagerService {
     public SnacksAndBoissons saveSnackWithImage(String name, double sellingPrice, double purchasePrice, Integer saveSnackWithImage, String type, MultipartFile imageFile , Long quantity) throws IOException ;
 
     List<SnacksAndBoissons> getAllSnacks();
+
     ServiceType getServiceById(UUID uuid);
 
     void saveServicesToDevis(UUID devisId, DesignationForm designationForm);
@@ -100,4 +101,6 @@ public interface ManagerService {
     double totaleOfAllVisitsOfRoom(double sommeServicePriceForRoomVisits, double sommeServiceSuplimentaireOfVisitRoom, double sommeConsommationsForRoom, double sommeConsommationsForRoomParticipants);
     double totaleOfVisitsOfDesk(double sommeServicePriceForDeskVisits, double sommeServiceSupplimentaiePriceOfDisk, double sommeConsommationsForDesk);
     double totaleVisitsForTeam(double sommeServiceSupplimentairePriceOfTeam, double sommeSnacksAndBoissonsForVisitsTeam);
+
+    List<SnacksAndBoissons> getSnacksAndBoissonsByName(String name);
 }

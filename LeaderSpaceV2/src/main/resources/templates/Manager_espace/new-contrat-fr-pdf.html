@@ -178,12 +178,12 @@
     <form th:action="@{/manager/confirm-domiciliation-facture(factureId=${contrat.domiciliationFacture.id})}" method="post">
         <button type="submit">La facture </button>
     </form>
-    <form th:action="@{/}"
+    <form th:action="@{list-contrat}"
           method="get">
         <button type="submit">Annuler</button>
     </form>
-    <form th:action="@{/manager/annulation-du-contrat(contratId=${contrat.id})}" method="post">
-        <button class="delete" type="submit">supprimer</button>
+    <form th:action="@{/manager/annulation-du-contrat(contratId=${contrat.id})}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce contrat ?')">
+        <button class="delete" type="submit">Supprimer</button>
     </form>
 </div>
 
