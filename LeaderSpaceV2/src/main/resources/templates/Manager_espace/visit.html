@@ -208,7 +208,7 @@
                         <div class="action-buttons" th:if="${nowInMorocco.toLocalDate().isBefore(visit.day)||(nowInMorocco.toLocalDate().isEqual(visit.day)&&nowInMorocco.toLocalTime().isBefore(visit.startTime))}">
                             <abbr title="Supprimer">
                                 <button type="submit">
-                                    <a onclick="event.stopPropagation(); return confirm('Are you sure you want to delete this reservation?');" th:href="@{/manager/delete-reservation-of-desk(reservation_id=${visit.id},section='Table-Desk')}"><i class="fa fa-trash"></i></a>
+                                    <a onclick="event.stopPropagation(); return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');" th:href="@{/manager/delete-reservation-of-desk(reservation_id=${visit.id},section='Table-Desk')}"><i class="fa fa-trash"></i></a>
                                 </button>
                             </abbr>
                         </div>
@@ -276,7 +276,7 @@
                     <td>
                         <div class="action-buttons" th:if="${nowInMorocco.toLocalDate().isBefore(visit.day)||(nowInMorocco.toLocalDate().isEqual(visit.day)&&nowInMorocco.toLocalTime().isBefore(visit.startTime))}">
                             <abbr title="Supprimer">
-                                <button type="submit"><a onclick="event.stopPropagation(); return confirm('Are you sure you want to delete this reservation?');" th:href="@{/manager/delete-visit-of-room(visit_room_id=${visit.id},section='Table-Room')}"><i class="fa fa-trash"></i></a></button>
+                                <button type="submit"><a onclick="event.stopPropagation(); return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?');" th:href="@{/manager/delete-visit-of-room(visit_room_id=${visit.id},section='Table-Room')}"><i class="fa fa-trash"></i></a></button>
                             </abbr>
                         </div>
                     </td>

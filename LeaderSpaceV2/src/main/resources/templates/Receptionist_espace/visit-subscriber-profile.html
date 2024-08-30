@@ -196,7 +196,7 @@
         <form th:action="@{/reception/add-snacks-to-visitor(visitId=${visit.id})}" method="post">
             <button type="submit">Ajouter Snacks</button>
         </form>
-        <form th:action="@{/reception/checkout(visitId=${visit.id})}" method="post">
+        <form th:action="@{/reception/checkout(visitId=${visit.id})}" method="post" onclick="return confirm('Êtes-vous sûr de vouloir terminer la visite ?')">
             <button type="submit">Fin de visite</button>
         </form>
     </div>
@@ -266,7 +266,7 @@
                         <abbr title="modifier le snack">
                             <button type="submit" class="icon"><i class="fa fa-edit"></i></button></abbr>
                     </form>
-                    <form th:action="@{/reception/delete-snack}" method="post">
+                    <form th:action="@{/reception/delete-snack}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce snack ?')">
                         <input type="hidden" name="visitId" th:value="${visit.id}" />
                         <input type="hidden" name="snackId" th:value="${snack.snacksAndBoissons.id}" />
                         <abbr title="supprimer le snack">
@@ -307,7 +307,7 @@
                     <abbr title="modifier le service">
                         <button type="submit" class="icon"><i class="fa fa-edit"></i></button></abbr>
                 </form>
-                <form th:action="@{/reception/delete-Additional-service-of-visit}" method="post">
+                <form th:action="@{/reception/delete-Additional-service-of-visit}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce service supplémentaire ?')">
                     <input type="hidden" name="visitId" th:value="${visit.id}">
                     <abbr title="supprimer le service">
                         <button type="submit" class="icon"><i class="fa fa-trash"></i></button>

@@ -26,15 +26,14 @@
                 </abbr>
             </form>
         </div>
-            <div class="search-form">
+            <!--<div class="search-form">
                 <form th:action="@{/reception/subscriber-Search}" method="get">
                     <input type="text" name="Name" placeholder="Rechercher par nom" />
                     <abbr title="Rechercher">
                         <button type="submit"><i class="fa fa-search"></i></button>
                     </abbr>
                 </form>
-            </div>
-
+            </div>-->
     </div>
     <div class="table-container cadre-table-scroll">
         <table border="1" class="subscriber-table table-fixed scroll table-scroll">
@@ -64,8 +63,8 @@
                                 <button type="submit"><i class="fa fa-edit"></i></button>
                             </abbr>
                         </form>
-                        <form th:action="@{/manager/delete-receptionist(receptionistId=${receptionist.id})}" method="post">
-                            <abbr title="Supprimer un réceptioniste">
+                        <form th:action="@{/manager/delete-receptionist(receptionistId=${receptionist.id})}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce réceptionniste ?')">
+                            <abbr title="Supprimer un réceptionniste">
                                 <button type="submit"><i class="fa fa-trash"></i></button>
                             </abbr>
                         </form>

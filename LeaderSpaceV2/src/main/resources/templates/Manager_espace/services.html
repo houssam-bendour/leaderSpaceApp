@@ -49,7 +49,8 @@
                             <button type="submit"><i class="fa fa-edit"></i></button>
                         </abbr>
                     </form>
-                    <form th:action="@{/manager/delete-service(serviceId=${service.id})}" method="post">
+                    <form action="/manager/delete-service" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce service ?')">
+                        <input type="hidden" name="serviceId" value="${service.id}">
                         <abbr title="Supprimer un service">
                             <button type="submit"><i class="fa fa-trash"></i></button>
                         </abbr>
