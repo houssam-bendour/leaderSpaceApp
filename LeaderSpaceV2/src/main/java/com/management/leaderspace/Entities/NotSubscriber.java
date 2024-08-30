@@ -15,5 +15,6 @@ import java.util.UUID;
 public class NotSubscriber {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private int cartNumber;
 
 }

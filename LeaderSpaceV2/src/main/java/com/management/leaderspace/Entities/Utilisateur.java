@@ -36,7 +36,7 @@ public abstract class Utilisateur {
     private String resetToken;
 
     @Lob
-    @Column(length=100000)
+    @Column(length=16777215)
     private byte[] image;
 
     @Transient
