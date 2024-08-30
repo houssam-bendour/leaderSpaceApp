@@ -3,37 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <title>Receptionist Home</title>
-    <link rel="stylesheet" type="text/css" href="/css/addsnaksforvisit.css">
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background-color: rgba(0, 0, 0, 0.44);
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 50px auto;
+        }
+
+        h2 {
+            color: #29978d;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        form div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.44);
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        form div span {
+            font-size: 18px;
+            color: white;
+        }
+
+        form div input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            background-color: transparent;
+            color: white;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translate(-50%, 10px);
+            gap: 60px;
+            background-color: rgba(0, 0, 0, 0.71);
+            border-radius: 20px;
+        }
+
+        .form-actions button, .form-actions a {
+            background-color: transparent;
+            color: rgb(0, 125, 126);
+            padding: 5px 5px;
+            border: 3px solid rgb(0, 125, 126);
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 22px;
+            cursor: pointer;
+            width: 108px;
+            text-align: center;
+        }
+
+        .form-actions button:hover {
+            background-color: rgba(0, 125, 126, 0.69);
+            color: #ffffff;
+            border: 3px solid rgba(0, 125, 126, 0.69);
+        }
+        .form-actions a:hover {
+            background-color: rgba(119, 119, 119, 0.69);
+            color: #000000;
+            border: 3px solid rgba(119, 119, 119, 0.69);
+        }
+
+        hr {
+            border: none;
+            border-top: 2px solid #29978d;
+        }
+    </style>
 </head>
 <body>
-<header>
-    <h1>Welcome to the Manager Home Page</h1>
-    <form th:action="@{/}" method="get">
-        <button type="submit">Cancel</button>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+
+<div class="container">
+    <form th:action="@{/manager/save-services-to-devis(devisId=${devis.id})}" th:object="${designationForm}" method="post">
+        <h2>Choisir les services</h2>
+        <hr>
+        <div th:each="service : ${serviceTypes}">
+            <span th:text="${service.name}"></span>
+            <input type="number" th:field="*{serviceQuantities[__${service.id}__]}" min="0" value="0"/>
+        </div>
+        <h2>Choisir l'abonnement</h2>
+        <hr>
+        <div th:each="subscription : ${subscriptionTypes}">
+            <span th:text="${subscription.name}"></span>
+            <input type="number" th:field="*{serviceQuantities[__${subscription.id}__]}" min="0" value="0"/>
+        </div>
+        <div class="form-actions">
+            <a href="#" onclick="document.getElementById('annulerForm').submit()">Annuler</a>
+            <button type="submit">Suivante</button>
+        </div>
     </form>
-</header>
+</div>
+<form id="annulerForm" th:action="@{/manager/annulation-du-devis(devisId=${devis.id})}" style="display: none" method="post"></form>
 
-<main>
-    <section>
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const inputs = document.querySelectorAll('input[type="number"]');
+        let atLeastOneFilled = false;
 
-        <form th:action="@{/manager/save-services-to-devis(devisId=${devis.id})}" th:object="${designationForm}" method="post">
-            <h2>Choose Services</h2>
-            <div th:each="service : ${serviceTypes}">
-                <span th:text="${service.name}"></span>
-                <input type="number" th:field="*{serviceQuantities[__${service.id}__]}" min="0" value="0"/>
-            </div>
-            <h2>Choose Subscription</h2>
-            <div th:each="subscription : ${subscriptionTypes}">
-                <span th:text="${subscription.name}"></span>
-                <input type="number" th:field="*{serviceQuantities[__${subscription.id}__]}" min="0" value="0"/>
-            </div>
-            <button type="submit">Save</button>
-        </form>
-    </section>
-</main>
+        // Check if at least one input is greater than 0
+        inputs.forEach(function(input) {
+            if (input.value > 0) {
+                atLeastOneFilled = true;
+            }
+        });
 
-<footer>
-    <p>© 2024 leader space. All Rights Reserved.</p>
-</footer>
+        if (!atLeastOneFilled) {
+            alert('Veuillez remplir au moins un champ avant de continuer.');
+            event.preventDefault(); // Prevent form submission
+        } else {
+            // Remove the onbeforeunload event listener before submitting the form
+            window.onbeforeunload = null;
+        }
+    });
+
+    // Handle click on the "Suivante" button to remove the alert
+    document.querySelector('.form-actions button[type="submit"]').addEventListener('click', function(event) {
+        const inputs = document.querySelectorAll('input[type="number"]');
+        let atLeastOneFilled = false;
+
+        // Check if at least one input is greater than 0
+        inputs.forEach(function(input) {
+            if (input.value > 0) {
+                atLeastOneFilled = true;
+            }
+        });
+
+        if (!atLeastOneFilled) {
+            alert('Veuillez remplir au moins un champ avant de continuer.');
+            event.preventDefault(); // Prevent form submission
+        } else {
+            // Remove the onbeforeunload event listener before submitting the form
+            window.onbeforeunload = null;
+        }
+    });
+
+    // Warning alert when the user tries to leave or refresh the page
+    window.onbeforeunload = function (e) {
+        e = e || window.event;
+
+        // For IE and Firefox
+        if (e) {
+            e.returnValue = 'Êtes-vous sûr de vouloir quitter cette page? Les modifications que vous avez apportées peuvent ne pas être enregistrées.';
+        }
+
+        // For Safari
+        return 'Êtes-vous sûr de vouloir quitter cette page? Les modifications que vous avez apportées peuvent ne pas être enregistrées.';
+    };
+</script>
+
+
+
+
 </body>
 </html>

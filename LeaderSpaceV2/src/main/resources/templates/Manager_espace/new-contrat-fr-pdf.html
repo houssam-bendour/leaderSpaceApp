@@ -9,7 +9,12 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f8f8;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
         }
         .container {
             width: 210mm;
@@ -39,16 +44,40 @@
         .button-container {
             text-align: center;
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            position: fixed;
+            left: 50%;
+            bottom: 10px;
+            transform: translate(-50%, 0);
         }
+
         .button-container button {
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-            background-color: #007bff;
+            background-color: #2a8a7c;
             color: #fff;
             border: none;
             border-radius: 5px;
+            width: 190px;
         }
+
+        .button-container button:hover {
+            background-color: #09453d;
+        }
+
+        form {
+            width: max-content;
+        }
+        .button-container button.delete:hover {
+            background-color: #721c24;
+        }
+        .button-container button.delete {
+            background-color: #880e18;
+        }
+
     </style>
 </head>
 <body>
@@ -145,11 +174,16 @@
 
 <div class="button-container">
     <button onclick="downloadPDF()">Télécharger en PDF</button>
-    <form th:action="@{/manager/annulation-du-contrat(contratId=${contrat.id})}" method="post">
-        <button type="submit">Annuler</button>
-    </form>
+
     <form th:action="@{/manager/confirm-domiciliation-facture(factureId=${contrat.domiciliationFacture.id})}" method="post">
         <button type="submit">La facture </button>
+    </form>
+    <form th:action="@{/}"
+          method="get">
+        <button type="submit">Annuler</button>
+    </form>
+    <form th:action="@{/manager/annulation-du-contrat(contratId=${contrat.id})}" method="post">
+        <button class="delete" type="submit">supprimer</button>
     </form>
 </div>
 

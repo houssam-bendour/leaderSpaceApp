@@ -9,10 +9,15 @@
 <body>
 <div class="main-header">
     <div class="button-container">
+
+        <form th:action="@{/manager/list-facture}" method="get">
+            <button type="submit">Retour</button>
+        </form>
+        <span style="width: 20px"></span>
         <button id="download-btn" onclick="downloadPDF()">Télécharger en PDF</button>
         <span style="width: 20px"></span>
         <form th:action="@{/manager/annulation-du-facture(factureId=${facture.id})}" method="post">
-            <button type="submit">Annuler</button>
+            <button style="background-color: #721c24" type="submit">Supprimer</button>
         </form>
     </div>
 </div>

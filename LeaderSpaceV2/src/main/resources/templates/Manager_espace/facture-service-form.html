@@ -4,81 +4,169 @@
     <title>Formulaire de Devis</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            color: #333;
         }
+
         .form-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 21px;
+            border: 1px solid rgba(204, 204, 204, 0);
+            border-radius: 0 0 10px 10px;
+            background-color: rgba(0, 0, 0, 0.44);
         }
+
         .form-container div {
             margin-bottom: 15px;
         }
+
         label {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
+            color: white;
         }
+
         input[type="text"],
         input[type="number"],
         input[type="date"],
         textarea {
             width: 100%;
             padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.44);
+            color: white;
+            height: 45px;
         }
+
         .form-actions {
             text-align: center;
         }
-        .button-container {
+
+        .language-buttons {
+            width: 100%;
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
         }
-        .button-container button {
-            background-color: #007bff;
+
+        ::placeholder{
+            color: #b6b6b6;
+        }
+        .grid-visit-info3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            margin-top: 10px;
+            max-width: 600px;
+        }
+        .grid-visit-info .half-width {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .grid-visit-info3 .half-width {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .half-width button{
+            width: 300px;
+            height: 60px;
+            border: transparent;
+        }
+        .grid-visit-info3 .half-width button{
+            width: 200px;
+            height: 49px;
+            border: transparent;
+            font-size: larger;
+        }
+        .half-width .particulier{
+            border-radius: 10px 0 0 0;
+            background-color: #ffffff;
+        }
+        .half-width .coop-asso{
+            border-radius: 0 10px 0 0 ;
+            background-color: #ffffff;
+
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            background-color: #339794;
             color: white;
             border: none;
             padding: 10px 20px;
-            margin: 0 5px;
-            border-radius: 5px;
+            text-transform: uppercase;
+            font-size: 0.9em;
             cursor: pointer;
-            font-size: 14px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
         }
-        .button-container button:hover {
-            background-color: #0056b3;
+
+        .form-actions a {
+            background-color: #339794;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            text-decoration: blink;
         }
-        table {
+        table{
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
+            border: 1px ;
         }
-        table, th, td {
-            border: 1px solid #ddd;
+        table thead{
+            background-color: #ffffff;
+            color: black;
         }
-        th, td {
-            padding: 10px;
-            text-align: left;
+        table tbody{
+            color: white;
         }
-        th {
-            background-color: #f2f2f2;
+
+        td{
+            border: 1px solid white;
+            text-align: center;
+            padding: 7px;
         }
+        th{
+            border: 1px solid white;
+        }
+
     </style>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 </head>
 <body>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+
 <div class="language-buttons">
-    <button onclick="showForm('particulier')">Particulier</button>
-    <button onclick="showForm('société')">Société</button>
-    <button onclick="showForm('association/coopérative')">association/coopérative</button>
+    <div class="grid-visit-info3">
+        <div class="half-width">
+            <button class="particulier" style="background-color: #249389" id="particulier-btn" onclick="showForm('particulier')">Particulier</button>
+        </div>
+        <div class="half-width">
+            <button id="société-btn" onclick="showForm('société')">Société</button>
+        </div>
+        <div class="half-width">
+            <button class="coop-asso" id="association/coopérative-btn" onclick="showForm('association/coopérative')">association / coopérative</button>
+        </div>
+    </div>
 </div>
-<div class="form-container" id="form-particulier" style="display: none;">
+<div class="form-container" id="form-particulier" style="display: block;">
     <form id="particulier" th:action="@{/manager/confirm-facture}" th:object="${facture}" method="post">
 
         <input type="hidden" th:field="*{id}" th:value="${facture.id}"/>
@@ -117,9 +205,12 @@
         </div>
         <div class="form-actions">
             <button type="submit">Générer PDF</button>
+            <a href="#" style="background-color: #721c24" onclick="document.getElementById('annulerForm').submit()">Annuler</a>
         </div>
     </form>
 </div>
+<form id="annulerForm" th:action="@{/manager/annulation-du-facture(factureId=${facture.id})}" style="display: none" method="post">
+</form>
 <!--===========================société=============================-->
 <div class="form-container" id="form-société" style="display: none;">
     <form id="société" th:action="@{/manager/confirm-facture}" th:object="${facture}" method="post">
@@ -160,6 +251,8 @@
         </div>
         <div class="form-actions">
             <button type="submit">Générer PDF</button>
+            <a href="#" style="background-color: #721c24" onclick="document.getElementById('annulerForm').submit()">Annuler</a>
+
         </div>
     </form>
 </div>
@@ -203,6 +296,7 @@
         </div>
         <div class="form-actions">
             <button type="submit">Générer PDF</button>
+            <a href="#" style="background-color: #721c24" onclick="document.getElementById('annulerForm').submit()">Annuler</a>
         </div>
     </form>
 </div>
@@ -237,7 +331,31 @@
         document.getElementById('form-particulier').style.display = language === 'particulier' ? 'block' : 'none';
         document.getElementById('form-société').style.display = language === 'société' ? 'block' : 'none';
         document.getElementById('form-association-coopérative').style.display = language === 'association/coopérative' ? 'block' : 'none';
+        document.getElementById('particulier-btn').style.backgroundColor = language === 'particulier' ? '#249389' : 'white';
+        document.getElementById('société-btn').style.backgroundColor = language === 'société' ? '#249389' : 'white';
+        document.getElementById('association/coopérative-btn').style.backgroundColor = language === 'association/coopérative' ? '#249389' : 'white';
+
     }
+</script>
+<script>
+    // Handle click on the "Suivante" button to remove the alert
+    document.querySelector('.form-actions button[type="submit"]').addEventListener('click', function(event) {
+
+            window.onbeforeunload = null;
+
+    });
+    // Warning alert when the user tries to leave or refresh the page
+    window.onbeforeunload = function (e) {
+        e = e || window.event;
+
+        // For IE and Firefox
+        if (e) {
+            e.returnValue = 'Êtes-vous sûr de vouloir quitter cette page? Les modifications que vous avez apportées peuvent ne pas être enregistrées.';
+        }
+
+        // For Safari
+        return 'Êtes-vous sûr de vouloir quitter cette page? Les modifications que vous avez apportées peuvent ne pas être enregistrées.';
+    };
 </script>
 </body>
 </html>
