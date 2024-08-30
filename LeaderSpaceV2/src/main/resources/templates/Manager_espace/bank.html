@@ -64,14 +64,14 @@
                 <div class="col-md-2">
                     <abbr title="Rechercher">
                         <button type="submit" class="btn btn-custom w-100" style="width: 100%">
-                            <i class="fa fa-search"></i>
+                            <i class="fa fa-search" id="ancreTest"></i>
                         </button>
                     </abbr>
                 </div>
             </div>
         </form>
     </div>
-    <main id="ancreTest" >
+    <main>
         <div class="btn-group-custom" role="group" aria-label="Navigation des sections">
             <div class="visitType-buttons">
                 <button class="btn-custom" onclick="showTable('FromBank')" id="from-bank-btn">De la banque</button>
@@ -99,7 +99,7 @@
                     </tr>
                     </tbody>
                 </table>
-                <nav aria-label="Page navigation example">
+                <nav aria-label="Page navigation example" th:style="'margin-top:0.8rem'">
                     <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
                         <li th:each="page, status : ${fromBankPages}" style="margin-left: 10px;">
                             <a th:class="${(status.count == (fromBankCurrentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"
@@ -131,7 +131,7 @@
                         </tr>
                         </tbody>
                     </table>
-                <nav aria-label="Page navigation example">
+                <nav aria-label="Page navigation example" th:style="'margin-top:0.8rem'">
                     <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
                         <li th:each="page, status : ${toBankPages}" style="margin-left: 10px;">
                             <a th:class="${(status.count == (toBankCurrentPage+1)) ? 'btn-pagination-customHov' : 'btn-pagination-custom'}"

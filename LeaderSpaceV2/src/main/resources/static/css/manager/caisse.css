@@ -342,6 +342,10 @@ main {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+::placeholder{
+    font-family: 'Arial', sans-serif;
+}
+
 /* Responsive: Ensure the pagination is fluid on different screen sizes */
 @media (max-width: 576px) {
     .pagination {
