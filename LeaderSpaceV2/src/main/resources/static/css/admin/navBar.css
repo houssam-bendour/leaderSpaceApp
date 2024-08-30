@@ -36,7 +36,9 @@ body {
     justify-content: center;
     align-items: center;
 }
-
+.logo a img{
+    height: 40px;
+}
 .nav-links {
     list-style: none;
     display: flex;

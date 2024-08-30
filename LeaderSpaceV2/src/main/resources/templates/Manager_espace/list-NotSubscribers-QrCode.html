@@ -3,50 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <title>QR Code</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/manager/list-NotSubscribers-QrCode.css}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+        }
+
+        .action-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .qr-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .qr-card {
+            width: 250px;
+            padding: 15px;
+            border-radius: 15px;
+            background: linear-gradient(to bottom, #e0e5f0, #a2b9e2, #3b8edc);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .qr-card .logo {
+            width: 100px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .qr-card .card-text {
+            margin: 15px 0;
+        }
+
+        .qr-card .qr-code img {
+            width: 130px;
+            height: 130px;
+        }
+
+        .qr-card .footer {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #fff;
+        }
+
+        /* Styles for action buttons */
+        .action-buttons button {
+            width: 160px;
+            background-color: #025859;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-buttons button:hover {
+            background-color: #003839;
+            transform: translateY(-2px);
+        }
+
+        .action-buttons button:active {
+            background-color: #012929;
+            transform: translateY(0);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* Styles spécifiques au formulaire dans le modal */
+        .modal-content form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .modal-content label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .modal-content input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
+        }
+
+        .modal-content input[type="number"]:focus {
+            border-color: #025859;
+            outline: none;
+        }
+
+        .modal-content .form-actions {
+            text-align: center;
+        }
+
+        .modal-content .form-actions button {
+            background-color: #025859;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-content .form-actions button:hover {
+            background-color: #003839;
+            transform: translateY(-2px);
+        }
+
+        .modal-content .form-actions button:active {
+            background-color: #003849;
+            transform: translateY(0);
+        }
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
 </head>
 <body>
-<header>
-    <h1>Welcome to the Manager Home Page</h1>
-    <form th:action="@{/}" method="get">
-        <button type="submit">cancel</button>
-    </form>
-    <button id="downloadAllBtn">Download All QR Codes</button>
-</header>
+<div th:replace="~{Admin_espace/fragments/navbar :: navbar}"></div>
+<form id="cancelForm" th:action="@{/}" method="get" style="display: none"></form>
+<div class="action-buttons">
+    <button onclick="document.getElementById('cancelForm').submit()">Annuler</button>
+    <button id="downloadAllBtn">Télécharger tout</button>
+    <button onclick="showModal()">Générer plus</button>
+</div>
 
-<main>
-    <div>
-        <div class="buttons">
-            <button onclick="showForm('generer')">generer QR CODE</button>
-        </div><br>
-        <div id="generat-qr-code-form" style="display: none;">
-            <form th:action="@{/manager/generat-qr-code} " method="post">
-                <label for="QR">number of Qr code</label><br>
+<!-- Modal Structure -->
+<div id="qrModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div id="generat-qr-code-form">
+            <form th:action="@{/manager/generat-qr-code}" method="post">
+                <label for="QR">Saisissez le nombre de cartes à créer</label><br>
                 <input type="number" id="QR" name="numbreQR" min="0" value="0"><br>
                 <div class="form-actions">
-                    <button type="submit">Generate</button>
-                    <button onclick="showForm('close')">close</button>
+                    <button type="submit">Générer</button>
                 </div>
             </form>
-
         </div>
     </div>
-    <section>
-        <div th:each="Qr:${QrCode}">
-            <div>
-                <img id="qrCodeImg" th:src="@{'data:image/png;base64,' + ${Qr}}"/>
+</div>
 
+<div class="qr-cards-container">
+    <section th:each="Qr:${QrCode}">
+        <div class="qr-card">
+            <img class="logo" src="/image/logoLeadeSpace.png" alt="Logo"/>
+            <div class="card-text">
+                <h3>Carte <span th:text="'N°'+${Qr.getKey()}"></span> de visiteur</h3>
+                <p style="padding: 5px 0; font-size: 12px;">Vous utilisez cette carte pour acheter une boisson ou un
+                    snack.</p>
+                <strong style="color: #ca472b; font-size: 14px;">Cette carte est remise à la sortie</strong>
+            </div>
+            <div class="qr-code">
+                <img th:src="@{'data:image/png;base64,' + ${Qr.getValue()}}"/>
+            </div>
+            <div class="footer">
+                <p>www.leader-space.net</p>
             </div>
         </div>
     </section>
-</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 <script>
-    function showForm(action) {
-        document.getElementById('generat-qr-code-form').style.display = action === 'generer' ? 'block' : 'none';
+    function showModal() {
+        document.getElementById('qrModal').style.display = 'flex';
     }
+
+    function closeModal() {
+        document.getElementById('qrModal').style.display = 'none';
+    }
+
+    // Assuming you're using html2canvas for capturing the card as images and JSZip for creating the zip file
+
+    document.getElementById('downloadAllBtn').addEventListener('click', function () {
+        const cards = document.querySelectorAll('.qr-card');
+        const zip = new JSZip();
+        let imgCount = 0;
+
+        cards.forEach((card, index) => {
+            html2canvas(card).then(canvas => {
+                canvas.toBlob(blob => {
+                    zip.file(`qr-card-${index + 1}.png`, blob);
+                    imgCount++;
+
+                    // When all images are added, generate and download the ZIP file
+                    if (imgCount === cards.length) {
+                        zip.generateAsync({type: 'blob'}).then(content => {
+                            saveAs(content, 'qr-cards.zip');
+                        });
+                    }
+                });
+            });
+        });
+    });
+
+    // Prevent Ctrl/Cmd + Scroll (mouse wheel zoom) and touchpad pinch-to-zoom
+    document.addEventListener('wheel', function (event) {
+        if (event.ctrlKey || event.metaKey) {
+            event.preventDefault();
+        }
+    }, {passive: false});
+
+    // Prevent keyboard zooming (Ctrl/Cmd + +/-, Ctrl/Cmd + 0)
+    document.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey || event.metaKey) &&
+            (event.key === '+' || event.key === '-' || event.key === '=' || event.key === '0')) {
+            event.preventDefault();
+        }
+    });
+
+    // Prevent pinch-to-zoom on touch devices
+    document.addEventListener('touchstart', function (event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, {passive: false});
 </script>
-<script type="text/javascript" th:src="@{/js/manager/ZIP.js}"></script>
-<script type="text/javascript" th:src="@{/js/manager/list-NotSubscribers-QrCode.js}"></script>
 </body>
 </html>

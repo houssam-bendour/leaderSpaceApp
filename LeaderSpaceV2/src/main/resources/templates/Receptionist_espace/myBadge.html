@@ -4,126 +4,128 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Member ID Card</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url('/image/ls.jpg');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      background-attachment: fixed;
+      flex-direction: column;
+    }
+
+    .id-card-container {
+      text-align: center;
+      position: relative;
+    }
+
+    .id-card {
+      width: 6.5cm;
+      height: 9.5cm;
+      background: linear-gradient(135deg, #1F2A38 0%, #3B4B5B 100%);
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      text-align: center;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #E3D9F5 0%, #C0E0F0 100%);
+      padding: 5px;
+      border-bottom: 4px solid #2997aa;
+    }
+
+    .company-logo {
+      width: 70px; /* Logo size adjusted */
+      height: auto;
+    }
+
+    .member-info {
+      padding: 5px 10px;
+      background: linear-gradient(135deg, #1F2A38 0%, #3B4B5B 100%);
+    }
+
+    .photo-container {
+      border-radius: 50%;
+      width: 90px;
+      height: 90px;
+      overflow: hidden;
+      margin: 0 auto 10px;
+    }
+
+    .member-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .member-name {
+      font-size: 18px;
+      margin: 5px 0;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .qr-code-container {
+      margin-top: 10px;
+    }
+
+    .qr-code {
+      width: 80px;
+      height: 80px;
+    }
+
+    .card-footer {
+      background: linear-gradient(135deg, #E3D9F5 0%, #C0E0F0 100%);
+      padding: 10px;
+      border-top: 4px solid #2997aa;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      box-sizing: border-box; /* Ensure padding does not affect centering */
+    }
+
+    .website {
+      color: #2997aa;
+      font-size: 12px;
+      margin: 0; /* Remove default margin */
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    button {
+      background-color: #339794;
+      color: white;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3d7372;
+    }
+
+    button:focus {
+      outline: none;
+    }
+  </style>
 </head>
-<style>
-  body {
-    font-family: 'Arial', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-image: url('/image/ls.jpg');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    background-attachment: fixed;
-    flex-direction: column;
-  }
-
-  .id-card-container {
-    text-align: center;
-    position: relative;
-  }
-
-  .id-card {
-    width: 320px;
-    height: 520px;
-    background: linear-gradient(135deg, #1F2A38 0%, #3B4B5B 100%);
-    border-radius: 20px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    text-align: center;
-    position: relative;
-  }
-
-  .card-header {
-    background: linear-gradient(135deg, #E3D9F5 0%, #C0E0F0 100%);
-    padding: 5px;
-    border-bottom: 4px solid #2997aa;
-  }
-
-  .company-logo {
-    width: 100px;
-    height: auto;
-  }
-
-  .member-info {
-    padding: 15px;
-    background: linear-gradient(135deg, #1F2A38 0%, #3B4B5B 100%);
-  }
-
-  .photo-container {
-    border-radius: 50%;
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
-    display: inline-block;
-    margin-bottom: 15px;
-  }
-
-  .member-photo {
-    border-radius: 50%;
-    width: 110px;
-    height: 110px;
-    object-fit: cover;
-    display: inline-block;
-    margin-bottom: 15px;
-  }
-
-  .member-name {
-    font-size: 24px;
-    margin: 10px 0;
-    color: #fff;
-    font-weight: 600;
-
-  }
-
-
-
-  .qr-code {
-    width: 130px;
-    height: 130px;
-  }
-
-  .card-footer {
-    background: linear-gradient(135deg, #E3D9F5 0%, #C0E0F0 100%);
-    padding: 10px;
-    border-top: 4px solid #2997aa;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-  }
-
-  .website {
-    color: #2997aa;
-  }
-
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
-
-  button {
-    background-color: #339794;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #3d7372;
-  }
-
-  button:focus {
-    outline: none;
-  }
-</style>
 <body>
 <div class="id-card-container">
   <div class="id-card" id="idCard">
