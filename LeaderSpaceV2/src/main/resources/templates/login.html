@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
         body {
             font-family: "Poppins", sans-serif;
             display: flex;
-            background-image: url(https://app.leaderspace.net/ls.jpg);
+            background-image: url('/image/ls.jpg');
             background-repeat: no-repeat;
             background-position: center center;
             background-size: cover;
@@ -21,20 +21,22 @@
             margin: 0;
         }
 
+
         .login-container {
             width: 100%;
             max-width: 400px;
             padding: 30px;
             border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.62);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             text-align: center;
             backdrop-filter: blur(500px);
-            border: 2px solid rgba(255, 255, 255, 0.86);
+            /*border: 2px solid rgba(255, 255, 255, 0.86);*/
         }
 
         h1 {
             font-size: 28px;
-            color: #fff;
+            color: #339794;
             margin-bottom: 20px;
         }
 
@@ -176,7 +178,7 @@
 
         @media (max-width: 460px) {
             .login-container {
-                max-width: 100%;
+                max-width: 90%;
                 height: auto;
                 border: none;
                 padding: 15px;
@@ -193,11 +195,32 @@
                 height: 36px;
                 font-size: 14px;
             }
+            /*.box{
+                width: 90%;
+                height: auto;
+            }
+            .box::before{
+                width: 90%;
+                height: auto;
+            }
+            .box::after{
+                width: 90%;
+                height: auto;
+            }
+            .borderLine::before{
+                width: 90%;
+                height: auto;
+            }
+            .borderLine::after{
+                width: 90%;
+                height: auto;
+            }*/
         }
 
         @media (max-width: 360px) {
             .login-container {
                 padding: 10px;
+                max-width: 90%;
                 backdrop-filter: blur(500px);
             }
 
@@ -210,44 +233,130 @@
                 height: 32px;
                 font-size: 12px;
             }
+        }
 
+        .box{
+            position: relative;
+            max-width: 400px;
+            height: 420px;
+            background: #1c1c1c;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .box::before{
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 400px;
+            height: 420px;
+            background: linear-gradient(0deg,transparent,transparent,#45f3ff,#45f3ff,#45f3ff);
+            z-index: 1;
+            transform-origin: bottom right;
+            animation: animate 6s linear infinite;
+        }
+        .box::after{
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 400px;
+            height: 420px;
+            background: linear-gradient(0deg,transparent,transparent,#45f3ff,#45f3ff,#45f3ff);
+            z-index: 1;
+            transform-origin: bottom right;
+            animation: animate 6s linear infinite;
+            animation-delay: -3s;
+        }
+        .borderLine{
+            position: absolute;
+            top: 0;
+            inset: 0;
+
+        }
+        .borderLine::before{
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 400px;
+            height: 420px;
+            background: linear-gradient(0deg,transparent,transparent,#ff2770,#ff2770,#ff2770);
+            z-index: 1;
+            transform-origin: bottom right;
+            animation: animate 6s linear infinite;
+            animation-delay: -1.5s;
+        }
+        .borderLine::after{
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 400px;
+            height: 420px;
+            background: linear-gradient(0deg,transparent,transparent,#ff2770,#ff2770,#ff2770);
+            z-index: 1;
+            transform-origin: bottom right;
+            animation: animate 6s linear infinite;
+            animation-delay: -4.5s;
+        }
+        @keyframes animate {
+            0%{
+                transform: rotate(0deg);
+            }
+            100%{
+                transform: rotate(360deg);
+            }
+        }
+        #tt{
+            position: absolute;
+            inset: 4px;
+            background: #222;
+            padding: 30px 40px;
+            border-radius: 8px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
         }
 
     </style>
 </head>
 <body>
-<div class="login-container">
-    <h1>Se connecter</h1>
-    <form th:action="@{/login}" method="post">
-        <div class="form-group">
-            <div class="icones">
-                <i class="fa fa-user"></i>
-                <label for="username">Username</label>
+<div class="login-container box">
+    <span class="borderLine"></span>
+    <div id="tt">
+        <h1>Se connecter</h1>
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <div class="icones">
+                    <i class="fa fa-user"></i>
+                    <label for="username">Username</label>
+                </div>
+                <input type="text" id="username" name="username" required/>
             </div>
-            <input type="text" id="username" name="username" required/>
-        </div>
-        <div class="form-group" style="position: relative;">
-            <div class="icones">
-                <i class="fa fa-lock"></i>
-                <label for="password">Password</label>
-            </div>
-            <input type="password" id="password" name="password" required/>
-            <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
+            <div class="form-group" style="position: relative;">
+                <div class="icones">
+                    <i class="fa fa-lock"></i>
+                    <label for="password">Password</label>
+                </div>
+                <input type="password" id="password" name="password" required/>
+                <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
                 <i class="fa fa-eye"></i>
             </span>
-        </div>
+            </div>
 
-        <div class="checkbox">
-            <input type="checkbox" id="remember-me" name="remember-me"/>
-            <label for="remember-me">Rester connecté un mois</label>
-        </div>
-        <div class="form-group">
-            <button type="submit">Se connecter</button>
-        </div>
-        <div class="forgot-password">
-            <a th:href="@{/forgot-password}">Mot de passe oublié ?</a>
-        </div>
-    </form>
+            <div class="checkbox">
+                <input type="checkbox" id="remember-me" name="remember-me"/>
+                <label for="remember-me">Rester connecté un mois</label>
+            </div>
+            <div class="form-group">
+                <button type="submit">Se connecter</button>
+            </div>
+            <div class="forgot-password">
+                <a th:href="@{/forgot-password}">Mot de passe oublié ?</a>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 <script>
