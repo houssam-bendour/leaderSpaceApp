@@ -3,10 +3,6 @@
         <ul class="sidebar">
             <li onclick=hideSidebar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26"><path d="m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z" fill="white"/></svg></a></li>
             <li><a href="#" onclick="document.getElementById('profileForm').submit();">Profile</a></li>
-            <li><a href="#">Mon abonnement</a></li>
-            <li><a href="#" onclick="document.getElementById('visitFormForSubscriber').submit();">visites</a></li>
-            <li><a href="#">à propos</a></li>
-            <li><a href="#">se déconnecter</a></li>
             <li><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon Badge</a></li>
             <li><a href="#" onclick="document.getElementById('visitForm').submit();">visites</a></li>
             <li><a href="#" onclick="document.getElementById('about').submit();">à propos</a></li>
@@ -16,10 +12,6 @@
             <li><a href="#" onclick="document.getElementById('homeForm').submit();"><img src="/image/logo_leader_space.png"
                                                                                         alt="esc_logo" ></a></li>
             <li class="hideOnMobile"><a href="#" onclick="document.getElementById('profileForm').submit();">Profile</a></li>
-            <li class="hideOnMobile"><a href="#">Mon abonnement</a></li>
-            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('visitFormForSubscriber').submit();">visites</a></li>
-            <li class="hideOnMobile"><a href="#">à propos</a></li>
-            <li class="hideOnMobile"><a href="#">se déconnecter</a></li>
             <li class="hideOnMobile"><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon Badge</a></li>
             <li class="hideOnMobile"><a href="#" onclick="document.getElementById('visitForm').submit();">visites</a></li>
             <li class="hideOnMobile"><a href="#" onclick="document.getElementById('about').submit();">à propos</a></li>
@@ -35,13 +27,8 @@
     </nav>
     <form id="homeForm" method="get" th:action="@{/}" style="display:none;"></form>
     <form id="profileForm" method="get" th:action="@{/subscriber/profile}" style="display:none;"></form>
-    <form id="profileFormForAdmin" method="get" th:action="@{/admin/profile}" style="display:none;"></form>
-    <form id="profileFormForManager" method="get" th:action="@{/manager/profile}" style="display:none;"></form>
-    <form id="profileFormForSubscriber" method="get" th:action="@{/subscriber/profile}" style="display:none;"></form>
-    <form id="adminForm" method="get" th:action="@{/admin/list-admins}" style="display:none;"></form>
-    <form id="visitFormForSubscriber" method="get" th:action="@{subscriber/visit}" style="display:none;"></form>
     <form id="badgeForm" method="get" th:action="@{/subscriber/badge}" style="display:none;"></form>
-    <form id="visitForm" method="post" th:action="@{/subscriber/visit}" style="display:none;"></form>
+    <form id="visitForm" method="get" th:action="@{/subscriber/visit}" style="display:none;"></form>
     <form id="about" method="get" th:action="@{/subscriber/about}" style="display:none;"></form>
     <form id="logoutForm" method="post" th:action="@{/logout}" style="display:none;"></form>
     <script>
