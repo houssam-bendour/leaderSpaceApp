@@ -54,7 +54,7 @@ public class subscriberController {
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", subscriber);
         model.addAttribute("profileImage", subscriber.getBase64Image());
-        return "Subscribeupdate-passwordr_espace/profile";
+        return "Subscriber_espace/profile";
     }
     @GetMapping("updateProfile")
     String updateProfile(Model model) {
@@ -106,5 +106,17 @@ public class subscriberController {
         }
     }
 
-}
+
+    @GetMapping("about")
+    String about() {
+        return "Subscriber_espace/about";
+    }
+    @GetMapping("badge")
+    String badg(Model model) {
+        Subscriber subscriber = subscriberService.getProfile();
+        String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(subscriber.getId().toString());
+        model.addAttribute("user", subscriber);
+        model.addAttribute("qrCodeBase64", qrCodeBase64);
+        return "Subscriber_espace/badge";
+    }}
 
