@@ -2,6 +2,7 @@ package com.management.leaderspace.Controllers;
 
 import com.management.leaderspace.Entities.Admin;
 import com.management.leaderspace.Entities.Subscriber;
+import com.management.leaderspace.Entities.Utilisateur;
 import com.management.leaderspace.Repositories.SubscriberRepository;
 import com.management.leaderspace.Services.Subscriber.SubscriberService;
 import com.management.leaderspace.model.QrCodeGenerator;
@@ -82,6 +83,18 @@ public class subscriberController {
             model.addAttribute("message", "Failed to upload image.");
         }
         return "redirect:/subscriber/profile";
+    }
+    @GetMapping("about")
+    String about() {
+        return "Subscriber_espace/about";
+    }
+    @GetMapping("badge")
+    String badg(Model model) {
+        Subscriber subscriber = subscriberService.getProfile();
+        String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(subscriber.getId().toString());
+        model.addAttribute("user", subscriber);
+        model.addAttribute("qrCodeBase64", qrCodeBase64);
+        return "Subscriber_espace/badge";
     }
 }
 

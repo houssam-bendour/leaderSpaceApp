@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member ID Card</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-image: url('/image/ls.jpg');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            background-attachment: fixed;
+            flex-direction: column;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .id-card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background-color: transparent;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .id-card {
+            width: 400px;
+            height: 600px;
+            background: linear-gradient(135deg, #1D5C63 0%, #62BBC1 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+            box-sizing: border-box;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+        }
+
+        .company-logo {
+            width: 100px;
+            height: auto;
+        }
+
+        .member-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .member-name {
+            font-size: 24px;
+            margin: 10px 0;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .qr-code-container {
+            margin-top: 20px;
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .qr-code {
+            width: 200px;
+            height: 200px;
+        }
+
+        .card-footer {
+            position: absolute;
+            bottom: 20px;
+            width: calc(100% - 40px);
+            text-align: center;
+            font-size: 14px;
+            color: #f0f0f0;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button {
+            background-color: #1D5C63;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            min-width: 180px;
+        }
+
+        button:hover {
+            background-color: #163F45;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 500px) {
+            .id-card {
+                width: 300px;
+                height: 450px;
+                padding: 15px;
+            }
+
+            .company-logo {
+                width: 80px;
+            }
+
+            .member-name {
+                font-size: 20px;
+            }
+
+            .qr-code {
+                width: 150px;
+                height: 150px;
+            }
+
+            .card-footer {
+                font-size: 12px;
+                bottom: 15px;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px 15px;
+                min-width: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="id-card-container">
+    <div class="id-card" id="idCard">
+        <div class="card-header">
+            <img src="/image/logoLeadeSpace.png" alt="Company Logo" class="company-logo">
+        </div>
+        <div class="member-info">
+            <h2 class="member-name" th:text="${user.first_name} + ' ' + ${user.last_name}">John Doe</h2>
+            <div class="qr-code-container">
+                <img th:src="@{'data:image/png;base64,' + ${qrCodeBase64}}" src="path_to_qr_code.png" alt="QR Code" class="qr-code">
+            </div>
+        </div>
+        <div class="card-footer">
+            www.leaderspace.net
+        </div>
+    </div>
+    <div class="button-container">
+        <button id="downloadButton">Télécharger la carte</button>
+        <form th:action="@{/}" method="get">
+            <button type="submit">Retour</button>
+        </form>
+    </div>
+</div>
+
+<!-- Include html2canvas from CDN -->
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+    document.getElementById('downloadButton').addEventListener('click', function () {
+        const idCard = document.getElementById('idCard');
+        html2canvas(idCard, {
+            scale: 2, // Increase scale for better quality
+            useCORS: true,
+            width: idCard.scrollWidth, // Capture the full width of the element
+            height: idCard.scrollHeight, // Capture the full height of the element
+            windowWidth: document.documentElement.clientWidth, // Ensure correct viewport width
+            windowHeight: document.documentElement.clientHeight // Ensure correct viewport height
+        }).then(function (canvas) {
+            const link = document.createElement('a');
+            link.download = 'id_card.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).catch(function (error) {
+            console.error('Error generating image:', error);
+        });
+    });
+
+    // Prevent default zooming on mobile devices
+    document.addEventListener('gesturestart', function (e) {
+        e.preventDefault();
+    });
+
+    document.addEventListener('touchmove', function (e) {
+        if (e.scale !== 1) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+</script>
+</body>
+</html>

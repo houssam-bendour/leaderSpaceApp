@@ -13,6 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Base64;
 
 @Controller
@@ -51,14 +55,19 @@ public class HomeController {
     @GetMapping("/Subscriber-Home")
     public String homeSubscriber(Model model) {
         Subscriber subscriber= subscriberService.getProfile();
-        String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(subscriber.getId().toString());
-        model.addAttribute("qrCodeBase64", qrCodeBase64);
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+        LocalDate localDate = moroccoDateTime.toLocalDate();
+//        String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(subscriber.getId().toString());
+//        model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", subscriber);
-        String largeString = (String) httpSession.getAttribute("profileImage");
-        System.out.println(largeString);
-        if (largeString == null) {
-            httpSession.setAttribute("profileImage", subscriber.getBase64Image());
-        }
+        model.addAttribute("toDay", localDate);
+
+//        String largeString = (String) httpSession.getAttribute("profileImage");
+//        System.out.println(largeString);
+//        if (largeString == null) {
+//            httpSession.setAttribute("profileImage", subscriber.getBase64Image());
+//        }
         return "/Subscriber_espace/Home";
     }
 
