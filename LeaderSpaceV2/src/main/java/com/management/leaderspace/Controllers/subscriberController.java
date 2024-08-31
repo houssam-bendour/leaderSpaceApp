@@ -28,7 +28,7 @@ public class subscriberController {
     private final SubscriberRepository subscriberRepository;
     SubscriberService subscriberService;
 
-    @PostMapping("visit")
+    @GetMapping("visit")
     public String visit(@RequestParam(name = "date_debut", required = false) LocalDate date_debut,
                         @RequestParam(name = "date_fin", required = false) LocalDate date_fin,
                         Model model) {
