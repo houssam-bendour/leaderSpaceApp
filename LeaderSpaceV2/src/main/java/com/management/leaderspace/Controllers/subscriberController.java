@@ -2,10 +2,13 @@ package com.management.leaderspace.Controllers;
 
 import com.management.leaderspace.Entities.Admin;
 import com.management.leaderspace.Entities.Subscriber;
+import com.management.leaderspace.Entities.Utilisateur;
 import com.management.leaderspace.Repositories.SubscriberRepository;
+import com.management.leaderspace.Repositories.UtilisateurRepository;
 import com.management.leaderspace.Services.Subscriber.SubscriberService;
 import com.management.leaderspace.model.QrCodeGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -26,7 +29,9 @@ import java.util.Base64;
 public class subscriberController {
 
     private final SubscriberRepository subscriberRepository;
+    private final UtilisateurRepository utilisateurRepository;
     SubscriberService subscriberService;
+    PasswordEncoder passwordEncoder;
 
     @PostMapping("visit")
     public String visit(@RequestParam(name = "date_debut", required = false) LocalDate date_debut,
@@ -49,7 +54,7 @@ public class subscriberController {
         model.addAttribute("qrCodeBase64", qrCodeBase64);
         model.addAttribute("profile", subscriber);
         model.addAttribute("profileImage", subscriber.getBase64Image());
-        return "Subscriber_espace/profile";
+        return "Subscribeupdate-passwordr_espace/profile";
     }
     @GetMapping("updateProfile")
     String updateProfile(Model model) {
@@ -83,5 +88,23 @@ public class subscriberController {
         }
         return "redirect:/subscriber/profile";
     }
+    @GetMapping("update-password")
+    String updatePassword(@RequestParam(defaultValue = "") String message, Model model) {
+        model.addAttribute("message", message);
+        return "Subscriber_espace/updatePassword";
+    }
+    @PostMapping("validity-password")
+    String validityPassword(@RequestParam String oldPassword,
+                            Model model) {
+       Subscriber subscriber = subscriberService.getProfile();
+        if (passwordEncoder.matches(oldPassword, subscriber.getPassword())) {
+            // Si le mot de passe est correct, on peut changer le mot de passe
+            return "Subscriber_espace/new-password-form";
+        } else {
+            // Mot de passe actuel incorrect
+            return "redirect:update-password?message=Mot de passe actuel incorrect";
+        }
+    }
+
 }
 

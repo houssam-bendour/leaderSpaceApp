@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,22 +21,65 @@
             margin: 0;
         }
 
-
         .login-container {
+            position: relative;
             width: 100%;
             max-width: 400px;
             padding: 30px;
             border-radius: 20px;
-            background-color: rgba(0, 0, 0, 0.62);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-width: 5px;
             text-align: center;
-            backdrop-filter: blur(500px);
-            /*border: 2px solid rgba(255, 255, 255, 0.86);*/
+            backdrop-filter: blur(15px);
+            /*background-color: rgba(255, 255, 255, 0.1);*/
+        }
+
+        .animated-border {
+            position: absolute;
+            border-radius: 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .animated-border svg {
+            position: absolute;
+            border-radius: 20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .line {
+            stroke-dasharray: 100 30;
+            stroke-width: 5px;
+            fill: transparent;
+            stroke-linejoin: round;
+            animation: draw 8s infinite;
+        }
+
+        .line.color1 {
+            stroke: rgb(13, 255, 199);
+        }
+
+        .line.color2 {
+            stroke: teal;
+        }
+
+        @keyframes draw {
+            0% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: -520;
+            }
         }
 
         h1 {
             font-size: 28px;
-            color: #339794;
+            color: #fff;
             margin-bottom: 20px;
         }
 
@@ -139,14 +182,13 @@
             transform: translateY(-50%);
             cursor: pointer;
             color: white;
-            z-index: 10; /* S'assure que l'icône est au-dessus de l'input */
+            z-index: 10;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .login-container {
                 padding: 20px;
-                border-radius: 10px;
                 box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
             }
 
@@ -165,25 +207,16 @@
             }
 
             .eye-icon {
-                position: absolute;
                 right: 10px;
                 top: 70%;
-                transform: translateY(-50%);
-                cursor: pointer;
-                color: white;
-                z-index: 10; /* S'assure que l'icône est au-dessus de l'input */
             }
-
         }
 
         @media (max-width: 460px) {
             .login-container {
-                max-width: 90%;
-                height: auto;
-                border: none;
+                max-width: 100%;
                 padding: 15px;
-                backdrop-filter: blur(500px);
-
+                margin: 20px;
             }
 
             input[type="text"],
@@ -195,33 +228,13 @@
                 height: 36px;
                 font-size: 14px;
             }
-            /*.box{
-                width: 90%;
-                height: auto;
-            }
-            .box::before{
-                width: 90%;
-                height: auto;
-            }
-            .box::after{
-                width: 90%;
-                height: auto;
-            }
-            .borderLine::before{
-                width: 90%;
-                height: auto;
-            }
-            .borderLine::after{
-                width: 90%;
-                height: auto;
-            }*/
         }
 
         @media (max-width: 360px) {
             .login-container {
                 padding: 10px;
-                max-width: 90%;
-                backdrop-filter: blur(500px);
+                margin: 10px;
+
             }
 
             input[type="text"],
@@ -235,128 +248,49 @@
             }
         }
 
-        .box{
-            position: relative;
-            max-width: 400px;
-            height: 420px;
-            background: #1c1c1c;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .box::before{
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 400px;
-            height: 420px;
-            background: linear-gradient(0deg,transparent,transparent,#45f3ff,#45f3ff,#45f3ff);
-            z-index: 1;
-            transform-origin: bottom right;
-            animation: animate 6s linear infinite;
-        }
-        .box::after{
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 400px;
-            height: 420px;
-            background: linear-gradient(0deg,transparent,transparent,#45f3ff,#45f3ff,#45f3ff);
-            z-index: 1;
-            transform-origin: bottom right;
-            animation: animate 6s linear infinite;
-            animation-delay: -3s;
-        }
-        .borderLine{
-            position: absolute;
-            top: 0;
-            inset: 0;
-
-        }
-        .borderLine::before{
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 400px;
-            height: 420px;
-            background: linear-gradient(0deg,transparent,transparent,#ff2770,#ff2770,#ff2770);
-            z-index: 1;
-            transform-origin: bottom right;
-            animation: animate 6s linear infinite;
-            animation-delay: -1.5s;
-        }
-        .borderLine::after{
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 400px;
-            height: 420px;
-            background: linear-gradient(0deg,transparent,transparent,#ff2770,#ff2770,#ff2770);
-            z-index: 1;
-            transform-origin: bottom right;
-            animation: animate 6s linear infinite;
-            animation-delay: -4.5s;
-        }
-        @keyframes animate {
-            0%{
-                transform: rotate(0deg);
-            }
-            100%{
-                transform: rotate(360deg);
-            }
-        }
-        #tt{
-            position: absolute;
-            inset: 4px;
-            background: #222;
-            padding: 30px 40px;
-            border-radius: 8px;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-        }
-
     </style>
 </head>
 <body>
-<div class="login-container box">
-    <span class="borderLine"></span>
-    <div id="tt">
-        <h1>Se connecter</h1>
-        <form th:action="@{/login}" method="post">
-            <div class="form-group">
-                <div class="icones">
-                    <i class="fa fa-user"></i>
-                    <label for="username">Username</label>
-                </div>
-                <input type="text" id="username" name="username" required/>
+<div class="login-container">
+    <div class="animated-border">
+        <svg xmlns="http://www.w3.org/2000/svg">
+            <rect rx="20" ry="20" class="line color1" height="100%" width="100%" />
+            <rect rx="20" ry="20" class="line color2" height="100%" width="100%" />
+            <rect rx="20" ry="20" class="line color1" height="100%" width="100%" />
+            <rect rx="20" ry="20" class="line color2" height="100%" width="100%" />
+        </svg>
+    </div>
+    <h1>Se connecter</h1>
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <div class="icones">
+                <i class="fa fa-user"></i>
+                <label for="username">Username</label>
             </div>
-            <div class="form-group" style="position: relative;">
-                <div class="icones">
-                    <i class="fa fa-lock"></i>
-                    <label for="password">Password</label>
-                </div>
-                <input type="password" id="password" name="password" required/>
-                <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
+            <input type="text" id="username" name="username" required/>
+        </div>
+        <div class="form-group" style="position: relative;">
+            <div class="icones">
+                <i class="fa fa-lock"></i>
+                <label for="password">Password</label>
+            </div>
+            <input type="password" id="password" name="password" required/>
+            <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
                 <i class="fa fa-eye"></i>
             </span>
-            </div>
+        </div>
 
-            <div class="checkbox">
-                <input type="checkbox" id="remember-me" name="remember-me"/>
-                <label for="remember-me">Rester connecté un mois</label>
-            </div>
-            <div class="form-group">
-                <button type="submit">Se connecter</button>
-            </div>
-            <div class="forgot-password">
-                <a th:href="@{/forgot-password}">Mot de passe oublié ?</a>
-            </div>
-        </form>
-    </div>
+        <div class="checkbox">
+            <input type="checkbox" id="remember-me" name="remember-me"/>
+            <label for="remember-me">Rester connecté un mois</label>
+        </div>
+        <div class="form-group">
+            <button type="submit">Se connecter</button>
+        </div>
+        <div class="forgot-password">
+            <a th:href="@{/forgot-password}">Mot de passe oublié ?</a>
+        </div>
+    </form>
 </div>
 </body>
 <script>
