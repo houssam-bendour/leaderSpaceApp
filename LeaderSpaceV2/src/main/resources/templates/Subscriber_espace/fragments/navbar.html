@@ -7,6 +7,10 @@
             <li><a href="#" onclick="document.getElementById('visitFormForSubscriber').submit();">visites</a></li>
             <li><a href="#">à propos</a></li>
             <li><a href="#">se déconnecter</a></li>
+            <li><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon Badge</a></li>
+            <li><a href="#" onclick="document.getElementById('visitForm').submit();">visites</a></li>
+            <li><a href="#" onclick="document.getElementById('about').submit();">à propos</a></li>
+            <li><a href="#" onclick="document.getElementById('logoutForm').submit();">se déconnecter</a></li>
         </ul>
         <ul>
             <li><a href="#" onclick="document.getElementById('homeForm').submit();"><img src="/image/logo_leader_space.png"
@@ -16,6 +20,10 @@
             <li class="hideOnMobile"><a href="#" onclick="document.getElementById('visitFormForSubscriber').submit();">visites</a></li>
             <li class="hideOnMobile"><a href="#">à propos</a></li>
             <li class="hideOnMobile"><a href="#">se déconnecter</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon Badge</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('visitForm').submit();">visites</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('about').submit();">à propos</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('logoutForm').submit();">se déconnecter</a></li>
             <li class="menu-button" onclick="showSidebar()">
                 <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26">
@@ -32,7 +40,10 @@
     <form id="profileFormForSubscriber" method="get" th:action="@{/subscriber/profile}" style="display:none;"></form>
     <form id="adminForm" method="get" th:action="@{/admin/list-admins}" style="display:none;"></form>
     <form id="visitFormForSubscriber" method="get" th:action="@{subscriber/visit}" style="display:none;"></form>
-
+    <form id="badgeForm" method="get" th:action="@{/subscriber/badge}" style="display:none;"></form>
+    <form id="visitForm" method="post" th:action="@{/subscriber/visit}" style="display:none;"></form>
+    <form id="about" method="get" th:action="@{/subscriber/about}" style="display:none;"></form>
+    <form id="logoutForm" method="post" th:action="@{/logout}" style="display:none;"></form>
     <script>
         function showSidebar(){
             const sidebar = document.querySelector('.sidebar');
