@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>profile</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+
+
+        .profile-container {
+            width: 100%;
+            max-width: 900px;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.44);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .profile-header {
+            background-color: #339794;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .profile-header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        .profile-body {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+
+        .profile-image {
+            flex: 1 1 200px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .profile-details {
+            flex: 2 1 300px;
+            padding: 20px;
+        }
+
+        .profile-details h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .profile-details p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #666;
+        }
+
+        .profile-details p span {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .profile-footer {
+            background-color: rgba(247, 247, 247, 0.44);
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #e7e7e7;
+        }
+
+        .profile-footer button {
+            background-color: #339794;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .profile-footer button:hover {
+            background-color: #02c1bc;
+            color: black;
+        }
+
+        .profile-details button {
+            background-color: #f31414;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-transform: uppercase;
+            font-size: 0.7em;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .profile-details button:hover {
+            background-color: #ec7575;
+            color: black;
+        }
+
+        /* Styles spécifiques aux petits écrans (smartphone) */
+        @media screen and (max-width: 768px) {
+            .profile-container {
+                margin: 20px;
+            }
+
+            .profile-header h1 {
+                font-size: 1.5em;
+                padding: 20px;
+            }
+
+            .profile-body {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .profile-details {
+                padding: 10px;
+                text-align: center;
+            }
+
+            .profile-details h2 {
+                font-size: 1.2em;
+            }
+
+            .profile-details p {
+                font-size: 0.9em;
+            }
+
+            .profile-footer {
+                padding: 10px;
+            }
+
+            .profile-footer button {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media screen and (max-width: 580px) {
+            .profile-image img {
+                width: 150px;
+                height: 150px;
+
+            }
+            .profile-image  {
+                flex: none;
+            }
+            .profile-header h1 {
+                font-size: 1.2em;
+                padding: 15px;
+            }
+
+            .profile-details h2 {
+                font-size: 1em;
+            }
+            .profile-details {
+                flex:none;
+            }
+            .profile-details p {
+                font-size: 1em;
+            }
+            .profile-container {
+                width: 100%;
+                height: max-content;
+                margin-left: 0;
+                margin-right: 0;
+                margin-top: 20px;
+
+            }
+            .profile-details button {
+                font-size: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" type="text/css" href="/css/subscriber/navbar.css">
+</head>
+<body>
+<div th:replace="~{Subscriber_espace/fragments/navbar :: navbar}"></div>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1> Profile</h1>
+    </div>
+    <div class="profile-body">
+        <div class="profile-image">
+            <img th:src="${profile.base64Image}" alt="Photo de profil">
+        </div>
+        <div class="profile-details">
+            <h2 th:text="${profile.first_name} + ' ' + ${profile.last_name}" >Nom Prénom</h2>
+            <p><span>Email:</span> <span th:text="${profile.email}">email@exemple.com</span></p>
+            <p><span>Téléphone:</span> <span th:text="${profile.phone}">+212 6 00 00 00 00</span></p>
+            <p><span>CIN:</span> <span th:text="${profile.CIN}">CIN000000</span></p>
+            <button type="button" onclick="document.getElementById('passwordForm').submit();">Modifier le mot de passe</button>
+        </div>
+    </div>
+    <div class="profile-footer">
+        <button  type="button" onclick="document.getElementById('updateProfileForm').submit();">Modifier</button>
+        <button type="button" onclick="document.getElementById('MyBadg').submit();">Mon badge</button>
+    </div>
+</div>
+
+<form  id="passwordForm" method="get" th:action="@{/subscriber/update-password}" style="display:none;"></form>
+<form  id="updateProfileForm" method="get" th:action="@{/subscriber/updateProfile}" style="display:none;"></form>
+<form id="MyBadg" method="post" th:action="@{/reception/badge}" style="display:none;">
+    <input type="hidden" name="userId" th:value="${profile.id}">
+    <input type="hidden" name="qrCodeBase64" th:value="${qrCodeBase64}">
+</form>
+</body>
+</html>

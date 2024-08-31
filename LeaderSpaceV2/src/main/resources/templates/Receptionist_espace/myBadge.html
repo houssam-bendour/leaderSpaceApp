@@ -21,8 +21,7 @@
     }
 
     .id-card-container {
-      text-align: center;
-      position: relative;
+      display: contents;
     }
 
     .id-card {
@@ -102,7 +101,7 @@
 
     .button-container {
       display: flex;
-      justify-content: space-between;
+      gap: 10px;
       margin-top: 10px;
     }
 
@@ -115,6 +114,7 @@
       font-size: 12px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: 140px;
     }
 
     button:hover {
@@ -169,6 +169,28 @@
       link.click();
     });
   });
+
+  // Prevent Ctrl/Cmd + Scroll (mouse wheel zoom) and touchpad pinch-to-zoom
+  document.addEventListener('wheel', function (event) {
+    if (event.ctrlKey || event.metaKey) {
+      event.preventDefault();
+    }
+  }, {passive: false});
+
+  // Prevent keyboard zooming (Ctrl/Cmd + +/-, Ctrl/Cmd + 0)
+  document.addEventListener('keydown', function (event) {
+    if ((event.ctrlKey || event.metaKey) &&
+            (event.key === '+' || event.key === '-' || event.key === '=' || event.key === '0')) {
+      event.preventDefault();
+    }
+  });
+
+  // Prevent pinch-to-zoom on touch devices
+  document.addEventListener('touchstart', function (event) {
+    if (event.touches.length > 1) {
+      event.preventDefault();
+    }
+  }, {passive: false});
 </script>
 </body>
 </html>

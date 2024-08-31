@@ -128,6 +128,7 @@ public class ManagerController {
         assert oldSnack != null;
         long q = snack.getQuantity();
         snack.setQuantity(oldSnack.getQuantity() + snack.getQuantity());
+        snack.setRequiredQuantity(oldSnack.getRequiredQuantity());
         snacksAndBoissonsRepository.save(snack);
         SnacksAndBoissonsHistory snacksAndBoissonsHistory = new SnacksAndBoissonsHistory();
         snacksAndBoissonsHistory.setQuantity(q);
