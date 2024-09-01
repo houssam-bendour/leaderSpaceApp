@@ -4,6 +4,8 @@ import com.management.leaderspace.Entities.Subscriber;
 import com.management.leaderspace.Entities.Visit;
 import com.management.leaderspace.Repositories.SubscriberRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -35,14 +37,14 @@ public class SubscriberServiceImp implements SubscriberService{
     }
 
     @Override
-    public List<Visit> getAllVisits() {
-        return subscriberRepository.getVisits(getProfile().getId());
+    public Page<Visit> getAllVisits(Pageable pageable) {
+        return subscriberRepository.getVisits(getProfile().getId(),pageable);
     }
 
     @Override
-    public List<Visit> getVisitsByDate(LocalDate dateDebut, LocalDate dateFin) {
+    public Page<Visit> getVisitsByDate(LocalDate dateDebut, LocalDate dateFin, Pageable pageable) {
 
-        return subscriberRepository.getVisitsByDate(getProfile().getId(),dateDebut,dateFin);
+        return subscriberRepository.getVisitsByDate(getProfile().getId(),dateDebut,dateFin,pageable);
     }
 
 
