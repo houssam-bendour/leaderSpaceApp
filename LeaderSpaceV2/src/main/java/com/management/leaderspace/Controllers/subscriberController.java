@@ -1,14 +1,13 @@
 package com.management.leaderspace.Controllers;
 
-import com.management.leaderspace.Entities.Admin;
-import com.management.leaderspace.Entities.Receptionist;
-import com.management.leaderspace.Entities.Subscriber;
-import com.management.leaderspace.Entities.Utilisateur;
+import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.SubscriberRepository;
 import com.management.leaderspace.Repositories.UtilisateurRepository;
 import com.management.leaderspace.Services.Subscriber.SubscriberService;
 import com.management.leaderspace.model.QrCodeGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.List;
 
 @Controller
 @RequestMapping("/subscriber")
@@ -42,13 +42,23 @@ public class subscriberController {
     @GetMapping("visit")
     public String visit(@RequestParam(name = "date_debut", required = false) LocalDate date_debut,
                         @RequestParam(name = "date_fin", required = false) LocalDate date_fin,
+                        @RequestParam(defaultValue = "0") int page,
                         Model model) {
+        Page<Visit> pageVisits;
+        List<Visit> visits;
         if (date_debut==null || date_fin==null) {
-            model.addAttribute("visits", subscriberService.getAllVisits());
-        }else {
-            model.addAttribute("visits", subscriberService.getVisitsByDate(date_debut,date_fin));
-        }
+            pageVisits = subscriberService.getAllVisits(PageRequest.of(page,30));
+            visits = pageVisits.getContent();
 
+        }else {
+            pageVisits = subscriberService.getVisitsByDate(date_debut,date_fin,PageRequest.of(page,30));
+            visits = pageVisits.getContent();
+        }
+        model.addAttribute("date_debut", date_debut);
+        model.addAttribute("date_fin", date_fin);
+        model.addAttribute("pages",new int[pageVisits.getTotalPages()]);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("visits", visits);
 
         return "/Subscriber_espace/visit";
     }
