@@ -1,6 +1,7 @@
 package com.management.leaderspace.Controllers;
 
 import com.management.leaderspace.Entities.Admin;
+import com.management.leaderspace.Entities.Receptionist;
 import com.management.leaderspace.Entities.Subscriber;
 import com.management.leaderspace.Entities.Utilisateur;
 import com.management.leaderspace.Repositories.SubscriberRepository;
@@ -8,6 +9,11 @@ import com.management.leaderspace.Repositories.UtilisateurRepository;
 import com.management.leaderspace.Services.Subscriber.SubscriberService;
 import com.management.leaderspace.model.QrCodeGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,12 +72,10 @@ public class subscriberController {
     String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
                              @RequestParam("firstName") String firstName,
                              @RequestParam("lastName") String lastName,
-                             @RequestParam("email") String email,
                              @RequestParam("phone") String phone,
                              @RequestParam("CIN") String CIN,
                              Model model) {
         Subscriber subscriber = subscriberService.getProfile();
-        subscriber.setEmail(email);
         subscriber.setPhone(phone);
         subscriber.setCIN(CIN);
         subscriber.setLast_name(lastName);
@@ -84,10 +88,10 @@ public class subscriberController {
             subscriberRepository.save(subscriber);
         } catch (IOException e) {
             e.printStackTrace();
-            model.addAttribute("message", "Failed to upload image.");
         }
         return "redirect:/subscriber/profile";
     }
+
     @GetMapping("update-password")
     String updatePassword(@RequestParam(defaultValue = "") String message, Model model) {
         model.addAttribute("message", message);
@@ -104,6 +108,14 @@ public class subscriberController {
             // Mot de passe actuel incorrect
             return "redirect:update-password?message=Mot de passe actuel incorrect";
         }
+    }
+
+    @PostMapping("save-new-password")
+    String SaveNewPassword(@RequestParam("newPassword") String newPassword, Model model) {
+        Subscriber subscriber = subscriberService.getProfile();
+        subscriber.setPassword(passwordEncoder.encode(newPassword));
+        subscriberRepository.save(subscriber);
+        return "Subscriber_espace/password-changed-successfully";
     }
 
 

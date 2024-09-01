@@ -47,6 +47,7 @@ public class ManagerController {
     private final VisitOfRoomRepository visitOfRoomRepository;
     private final VisitOfDeskRepository visitOfDeskRepository;
     private final PageableHandlerMethodArgumentResolverCustomizer pageableCustomizer;
+    private final UtilisateurRepository utilisateurRepository;
     private SubscriptionTypeRepository subscriptionTypeRepository;
     private final SubscriberRepository subscriberRepository;
     private final SubscriptionHistoryRepository subscriptionHistoryRepository;
@@ -93,12 +94,12 @@ public class ManagerController {
 
     @GetMapping("list-snacks")
     public String listSnacks(@RequestParam(defaultValue = "") String name,
-            Model model) {
+                             Model model) {
         List<SnacksAndBoissons> snacksAndBoissonsList;
 
         if (name.isEmpty()) {
             snacksAndBoissonsList = managerService.getAllSnacks();
-        }else {
+        } else {
             snacksAndBoissonsList = managerService.getSnacksAndBoissonsByName(name);
         }
 
@@ -110,7 +111,7 @@ public class ManagerController {
             }
         }
         model.addAttribute("snacks", snacksAndBoissonsList);
-        model.addAttribute("name",name);
+        model.addAttribute("name", name);
         return "/Manager_espace/list-snacks";
     }
 
@@ -164,9 +165,9 @@ public class ManagerController {
     @GetMapping("list-NotSubscribers")
     public String listNotSubscribers(Model model) {
         List<NotSubscriber> notSubscribers = notSubscriberRepository.findAll();
-        Map<Integer,String>  notSubscriberQrCode = new HashMap<>();
+        Map<Integer, String> notSubscriberQrCode = new HashMap<>();
         for (NotSubscriber notSubscriber : notSubscribers) {
-            notSubscriberQrCode.put(notSubscriber.getCartNumber(),QrCodeGenerator.generateQrCodeBase64(notSubscriber.getId().toString()));
+            notSubscriberQrCode.put(notSubscriber.getCartNumber(), QrCodeGenerator.generateQrCodeBase64(notSubscriber.getId().toString()));
         }
         model.addAttribute("QrCode", notSubscriberQrCode);
         return "/Manager_espace/list-NotSubscribers-QrCode";
@@ -593,9 +594,10 @@ public class ManagerController {
         factureRepository.deleteById(factureId);
         return "redirect:list-facture";
     }
+
     /*
-    *
-    * */
+     *
+     * */
     @GetMapping("turnover")
     public String turnover(@RequestParam(name = "date_debut", required = false) String ch_date_debut,
                            @RequestParam(name = "date_fin", required = false) String ch_date_fin,
@@ -607,12 +609,12 @@ public class ManagerController {
         List<Visit> listNormaleVisitsByDayAndSectionAndPagee = new ArrayList<>();
         List<SubscriptionHistory> subscripitonsByDayAndPagee = new ArrayList<>();
         Map<UUID, Double> mapTotalPriceOfSnacksAndBoissonsByVisit = new HashMap<>();
-        List<VisitOfRoom> allVisitsOfRoomByDateAndPagee= new ArrayList<>();
-        Map<UUID,Double> sommeOfSnacksAndBoissonsOfRoom = new HashMap<>();
-        Map<UUID,Map<UUID,Double>> mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = new HashMap<>();
-        Map<UUID,Double> mapCalculeSommeForVisitOfRoom = new HashMap<>();
-        List<VisitOfDesk> visitsOfDeskByDayAndPagee= new ArrayList<>();
-        Map<UUID,Double> sommeOfsnacksAndBoissonsByVisit = new HashMap<>();
+        List<VisitOfRoom> allVisitsOfRoomByDateAndPagee = new ArrayList<>();
+        Map<UUID, Double> sommeOfSnacksAndBoissonsOfRoom = new HashMap<>();
+        Map<UUID, Map<UUID, Double>> mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = new HashMap<>();
+        Map<UUID, Double> mapCalculeSommeForVisitOfRoom = new HashMap<>();
+        List<VisitOfDesk> visitsOfDeskByDayAndPagee = new ArrayList<>();
+        Map<UUID, Double> sommeOfsnacksAndBoissonsByVisit = new HashMap<>();
         List<Contrat> allContractByDayAndPagee = new ArrayList<>();
         double totaleMontantOfContractsByDates;
         double sommeServiePriceSupplementaireOfVisits;
@@ -620,7 +622,7 @@ public class ManagerController {
         double sommeServiceSupplimentaiePriceOfDisk;
         //////////////////////////////////////////////
         List<VisitOfTeam> allVisitOfTeamByDayAndPagee = new ArrayList<>();
-        Map<UUID,Double> sommeSnacksAndBoissonsByVisitForTeam = new HashMap<>();
+        Map<UUID, Double> sommeSnacksAndBoissonsByVisitForTeam = new HashMap<>();
         double sommeServiceSupplimentairePriceOfTeam;
         double sommeSnacksAndBoissonsForVisitsTeam;
 
@@ -629,8 +631,8 @@ public class ManagerController {
         double totaleVisitsForTeam;
 
         /*
-        * normale visits
-        * */
+         * normale visits
+         * */
 
         double sommeServicePriceOfNormaleVisits;
         double sommeConsommationsNormaleVisits;
@@ -654,8 +656,8 @@ public class ManagerController {
             if (ch_date_debut.isEmpty() || ch_date_fin.isEmpty()) {
                 return "redirect:/manager/turnover";
             } else {
-                if(turnover.equals("chart")){
-                    return "redirect:/manager/charts?date_debut="+ch_date_debut+"&date_fin="+ch_date_fin;
+                if (turnover.equals("chart")) {
+                    return "redirect:/manager/charts?date_debut=" + ch_date_debut + "&date_fin=" + ch_date_fin;
                 }
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -663,20 +665,20 @@ public class ManagerController {
                 LocalDate dateFin = LocalDate.parse(ch_date_fin, formatter);
 
                 /*
-                * normale visits
-                * */
+                 * normale visits
+                 * */
 
                 sommeServicePriceOfNormaleVisits = visitRepository.sumServicePriceNormaleVisits(dateDebut, dateFin);
-                sommeServiePriceSupplementaireOfVisits = visitRepository.sommeServiePriceSupplementaireOfVisits(dateDebut,dateFin);
-                sommeConsommationsNormaleVisits = visitRepository.sumSnacksAndBoissonsOfVisitsForVisits(dateDebut,dateFin);
-                totalPriceByVisits = managerService.totalePriceByVisits(sommeServicePriceOfNormaleVisits,sommeServiePriceSupplementaireOfVisits,sommeConsommationsNormaleVisits);
-                model.addAttribute("totalPriceByVisits",totalPriceByVisits);
+                sommeServiePriceSupplementaireOfVisits = visitRepository.sommeServiePriceSupplementaireOfVisits(dateDebut, dateFin);
+                sommeConsommationsNormaleVisits = visitRepository.sumSnacksAndBoissonsOfVisitsForVisits(dateDebut, dateFin);
+                totalPriceByVisits = managerService.totalePriceByVisits(sommeServicePriceOfNormaleVisits, sommeServiePriceSupplementaireOfVisits, sommeConsommationsNormaleVisits);
+                model.addAttribute("totalPriceByVisits", totalPriceByVisits);
 
 
-                if (section.equals("normaleVisits")){
+                if (section.equals("normaleVisits")) {
 
 
-                    Page<Visit>listNormaleVisitsByDayAndSectionAndPage = visitRepository.listNormaleVisitsByDayAndPage(dateDebut,dateFin, PageRequest.of(page,50));
+                    Page<Visit> listNormaleVisitsByDayAndSectionAndPage = visitRepository.listNormaleVisitsByDayAndPage(dateDebut, dateFin, PageRequest.of(page, 50));
                     listNormaleVisitsByDayAndSectionAndPagee = listNormaleVisitsByDayAndSectionAndPage.getContent();
 
 
@@ -684,18 +686,18 @@ public class ManagerController {
 
                     model.addAttribute("mapTotalPriceOfSnacksAndBoissonsByVisit", mapTotalPriceOfSnacksAndBoissonsByVisit);
 
-                    model.addAttribute("sommeServicePriceOfNormaleVisits",sommeServicePriceOfNormaleVisits);
+                    model.addAttribute("sommeServicePriceOfNormaleVisits", sommeServicePriceOfNormaleVisits);
 
-                    model.addAttribute("sommeServiePriceSupplementaireOfVisits",sommeServiePriceSupplementaireOfVisits);
+                    model.addAttribute("sommeServiePriceSupplementaireOfVisits", sommeServiePriceSupplementaireOfVisits);
 
-                    model.addAttribute("sommeConsommationsNormaleVisits",sommeConsommationsNormaleVisits);
+                    model.addAttribute("sommeConsommationsNormaleVisits", sommeConsommationsNormaleVisits);
 
-                    model.addAttribute("currentPage",page);
+                    model.addAttribute("currentPage", page);
 
-                    model.addAttribute("pages",new int[listNormaleVisitsByDayAndSectionAndPage.getTotalPages()]);
+                    model.addAttribute("pages", new int[listNormaleVisitsByDayAndSectionAndPage.getTotalPages()]);
 
                 }
-                model.addAttribute("listNormaleVisitsByDayAndSection",listNormaleVisitsByDayAndSectionAndPagee);
+                model.addAttribute("listNormaleVisitsByDayAndSection", listNormaleVisitsByDayAndSectionAndPagee);
 
 
                 /*
@@ -703,160 +705,158 @@ public class ManagerController {
                  * */
 
                 sommeServicePriceForRoomVisits = visitOfRoomRepository.sumServicePriceRoomVisits(dateDebut, dateFin);
-                sommeServiceSuplimentaireOfVisitRoom= visitOfRoomRepository.sommeServiceSuplimentaireOfVisitRoom(dateDebut,dateFin);
-                sommeConsommationsForRoom = visitOfRoomRepository.sumSnacksAndBoissonsOfVisitsForVisitsRoom(dateDebut,dateFin);
-                sommeConsommationsForRoomParticipants = visitOfRoomRepository.sommeConsommationsForRoomParticipants(dateDebut,dateFin);
-                totaleOfAllVisitsOfRoom = managerServiceImp.totaleOfAllVisitsOfRoom(sommeServicePriceForRoomVisits,sommeServiceSuplimentaireOfVisitRoom,sommeConsommationsForRoom,sommeConsommationsForRoomParticipants);
+                sommeServiceSuplimentaireOfVisitRoom = visitOfRoomRepository.sommeServiceSuplimentaireOfVisitRoom(dateDebut, dateFin);
+                sommeConsommationsForRoom = visitOfRoomRepository.sumSnacksAndBoissonsOfVisitsForVisitsRoom(dateDebut, dateFin);
+                sommeConsommationsForRoomParticipants = visitOfRoomRepository.sommeConsommationsForRoomParticipants(dateDebut, dateFin);
+                totaleOfAllVisitsOfRoom = managerServiceImp.totaleOfAllVisitsOfRoom(sommeServicePriceForRoomVisits, sommeServiceSuplimentaireOfVisitRoom, sommeConsommationsForRoom, sommeConsommationsForRoomParticipants);
 
-                model.addAttribute("totaleOfAllVisitsOfRoom",totaleOfAllVisitsOfRoom);
-
-
-                if (section.equals("roomVisits")){
+                model.addAttribute("totaleOfAllVisitsOfRoom", totaleOfAllVisitsOfRoom);
 
 
+                if (section.equals("roomVisits")) {
 
-                    Page<VisitOfRoom> allVisitsOfRoomByDateAndPage = visitOfRoomRepository.findVisitsOfRoomByDateAndPage(dateDebut,dateFin,PageRequest.of(page,50));
+
+                    Page<VisitOfRoom> allVisitsOfRoomByDateAndPage = visitOfRoomRepository.findVisitsOfRoomByDateAndPage(dateDebut, dateFin, PageRequest.of(page, 50));
                     allVisitsOfRoomByDateAndPagee = allVisitsOfRoomByDateAndPage.getContent();
 
 
                     sommeOfSnacksAndBoissonsOfRoom = managerServiceImp.sommeOfSnacksAndBoissonsOfRoom(allVisitsOfRoomByDateAndPage.getContent());
 
-                    model.addAttribute("sommeOfSnacksAndBoissonsOfRoom",sommeOfSnacksAndBoissonsOfRoom);
+                    model.addAttribute("sommeOfSnacksAndBoissonsOfRoom", sommeOfSnacksAndBoissonsOfRoom);
 
                     mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom = managerServiceImp.sommeOfSnacksAndBoissonsForParticipantOfVisitRoom(allVisitsOfRoomByDateAndPage.getContent());
 
-                    model.addAttribute("mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom",mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
+                    model.addAttribute("mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom", mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
 
-                    mapCalculeSommeForVisitOfRoom = managerServiceImp.calculeSommeForVisitOfRoom(allVisitsOfRoomByDateAndPage.getContent(),sommeOfSnacksAndBoissonsOfRoom,mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
+                    mapCalculeSommeForVisitOfRoom = managerServiceImp.calculeSommeForVisitOfRoom(allVisitsOfRoomByDateAndPage.getContent(), sommeOfSnacksAndBoissonsOfRoom, mapSommeOfSnacksAndBoissonsForParticipantOfVisitRoom);
 
                     model.addAttribute("mapCalculeSommeForVisitOfRoom", mapCalculeSommeForVisitOfRoom);
 
-                    model.addAttribute("sommeServicePriceForRoomVisits",sommeServicePriceForRoomVisits);
+                    model.addAttribute("sommeServicePriceForRoomVisits", sommeServicePriceForRoomVisits);
 
-                    model.addAttribute("sommeServiceSuplimentaireOfVisitRoom",sommeServiceSuplimentaireOfVisitRoom);
+                    model.addAttribute("sommeServiceSuplimentaireOfVisitRoom", sommeServiceSuplimentaireOfVisitRoom);
 
-                    model.addAttribute("sommeConsommationsForRoom",sommeConsommationsForRoom);
+                    model.addAttribute("sommeConsommationsForRoom", sommeConsommationsForRoom);
 
-                    model.addAttribute("sommeConsommationsForRoomParticipants",sommeConsommationsForRoomParticipants);
+                    model.addAttribute("sommeConsommationsForRoomParticipants", sommeConsommationsForRoomParticipants);
 
-                    model.addAttribute("pages",new int[allVisitsOfRoomByDateAndPage.getTotalPages()]);
+                    model.addAttribute("pages", new int[allVisitsOfRoomByDateAndPage.getTotalPages()]);
 
-                    model.addAttribute("currentPage",page);
+                    model.addAttribute("currentPage", page);
 
                 }
 
-                model.addAttribute("allVisitsOfRoomByDate",allVisitsOfRoomByDateAndPagee);
+                model.addAttribute("allVisitsOfRoomByDate", allVisitsOfRoomByDateAndPagee);
 
 
                 /*
-                * desck visits
-                * */
+                 * desck visits
+                 * */
 
-                sommeServicePriceForDeskVisits = visitOfDeskRepository.sumServiceDeskPriceForDeskVisits(dateDebut,dateFin);
-                sommeServiceSupplimentaiePriceOfDisk = visitOfDeskRepository.sommeServiceSupplimentaiePriceOfDisk(dateDebut,dateFin);
-                sommeConsommationsForDesk = visitOfDeskRepository.sumSnacksAndBoissonsOfVisitsForDeskVisits(dateDebut,dateFin);
-                totaleOfVisitsOfDesk = managerService.totaleOfVisitsOfDesk(sommeServicePriceForDeskVisits,sommeServiceSupplimentaiePriceOfDisk,sommeConsommationsForDesk);
-                model.addAttribute("totaleOfVisitsOfDesk",totaleOfVisitsOfDesk);
-
-
-                if (section.equals("deskVisits")){
+                sommeServicePriceForDeskVisits = visitOfDeskRepository.sumServiceDeskPriceForDeskVisits(dateDebut, dateFin);
+                sommeServiceSupplimentaiePriceOfDisk = visitOfDeskRepository.sommeServiceSupplimentaiePriceOfDisk(dateDebut, dateFin);
+                sommeConsommationsForDesk = visitOfDeskRepository.sumSnacksAndBoissonsOfVisitsForDeskVisits(dateDebut, dateFin);
+                totaleOfVisitsOfDesk = managerService.totaleOfVisitsOfDesk(sommeServicePriceForDeskVisits, sommeServiceSupplimentaiePriceOfDisk, sommeConsommationsForDesk);
+                model.addAttribute("totaleOfVisitsOfDesk", totaleOfVisitsOfDesk);
 
 
+                if (section.equals("deskVisits")) {
 
-                    Page<VisitOfDesk> visitsOfDeskByDayAndPage  = visitOfDeskRepository.visitsOfDeskByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
-                    visitsOfDeskByDayAndPagee  = visitsOfDeskByDayAndPage.getContent();
+
+                    Page<VisitOfDesk> visitsOfDeskByDayAndPage = visitOfDeskRepository.visitsOfDeskByDayAndPage(dateDebut, dateFin, PageRequest.of(page, 50));
+                    visitsOfDeskByDayAndPagee = visitsOfDeskByDayAndPage.getContent();
 
 
                     sommeOfsnacksAndBoissonsByVisit = managerServiceImp.sommeOfsnacksAndBoissonsByVisit(visitsOfDeskByDayAndPage.getContent());
 
-                    model.addAttribute("sommeOfsnacksAndBoissonsByVisit",sommeOfsnacksAndBoissonsByVisit);
+                    model.addAttribute("sommeOfsnacksAndBoissonsByVisit", sommeOfsnacksAndBoissonsByVisit);
 
-                    model.addAttribute("sommeServicePriceForDeskVisits",sommeServicePriceForDeskVisits);
+                    model.addAttribute("sommeServicePriceForDeskVisits", sommeServicePriceForDeskVisits);
 
-                    model.addAttribute("sommeServiceSupplimentaiePriceOfDisk",sommeServiceSupplimentaiePriceOfDisk);
+                    model.addAttribute("sommeServiceSupplimentaiePriceOfDisk", sommeServiceSupplimentaiePriceOfDisk);
 
-                    model.addAttribute("sommeConsommationsForDesk",sommeConsommationsForDesk);
+                    model.addAttribute("sommeConsommationsForDesk", sommeConsommationsForDesk);
 
 
-                    model.addAttribute("pages",new int[visitsOfDeskByDayAndPage.getTotalPages()]);
+                    model.addAttribute("pages", new int[visitsOfDeskByDayAndPage.getTotalPages()]);
 
-                    model.addAttribute("currentPage",page);
+                    model.addAttribute("currentPage", page);
 
                 }
-                model.addAttribute("allvisitsOfDeskByDate",visitsOfDeskByDayAndPagee);
+                model.addAttribute("allvisitsOfDeskByDate", visitsOfDeskByDayAndPagee);
 
                 /*
-                * visitsOfTeam
-                * */
+                 * visitsOfTeam
+                 * */
 
-                sommeServiceSupplimentairePriceOfTeam = visitOfTeamRepository.sommeServiceSupplimentaiePriceForTeams(dateDebut,dateFin);
-                sommeSnacksAndBoissonsForVisitsTeam= visitOfTeamRepository.sumSnacksAndBoissonsOfVisitsForTeamVisits(dateDebut,dateFin);
-                totaleVisitsForTeam = managerService.totaleVisitsForTeam(sommeServiceSupplimentairePriceOfTeam,sommeSnacksAndBoissonsForVisitsTeam);
-                model.addAttribute("totaleVisitsForTeam",totaleVisitsForTeam);
+                sommeServiceSupplimentairePriceOfTeam = visitOfTeamRepository.sommeServiceSupplimentaiePriceForTeams(dateDebut, dateFin);
+                sommeSnacksAndBoissonsForVisitsTeam = visitOfTeamRepository.sumSnacksAndBoissonsOfVisitsForTeamVisits(dateDebut, dateFin);
+                totaleVisitsForTeam = managerService.totaleVisitsForTeam(sommeServiceSupplimentairePriceOfTeam, sommeSnacksAndBoissonsForVisitsTeam);
+                model.addAttribute("totaleVisitsForTeam", totaleVisitsForTeam);
 
-                if (section.equals("teamVisits")){
+                if (section.equals("teamVisits")) {
 
-                    Page<VisitOfTeam> allVisitOfTeamByDayAndPage = visitOfTeamRepository.allVisitOfTeamByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
+                    Page<VisitOfTeam> allVisitOfTeamByDayAndPage = visitOfTeamRepository.allVisitOfTeamByDayAndPage(dateDebut, dateFin, PageRequest.of(page, 50));
                     allVisitOfTeamByDayAndPagee = allVisitOfTeamByDayAndPage.getContent();
 
 
                     sommeSnacksAndBoissonsByVisitForTeam = managerService.sommeOfSnacksAndBoissonsByVisitFomTeam(allVisitOfTeamByDayAndPagee);
 
-                    model.addAttribute("sommeSnacksAndBoissonsByVisitForTeam",sommeSnacksAndBoissonsByVisitForTeam);
+                    model.addAttribute("sommeSnacksAndBoissonsByVisitForTeam", sommeSnacksAndBoissonsByVisitForTeam);
 
-                    model.addAttribute("sommeServiceSupplimentairePriceOfTeam",sommeServiceSupplimentairePriceOfTeam);
+                    model.addAttribute("sommeServiceSupplimentairePriceOfTeam", sommeServiceSupplimentairePriceOfTeam);
 
-                    model.addAttribute("sommeSnacksAndBoissonsForVisitsTeam",sommeSnacksAndBoissonsForVisitsTeam);
+                    model.addAttribute("sommeSnacksAndBoissonsForVisitsTeam", sommeSnacksAndBoissonsForVisitsTeam);
 
-                    model.addAttribute("pages",new int[allVisitOfTeamByDayAndPage.getTotalPages()]);
+                    model.addAttribute("pages", new int[allVisitOfTeamByDayAndPage.getTotalPages()]);
 
-                    model.addAttribute("currentPage",page);
+                    model.addAttribute("currentPage", page);
 
 
                 }
-                model.addAttribute("allVisitsOfTeamByDate",allVisitOfTeamByDayAndPagee);
+                model.addAttribute("allVisitsOfTeamByDate", allVisitOfTeamByDayAndPagee);
 
                 /*
-                * subscriptions
-                * */
+                 * subscriptions
+                 * */
 
-                totaleOfSubscriptions = subscriptionHistoryRepository.sumPriceOfSubscriptions(dateDebut,dateFin);
+                totaleOfSubscriptions = subscriptionHistoryRepository.sumPriceOfSubscriptions(dateDebut, dateFin);
                 model.addAttribute("totaleOfSubscriptions", totaleOfSubscriptions);
 
-                if (section.equals("subscriptions")){
+                if (section.equals("subscriptions")) {
 
-                    Page<SubscriptionHistory> subscripitonsByDayAndPage = subscriptionHistoryRepository.subscriptionsByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
+                    Page<SubscriptionHistory> subscripitonsByDayAndPage = subscriptionHistoryRepository.subscriptionsByDayAndPage(dateDebut, dateFin, PageRequest.of(page, 50));
                     subscripitonsByDayAndPagee = subscripitonsByDayAndPage.getContent();
-                    model.addAttribute("pages",new int[subscripitonsByDayAndPage.getTotalPages()]);
+                    model.addAttribute("pages", new int[subscripitonsByDayAndPage.getTotalPages()]);
 
-                    model.addAttribute("currentPage",page);
+                    model.addAttribute("currentPage", page);
 
                 }
                 model.addAttribute("allSubscriptionsByDateDebutBetweenStartDayAndEndDay", subscripitonsByDayAndPagee);
 
                 /*
-                * contracts
-                * */
+                 * contracts
+                 * */
 
-                totaleMontantOfContracts = contratRepository.totaleMontantOfContractByDates(dateDebut,dateFin);
-                model.addAttribute("totaleMontantOfContracts",totaleMontantOfContracts);
+                totaleMontantOfContracts = contratRepository.totaleMontantOfContractByDates(dateDebut, dateFin);
+                model.addAttribute("totaleMontantOfContracts", totaleMontantOfContracts);
 
-                if (section.equals("contracts")){
+                if (section.equals("contracts")) {
 
-                    Page<Contrat> allContractByDayAndPage = contratRepository.allContractByDayAndPage(dateDebut,dateFin,PageRequest.of(page,50));
+                    Page<Contrat> allContractByDayAndPage = contratRepository.allContractByDayAndPage(dateDebut, dateFin, PageRequest.of(page, 50));
                     allContractByDayAndPagee = allContractByDayAndPage.getContent();
-                    model.addAttribute("pages",new int[allContractByDayAndPage.getTotalPages()]);
+                    model.addAttribute("pages", new int[allContractByDayAndPage.getTotalPages()]);
 
-                    model.addAttribute("currentPage",page);
+                    model.addAttribute("currentPage", page);
 
 
                 }
 
-                model.addAttribute("allContractsByDate",allContractByDayAndPagee);
+                model.addAttribute("allContractsByDate", allContractByDayAndPagee);
             }
         }
         ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
-        model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+        model.addAttribute("dateInMorocco", nowInMorocco.toLocalDate());
 
         return "Manager_espace/turnover";
     }
@@ -867,16 +867,16 @@ public class ManagerController {
 
     @GetMapping("charts")
     public String charts(@RequestParam(name = "date_debut") LocalDate dateDebut,
-                         @RequestParam(name = "date_fin") LocalDate dateFin, Model model){
+                         @RequestParam(name = "date_fin") LocalDate dateFin, Model model) {
 
-        Map<LocalDate, Double> totaleVisitsNormaleCharts = managerService.totaleVisitsNormaleCharts(dateDebut,dateFin);
+        Map<LocalDate, Double> totaleVisitsNormaleCharts = managerService.totaleVisitsNormaleCharts(dateDebut, dateFin);
         Map<LocalDate, Double> totaleVisitsRoomCharts = managerService.totaleVisitsRoomCharts(dateDebut, dateFin);
         Map<LocalDate, Double> totaleVisitsDeskCharts = managerService.totaleVisitOfDesk(dateDebut, dateFin);
         Map<LocalDate, Double> totaleSubscriptionsCharts = managerServiceImp.totaleSubscriptions(dateDebut, dateFin);
-        Map<LocalDate,Double> totaleContractsCherts = managerService.totaleContractsCherts(dateDebut,dateFin);
-        Map<LocalDate,Double> totaleVisitsTeamsChartByDates = managerService.totaleVisitsTeamChartByDates(dateDebut,dateFin);
+        Map<LocalDate, Double> totaleContractsCherts = managerService.totaleContractsCherts(dateDebut, dateFin);
+        Map<LocalDate, Double> totaleVisitsTeamsChartByDates = managerService.totaleVisitsTeamChartByDates(dateDebut, dateFin);
         Map<LocalDate, Double> totaleTurnoverForCharts = managerService.totaleTurnoverForCharts(
-                new HashMap<>(totaleVisitsNormaleCharts), totaleVisitsRoomCharts, totaleVisitsDeskCharts,totaleVisitsTeamsChartByDates, totaleSubscriptionsCharts,totaleContractsCherts);
+                new HashMap<>(totaleVisitsNormaleCharts), totaleVisitsRoomCharts, totaleVisitsDeskCharts, totaleVisitsTeamsChartByDates, totaleSubscriptionsCharts, totaleContractsCherts);
 
         // Générer toutes les dates entre dateDebut et dateFin
         List<LocalDate> allDates = dateDebut.datesUntil(dateFin.plusDays(1))
@@ -955,10 +955,10 @@ public class ManagerController {
         model.addAttribute("dataContracts", dataContracts);
         model.addAttribute("labelsTeam", labelsTeam);
         model.addAttribute("dataTeam", dataTeam);
-        model.addAttribute("totaleTurnoverCherts",managerService.totaleTurnoverCherts(totaleTurnoverForCharts));
+        model.addAttribute("totaleTurnoverCherts", managerService.totaleTurnoverCherts(totaleTurnoverForCharts));
 
         ZonedDateTime nowInMorocco = ZonedDateTime.now(ZoneId.of("Africa/Casablanca"));
-        model.addAttribute("dateInMorocco",nowInMorocco.toLocalDate());
+        model.addAttribute("dateInMorocco", nowInMorocco.toLocalDate());
 
         return "Manager_espace/turnover-charts";
 
@@ -1051,34 +1051,40 @@ public class ManagerController {
 
     //==============================SUBSCRIBER CRUD============================
     @GetMapping("list-subscribers")
-    String getAllSubscribers(@RequestParam(value = "Name",defaultValue = "") String Name,
-                             @RequestParam(name = "page",defaultValue = "0") int page,
+    String getAllSubscribers(@RequestParam(value = "Name", defaultValue = "") String Name,
+                             @RequestParam(name = "page", defaultValue = "0") int page,
                              Model model) {
         Page<Subscriber> pageSubscribers;
-        if (Name.equals("")){
-            pageSubscribers = subscriberRepository.findAll(PageRequest.of(page,50));
-        }else {
-            pageSubscribers = receptionistService.getSubscribersByName(Name,PageRequest.of(page,50));
+        if (Name.equals("")) {
+            pageSubscribers = subscriberRepository.findAll(PageRequest.of(page, 50));
+        } else {
+            pageSubscribers = receptionistService.getSubscribersByName(Name, PageRequest.of(page, 50));
         }
 
         List<Subscriber> subscribers = pageSubscribers.getContent();
-        model.addAttribute("name",Name);
-        model.addAttribute("pages",new int[pageSubscribers.getTotalPages()]);
-        model.addAttribute("currentPage",page);
+        model.addAttribute("name", Name);
+        model.addAttribute("pages", new int[pageSubscribers.getTotalPages()]);
+        model.addAttribute("currentPage", page);
         model.addAttribute("subscribers", subscribers);
         return "Manager_espace/subscribers";
     }
 
     @GetMapping("add-subscriber")
-    String addSubscriber(Model model) {
+    String addSubscriber(@RequestParam(defaultValue = "") String message, Model model) {
         model.addAttribute("subscriber", new Subscriber());
         List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAll();
         model.addAttribute("subscriptionTypes", subscriptionTypes);
+        model.addAttribute("message", message);
         return "Manager_espace/add-subscriber-form";
     }
 
     @PostMapping("save-subscriber")
     public String saveSubscriber(@ModelAttribute Subscriber subscriber, @RequestParam("subscriptionType_id") UUID subscriptionType_id) {
+
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(subscriber.getEmail());
+        if (utilisateur != null) {
+            return "redirect:/manager/add-subscriber?message=Email est deja exist, veuillez utiliser un autre !";
+        }
         managerService.saveSubscriber(subscriber, subscriptionType_id);
         CaisseService caisseService = new CaisseService(caisseRepository);
         Caisse caisse = new Caisse();
@@ -1103,19 +1109,31 @@ public class ManagerController {
         return "redirect:/manager/list-subscribers";
     }
 
-    @PostMapping("update-subscriber")
-    String updateSubscriber(@RequestParam("subscriberId") UUID subscriberId, Model model) {
+    @GetMapping("update-subscriber")
+    String updateSubscriber(@RequestParam(defaultValue = "") String message,@RequestParam("subscriberId") UUID subscriberId, Model model) {
         Subscriber subscriber = subscriberRepository.findById(subscriberId).orElse(null);
         List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAll();
         model.addAttribute("subscriptionTypes", subscriptionTypes);
         model.addAttribute("subscriber", subscriber);
+        model.addAttribute("message", message);
         return "Manager_espace/update-subscriber-form";
     }
 
     @PostMapping("save-update-subscriber")
-    public String saveUpdateSubscriber( @ModelAttribute Subscriber subscriber) {
-        managerService.saveUpdateSubscriber(subscriber);
-        return "redirect:/manager/list-subscribers";
+    public String saveUpdateSubscriber(@ModelAttribute Subscriber subscriber) {
+        Subscriber oldSubscriber = subscriberRepository.findById(subscriber.getId()).orElse(null);
+        boolean newEmail = !subscriber.getEmail().equals(oldSubscriber.getEmail());
+        if (newEmail) {
+            if (utilisateurRepository.findByEmail(subscriber.getEmail()) == null) {
+                managerService.saveUpdateSubscriber(subscriber);
+                return "redirect:/manager/list-subscribers";
+            }else {
+                return "redirect:/manager/update-subscriber?message=veuillez utiliser un autre email&subscriberId="+subscriber.getId();
+            }
+        }else {
+            managerService.saveUpdateSubscriber(subscriber);
+            return "redirect:/manager/list-subscribers";
+        }
     }
 
     @PostMapping("delete-subscriber")
@@ -1133,54 +1151,54 @@ public class ManagerController {
             @RequestParam(name = "Name", defaultValue = "") String name,
             Model model) {
 
-        if (section.equals("Table-Subscribers")){
+        if (section.equals("Table-Subscribers")) {
             Page<Visit> pageVisitOfSubscribers;
-            if (name.isEmpty()){
-                pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page,50));
-            }else{
-                pageVisitOfSubscribers = visitRepository.listVisitsOfSubscribersByNameLike(name,PageRequest.of(page,50));
-                System.out.println("vitissubscriberbynamelike ===="+pageVisitOfSubscribers.getTotalPages());
+            if (name.isEmpty()) {
+                pageVisitOfSubscribers = managerService.getVisitsOfSubscribers(PageRequest.of(page, 50));
+            } else {
+                pageVisitOfSubscribers = visitRepository.listVisitsOfSubscribersByNameLike(name, PageRequest.of(page, 50));
+                System.out.println("vitissubscriberbynamelike ====" + pageVisitOfSubscribers.getTotalPages());
             }
 
             List<Visit> visitOfSubscribers = pageVisitOfSubscribers.getContent();
-            model.addAttribute("name",name);
-            model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
-            model.addAttribute("currentPage",page);
+            model.addAttribute("name", name);
+            model.addAttribute("pages", new int[pageVisitOfSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage", page);
             model.addAttribute("visitOfSubscribers", visitOfSubscribers);
         }
 
-        if (section.equals("Table-Non-Subscribers")){
+        if (section.equals("Table-Non-Subscribers")) {
 
-            Page<Visit> pageVisitOfNotSubscribers = managerService.getVisitsOfNotSubscribers(PageRequest.of(page,50));
+            Page<Visit> pageVisitOfNotSubscribers = managerService.getVisitsOfNotSubscribers(PageRequest.of(page, 50));
 
             List<Visit> visitOfNotSubscribers = pageVisitOfNotSubscribers.getContent();
 
-            model.addAttribute("pages",new int[pageVisitOfNotSubscribers.getTotalPages()]);
-            model.addAttribute("currentPage",page);
+            model.addAttribute("pages", new int[pageVisitOfNotSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage", page);
 
             model.addAttribute("visitOfNotSubscribers", visitOfNotSubscribers);
 
         }
 
-        if (section.equals("Table-Room")){
+        if (section.equals("Table-Room")) {
 
-            Page<VisitOfRoom> pageVisitOfSubscribers = managerService.getVisitsOfRoom(PageRequest.of(page,50));
+            Page<VisitOfRoom> pageVisitOfSubscribers = managerService.getVisitsOfRoom(PageRequest.of(page, 50));
 
             List<VisitOfRoom> visitOfRooms = pageVisitOfSubscribers.getContent();
 
-            model.addAttribute("pages",new int[pageVisitOfSubscribers.getTotalPages()]);
-            model.addAttribute("currentPage",page);
+            model.addAttribute("pages", new int[pageVisitOfSubscribers.getTotalPages()]);
+            model.addAttribute("currentPage", page);
             model.addAttribute("visitOfRooms", visitOfRooms);
         }
 
-        if (section.equals("Table-Desk")){
+        if (section.equals("Table-Desk")) {
 
-            Page<VisitOfDesk> pageVisitOfDesks = managerService.getVisitsOfDesk(PageRequest.of(page,50));
+            Page<VisitOfDesk> pageVisitOfDesks = managerService.getVisitsOfDesk(PageRequest.of(page, 50));
 
             List<VisitOfDesk> visitOfDesks = pageVisitOfDesks.getContent();
 
-            model.addAttribute("pages",new int[pageVisitOfDesks.getTotalPages()]);
-            model.addAttribute("currentPage",page);
+            model.addAttribute("pages", new int[pageVisitOfDesks.getTotalPages()]);
+            model.addAttribute("currentPage", page);
             model.addAttribute("visitOfDesks", visitOfDesks);
         }
 
@@ -1194,10 +1212,10 @@ public class ManagerController {
 
     @PostMapping("generat-qr-code")
     public String generatQrCode(@RequestParam("numbreQR") int numbreQR) {
-        int existCartNbr= notSubscriberRepository.findAll().size();
+        int existCartNbr = notSubscriberRepository.findAll().size();
         NotSubscriber notSubscriber = new NotSubscriber();
         for (int i = 1; i <= numbreQR; i++) {
-            notSubscriber.setCartNumber(existCartNbr+i);
+            notSubscriber.setCartNumber(existCartNbr + i);
             notSubscriberRepository.save(notSubscriber);
             notSubscriber = new NotSubscriber();
         }
@@ -1246,40 +1264,69 @@ public class ManagerController {
     }
 
     @GetMapping("add-receptionist")
-    String addReceptionist(Model model) {
+    String addReceptionist(@RequestParam(defaultValue = "") String message,Model model) {
         model.addAttribute("receptionist", new Receptionist());
+        model.addAttribute("message", message);
         return "Manager_espace/add-receptionist-form";
     }
 
     //ajouter une methode d'envoyer msg par mail ou wtsp
     @PostMapping("save-receptionist")
     public String saveReceptionist(@ModelAttribute Receptionist receptionist) {
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(receptionist.getEmail());
+        if (utilisateur != null) {
+            return "redirect:/manager/add-subscriber?message=Email est deja exist, veuillez utiliser un autre !";
+        }
         receptionist.setPassword(passwordEncoder.encode(receptionist.getPassword()));
         receptionistRepository.save(receptionist);
         return "redirect:/manager/list-receptionist";
     }
 
-    @PostMapping("update-receptionist")
-    String updateReceptionist(@RequestParam("receptionistId") UUID receptionistId, Model model) {
+    @GetMapping("update-receptionist")
+    String updateReceptionist(@RequestParam(defaultValue = "") String message,@RequestParam("receptionistId") UUID receptionistId, Model model) {
         Receptionist receptionist = receptionistRepository.findById(receptionistId).orElse(null);
         model.addAttribute("receptionist", receptionist);
+        model.addAttribute("message", message);
         return "Manager_espace/update-receptionist-form";
     }
 
     @PostMapping("save-update-receptionist")
     public String saveUpdateReceptionist(@ModelAttribute Receptionist receptionist) {
-        Receptionist existReceptionist=receptionistRepository.findById(receptionist.getId()).get();
-        if (receptionist.getPassword() != null && !receptionist.getPassword().isEmpty()) {
-            existReceptionist.setPassword(passwordEncoder.encode(receptionist.getPassword()));
+        Receptionist oldReceptionist=receptionistRepository.findById(receptionist.getId()).orElse(null);
+        boolean newEmail=!oldReceptionist.getEmail().equals(receptionist.getEmail());
+        if (newEmail) {
+            if(utilisateurRepository.findByEmail(receptionist.getEmail()) != null) {
+                return "redirect:/manager/update-receptionist?message=veuillez utiliser un autre email&receptionistId="+receptionist.getId();
+            }
+            else {
+                Receptionist existReceptionist = receptionistRepository.findById(receptionist.getId()).get();
+                if (receptionist.getPassword() != null && !receptionist.getPassword().isEmpty()) {
+                    existReceptionist.setPassword(passwordEncoder.encode(receptionist.getPassword()));
+                }
+                System.out.println(receptionist.getPassword().isEmpty());
+                existReceptionist.setCIN(receptionist.getCIN());
+                existReceptionist.setFirst_name(receptionist.getFirst_name());
+                existReceptionist.setLast_name(receptionist.getLast_name());
+                existReceptionist.setEmail(receptionist.getEmail());
+                existReceptionist.setCNSS_number(receptionist.getCNSS_number());
+                receptionistRepository.save(existReceptionist);
+                return "redirect:/manager/list-receptionist";
+            }
+        }else {
+            Receptionist existReceptionist = receptionistRepository.findById(receptionist.getId()).get();
+            if (receptionist.getPassword() != null && !receptionist.getPassword().isEmpty()) {
+                existReceptionist.setPassword(passwordEncoder.encode(receptionist.getPassword()));
+            }
+            System.out.println(receptionist.getPassword().isEmpty());
+            existReceptionist.setCIN(receptionist.getCIN());
+            existReceptionist.setFirst_name(receptionist.getFirst_name());
+            existReceptionist.setLast_name(receptionist.getLast_name());
+            existReceptionist.setEmail(receptionist.getEmail());
+            existReceptionist.setCNSS_number(receptionist.getCNSS_number());
+            receptionistRepository.save(existReceptionist);
+            return "redirect:/manager/list-receptionist";
         }
-        System.out.println(receptionist.getPassword().isEmpty());
-        existReceptionist.setCIN(receptionist.getCIN());
-        existReceptionist.setFirst_name(receptionist.getFirst_name());
-        existReceptionist.setLast_name(receptionist.getLast_name());
-        existReceptionist.setEmail(receptionist.getEmail());
-        existReceptionist.setCNSS_number(receptionist.getCNSS_number());
-        receptionistRepository.save(existReceptionist);
-        return "redirect:/manager/list-receptionist";
+
     }
 
     @PostMapping("delete-receptionist")
@@ -1287,6 +1334,7 @@ public class ManagerController {
         receptionistRepository.deleteById(receptionist);
         return "redirect:/manager/list-receptionist";
     }
+
     //==============================Devise CRUD============================
     @GetMapping("list-devis")
     String getAllDevis(Model model) {
@@ -1294,8 +1342,9 @@ public class ManagerController {
         model.addAttribute("devis", devis);
         return "Manager_espace/devis";
     }
+
     @GetMapping("devis-pdf")
-    String getDevis(@RequestParam("divisId")UUID divisId ,Model model) {
+    String getDevis(@RequestParam("divisId") UUID divisId, Model model) {
         Devis devis = devisRepository.findById(divisId).get();
         model.addAttribute("devis", devis);
         return "Manager_espace/new-devis-pdf";
@@ -1308,8 +1357,9 @@ public class ManagerController {
         model.addAttribute("factures", factures);
         return "Manager_espace/facture";
     }
+
     @GetMapping("facture-pdf")
-    String getFacture(@RequestParam("factureId")UUID factureId ,Model model) {
+    String getFacture(@RequestParam("factureId") UUID factureId, Model model) {
         Facture facture = factureRepository.findById(factureId).get();
         model.addAttribute("facture", facture);
         return "Manager_espace/new-facture-pdf";
@@ -1322,67 +1372,67 @@ public class ManagerController {
         model.addAttribute("contrats", contrats);
         return "Manager_espace/contrat";
     }
+
     @GetMapping("contrat-pdf")
-    String getContrt(@RequestParam("contratId")UUID contratId ,Model model) {
+    String getContrt(@RequestParam("contratId") UUID contratId, Model model) {
         Contrat contrat = contratRepository.findById(contratId).get();
         model.addAttribute("contrat", contrat);
-        if(contrat.getLangue().equals("fr"))
+        if (contrat.getLangue().equals("fr"))
             return "Manager_espace/new-contrat-fr-pdf";
         return "Manager_espace/new-contrat-ar-pdf";
     }
 
     @RequestMapping("caisse")
     String getCaisse(
-            @RequestParam(value = "dateDebut" ,required = false) LocalDate startDate,
-            @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,
+            @RequestParam(value = "dateDebut", required = false) LocalDate startDate,
+            @RequestParam(value = "dateFin", required = false) LocalDate endDate,
             @RequestParam(name = "page", defaultValue = "0") Integer page,
-            Model model){
-        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page,50));
+            Model model) {
+        Page<Caisse> pageCaisse = caisseRepository.findTopByOrderByDateTimeDesc(PageRequest.of(page, 50));
         List<Caisse> caisse = pageCaisse.getContent();
         Caisse FirstCaisse = caisse.isEmpty() ? null : caisse.getFirst();
-        if(startDate==null || endDate==null){
+        if (startDate == null || endDate == null) {
             model.addAttribute("caisse", caisse);
-            model.addAttribute("pages",new int[pageCaisse.getTotalPages()]);
+            model.addAttribute("pages", new int[pageCaisse.getTotalPages()]);
 
-        }else{
-            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate,PageRequest.of(page,50));
+        } else {
+            Page<Caisse> pageFilterCaisseByDate = caisseRepository.filterCaisseByDate(startDate, endDate, PageRequest.of(page, 50));
             List<Caisse> filterCaisseByDate = pageFilterCaisseByDate.getContent();
-            model.addAttribute("dateDebut",startDate);
-            model.addAttribute("dateFin",endDate);
-            model.addAttribute("pages",new int[pageFilterCaisseByDate.getTotalPages()]);
+            model.addAttribute("dateDebut", startDate);
+            model.addAttribute("dateFin", endDate);
+            model.addAttribute("pages", new int[pageFilterCaisseByDate.getTotalPages()]);
             model.addAttribute("caisse", filterCaisseByDate);
         }
-        model.addAttribute("currentPage",page);
+        model.addAttribute("currentPage", page);
 
         model.addAttribute("FirstCaisse", FirstCaisse);
         return "Manager_espace/caisse";
     }
 
     @RequestMapping("bank")
-    String getBank(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate,
-                   @RequestParam(value = "dateFin" ,required = false) LocalDate endDate,
+    String getBank(@RequestParam(value = "dateDebut", required = false) LocalDate startDate,
+                   @RequestParam(value = "dateFin", required = false) LocalDate endDate,
                    @RequestParam(defaultValue = "0") int fromBankPage,
                    @RequestParam(defaultValue = "0") int toBankPage,
                    @RequestParam(defaultValue = "") String section,
-                   Model model){
+                   Model model) {
         Page<Bank> pageFromBank;
         Page<Bank> pageToBank;
 
         List<Bank> Bank = bankRepository.findTopByOrderByDateTimeDesc();
         Bank FirstBank = Bank.isEmpty() ? null : Bank.getFirst();
-        if(startDate==null || endDate==null){
-            pageFromBank = bankRepository.findAllFromBank(PageRequest.of(fromBankPage,50));
-            pageToBank = bankRepository.findAllFromCaisseToBank(PageRequest.of(toBankPage,50));
+        if (startDate == null || endDate == null) {
+            pageFromBank = bankRepository.findAllFromBank(PageRequest.of(fromBankPage, 50));
+            pageToBank = bankRepository.findAllFromCaisseToBank(PageRequest.of(toBankPage, 50));
 
             List<Bank> fromBank = pageFromBank.getContent();
             List<Bank> toBank = pageToBank.getContent();
 
             model.addAttribute("FromBank", fromBank);
             model.addAttribute("ToBank", toBank);
-        }
-        else{
-            pageFromBank = bankRepository.filterFromBankByDate(startDate, endDate, PageRequest.of(fromBankPage,50));
-            pageToBank = bankRepository.filterToBankByDate(startDate, endDate, PageRequest.of(toBankPage,50));
+        } else {
+            pageFromBank = bankRepository.filterFromBankByDate(startDate, endDate, PageRequest.of(fromBankPage, 50));
+            pageToBank = bankRepository.filterToBankByDate(startDate, endDate, PageRequest.of(toBankPage, 50));
 
             List<Bank> fromBank = pageFromBank.getContent();
             List<Bank> toBank = pageToBank.getContent();
@@ -1390,16 +1440,16 @@ public class ManagerController {
             model.addAttribute("FromBank", fromBank);
             model.addAttribute("ToBank", toBank);
 
-            model.addAttribute("dateDebut",startDate);
-            model.addAttribute("dateFin",endDate);
+            model.addAttribute("dateDebut", startDate);
+            model.addAttribute("dateFin", endDate);
         }
-        model.addAttribute("fromBankPages",new int[pageFromBank.getTotalPages()]);
-        model.addAttribute("toBankPages",new int[pageToBank.getTotalPages()]);
+        model.addAttribute("fromBankPages", new int[pageFromBank.getTotalPages()]);
+        model.addAttribute("toBankPages", new int[pageToBank.getTotalPages()]);
 
-        model.addAttribute("fromBankCurrentPage",fromBankPage);
-        model.addAttribute("toBankCurrentPage",toBankPage);
+        model.addAttribute("fromBankCurrentPage", fromBankPage);
+        model.addAttribute("toBankCurrentPage", toBankPage);
 
-        model.addAttribute("section",section);
+        model.addAttribute("section", section);
 
         model.addAttribute("FirstBank", FirstBank);
         return "Manager_espace/bank";
@@ -1432,8 +1482,7 @@ public class ManagerController {
             bk.setSomme(sum);
             bk.setTime(localTime);
             bk.setDate(moroccoDateTime.toLocalDate());
-        }
-        else{
+        } else {
             double previous_bank_total = b.getFirst().getTotale_bank();
             bk.setTotale_bank(previous_bank_total + sum);
             bk.setSomme(sum);
@@ -1448,7 +1497,7 @@ public class ManagerController {
     }
 
     @PostMapping("/transferFromBank")
-    public String transferFromBank(@RequestParam("sumBank") double sum, @RequestParam("motif") String motif){
+    public String transferFromBank(@RequestParam("sumBank") double sum, @RequestParam("motif") String motif) {
         Bank b = bankRepository.findTopByOrderByDateTimeDesc().getFirst();
         if (b == null) {
             return "redirect:/error?message=no_bank_found";
@@ -1475,20 +1524,20 @@ public class ManagerController {
 
     @GetMapping("delete-reservation-of-desk")
     public String deleteReservationOfDesk(@RequestParam UUID reservation_id,
-                                          @RequestParam String section){
+                                          @RequestParam String section) {
         visitOfDeskRepository.deleteById(reservation_id);
         return "redirect:/manager/visit?section=" + section;
     }
 
     @GetMapping("delete-visit-of-room")
     public String deleteVisitOfRoom(@RequestParam UUID visit_room_id,
-                                    @RequestParam String section){
+                                    @RequestParam String section) {
         visitOfRoomRepository.deleteById(visit_room_id);
-        return "redirect:/manager/visit?section="+section;
+        return "redirect:/manager/visit?section=" + section;
     }
 
 
-//=======================uploadProfileImage=========================
+    //=======================uploadProfileImage=========================
     @PostMapping("/uploadProfileImage")
     public String uploadProfileImage(@RequestParam("file") MultipartFile file, @ModelAttribute("userId") UUID id, Model model) {
         Manager manager = managerRepository.findById(id).get();
@@ -1505,22 +1554,22 @@ public class ManagerController {
         return "redirect:/"; // rediriger vers la page de profil ou page souhaitée
     }
 
-//    @PostMapping("/filter_caisse_by_date")
+    //    @PostMapping("/filter_caisse_by_date")
 //    public String filterCaisseByDate(@RequestParam(value = "dateDebut" ,required = false) LocalDate startDate, @RequestParam(value = "dateFin" ,required = false) LocalDate endDate, Model model) {
 //        List<Caisse> filteredCaisseByDate = ;
 //        model.addAttribute("filteredCaisse", caisseRepository.filterCaisseByDate(startDate, endDate)); // Ajout au modèle
 //        return "Manager_espace/caisse"; // Retourner la vue sans redirection
 //    }
-@GetMapping("profile")
-String profile( Model model) {
+    @GetMapping("profile")
+    String profile(Model model) {
 
-    Manager manager = managerService.getProfile();
-    String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(manager.getId().toString());
-    model.addAttribute("qrCodeBase64", qrCodeBase64);
-    model.addAttribute("profile", manager);
-    model.addAttribute("profileImage", manager.getBase64Image());
-    return "Receptionist_espace/profile";
-}
+        Manager manager = managerService.getProfile();
+        String qrCodeBase64 = QrCodeGenerator.generateQrCodeBase64(manager.getId().toString());
+        model.addAttribute("qrCodeBase64", qrCodeBase64);
+        model.addAttribute("profile", manager);
+        model.addAttribute("profileImage", manager.getBase64Image());
+        return "Receptionist_espace/profile";
+    }
 
     @GetMapping("updateProfile")
     String updateProfile(Model model) {
@@ -1528,17 +1577,16 @@ String profile( Model model) {
         model.addAttribute("profile", manager);
         return "Receptionist_espace/updateProfile";
     }
+
     @PostMapping("saveUpdateProfile")
     String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
                              @RequestParam("firstName") String firstName,
                              @RequestParam("lastName") String lastName,
-                             @RequestParam("email") String email,
                              @RequestParam("phone") String phone,
                              @RequestParam("CIN") String CIN,
                              @RequestParam("CNSS") String CNSS,
                              Model model) {
         Manager manager = managerService.getProfile();
-        manager.setEmail(email);
         manager.setPhone(phone);
         manager.setCNSS_number(CNSS);
         manager.setCIN(CIN);
@@ -1550,14 +1598,12 @@ String profile( Model model) {
                 manager.setImage(imageData);
                 managerRepository.save(manager);
                 String base64Image = Base64.getEncoder().encodeToString(manager.getImage());
-                manager.setBase64Image("data:image/png;base64,"+base64Image);
+                manager.setBase64Image("data:image/png;base64," + base64Image);
                 httpSession.setAttribute("profileImage", manager.getBase64Image());
             }
         } catch (IOException e) {
             e.printStackTrace();
-            model.addAttribute("message", "Failed to upload image.");
         }
-        model.addAttribute("profile", manager);
         return "redirect:/manager/profile";
     }
 }

@@ -11,6 +11,7 @@
 <div class="form-container">
     <h1>Ajouter manager</h1>
     <hr/>
+    <p style="color: #ed6d7a ; text-align: center ; font-size: 20px" th:text="${message}"></p>
     <form th:action="@{/admin/save-manager}" method="post" th:object="${manager}">
         <div class="form-group">
             <label for="cin">CIN:</label>

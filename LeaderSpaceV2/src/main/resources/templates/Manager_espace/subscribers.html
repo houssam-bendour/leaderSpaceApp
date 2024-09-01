@@ -69,7 +69,8 @@
                 <td th:text="${subscriber.date_fin}">End Date</td>
                 <td>
                     <div class="action-buttons">
-                        <form th:action="@{/manager/update-subscriber(subscriberId=${subscriber.id})}" method="post">
+                        <form th:action="@{/manager/update-subscriber}" method="get">
+                            <input type="hidden" name="subscriberId" th:value="${subscriber.id}">
                             <abbr title="Modifier un abonné">
                                 <button type="submit"><i class="fa fa-edit"></i></button>
                             </abbr>

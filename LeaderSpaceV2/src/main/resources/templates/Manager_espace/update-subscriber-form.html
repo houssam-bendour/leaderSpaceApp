@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Modifier abonné</title>
@@ -36,6 +36,7 @@
         <div class="form-group">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" th:field="*{email}"  required/>
+            <p style="color: #ed6d7a ;  font-size: 20px" th:text="${message}"></p>
         </div>
         <div class="form-actions">
             <button type="submit">Enregistrer</button>
