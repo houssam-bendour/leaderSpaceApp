@@ -15,6 +15,7 @@ import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.config.PageableHandlerMethodArgumentResolverCustomizer;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -1012,7 +1013,9 @@ public class ManagerController {
     //==============================SUBSCRIPTION CRUD============================
     @GetMapping("list-subscriptions")
     String getAllSubscriptions(Model model) {
-        List<SubscriptionType> subscriptions = subscriptionTypeRepository.findAll();
+        List<SubscriptionType> subscriptions = subscriptionTypeRepository.findAll(
+                Sort.by(Sort.Direction.ASC, "price")
+        );
         model.addAttribute("subscriptions", subscriptions);
         return "Manager_espace/subscriptions";
     }

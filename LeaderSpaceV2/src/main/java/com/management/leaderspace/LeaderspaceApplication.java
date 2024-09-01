@@ -88,7 +88,7 @@ public class LeaderspaceApplication {
 //            subscriptionType.setName("Journée (15 jours)");
 //            subscriptionType.setDuration(15L);
 //            subscriptionType.setHour_of_day(14);
-//            subscriptionType.setFlexibility_duration(30L);
+//            subscriptionType.setFlexibility_duration(1L);
 //            subscriptionType.setNumber_of_Free_Drinks_of_day(2);
 //            subscriptionType.setPrice(300);
 //            subscriptionTypeRepository.save(subscriptionType);
@@ -96,7 +96,7 @@ public class LeaderspaceApplication {
 //            subscriptionType.setName("Journée (Mois)");
 //            subscriptionType.setDuration(30L);
 //            subscriptionType.setHour_of_day(14);
-//            subscriptionType.setFlexibility_duration(60L);
+//            subscriptionType.setFlexibility_duration(2L);
 //            subscriptionType.setNumber_of_Free_Drinks_of_day(2);
 //            subscriptionType.setPrice(500);
 //            subscriptionTypeRepository.save(subscriptionType);
@@ -104,7 +104,7 @@ public class LeaderspaceApplication {
 //            subscriptionType.setName("Journée (3 Mois)");
 //            subscriptionType.setDuration(90L);
 //            subscriptionType.setHour_of_day(14);
-//            subscriptionType.setFlexibility_duration(90L);
+//            subscriptionType.setFlexibility_duration(3L);
 //            subscriptionType.setNumber_of_Free_Drinks_of_day(2);
 //            subscriptionType.setPrice(1200);
 //            subscriptionTypeRepository.save(subscriptionType);
@@ -112,7 +112,7 @@ public class LeaderspaceApplication {
 //            subscriptionType.setName("Demi-Journée (15 jours)");
 //            subscriptionType.setDuration(15L);
 //            subscriptionType.setHour_of_day(6);
-//            subscriptionType.setFlexibility_duration(30L);
+//            subscriptionType.setFlexibility_duration(1L);
 //            subscriptionType.setNumber_of_Free_Drinks_of_day(1);
 //            subscriptionType.setPrice(150);
 //            subscriptionTypeRepository.save(subscriptionType);
@@ -120,7 +120,7 @@ public class LeaderspaceApplication {
 //            subscriptionType.setName("Demi-Journée (1 Mois)");
 //            subscriptionType.setDuration(15L);
 //            subscriptionType.setHour_of_day(6);
-//            subscriptionType.setFlexibility_duration(30L);
+//            subscriptionType.setFlexibility_duration(1L);
 //            subscriptionType.setNumber_of_Free_Drinks_of_day(1);
 //            subscriptionType.setPrice(250);
 //            subscriptionTypeRepository.save(subscriptionType);

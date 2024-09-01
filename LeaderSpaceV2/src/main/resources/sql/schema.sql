@@ -10,3 +10,5 @@ CREATE TABLE IF NOT EXISTS `persistent_logins` (
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
+
