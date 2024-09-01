@@ -1,6 +1,7 @@
 package com.management.leaderspace.Controllers;
 
 import com.management.leaderspace.Entities.Admin;
+import com.management.leaderspace.Entities.Receptionist;
 import com.management.leaderspace.Entities.Subscriber;
 import com.management.leaderspace.Entities.Utilisateur;
 import com.management.leaderspace.Repositories.SubscriberRepository;
@@ -107,6 +108,14 @@ public class subscriberController {
             // Mot de passe actuel incorrect
             return "redirect:update-password?message=Mot de passe actuel incorrect";
         }
+    }
+
+    @PostMapping("save-new-password")
+    String SaveNewPassword(@RequestParam("newPassword") String newPassword, Model model) {
+        Subscriber subscriber = subscriberService.getProfile();
+        subscriber.setPassword(passwordEncoder.encode(newPassword));
+        subscriberRepository.save(subscriber);
+        return "Subscriber_espace/password-changed-successfully";
     }
 
 
