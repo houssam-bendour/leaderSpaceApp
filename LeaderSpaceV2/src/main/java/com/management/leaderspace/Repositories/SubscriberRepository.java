@@ -22,4 +22,6 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, UUID> {
     List<Visit> getVisitsByDate(@Param("id") UUID id,@Param("date_debut") LocalDate date_debut,@Param("date_fin") LocalDate date_fin);
     @Query("select v from  Visit v where v.subscriber.id = :id order by v.day desc , v.StartTime desc ")
     List<Visit> getVisits(@Param("id") UUID id);
+    @Query("select s from Subscriber s where s.date_fin= :date_fin")
+    List<Subscriber> SubscriptionAboutToExpire(@Param("date_fin") LocalDate localDate);
 }

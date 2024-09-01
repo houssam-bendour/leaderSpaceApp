@@ -5,6 +5,41 @@
     <title>Modifier réceptioniste</title>
     <link rel="stylesheet" th:href="@{/css/add-subscriber.css}">
     <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">
+    <style>
+        #message {
+            display: none;
+            background: transparent;
+            color: white;
+            position: relative;
+            padding: 3px 20px;
+            margin-top: 10px;
+        }
+
+        #message p {
+            padding: 5px 35px;
+            font-size: 15px;
+        }
+
+        .valid {
+            color: #2cff00;
+        }
+
+        .valid:before {
+            position: relative;
+            left: -35px;
+            content: "✔";
+        }
+
+        .invalid {
+            color: #ffb31c;
+        }
+
+        .invalid:before {
+            position: relative;
+            left: -35px;
+            content: "✖";
+        }
+    </style>
 </head>
 <body>
 <div th:replace="Admin_espace/fragments/navbar :: navbar" ></div>
@@ -15,66 +50,123 @@
         <input type="hidden" th:field="*{id}" th:value="${receptionist.id}">
         <div class="form-group">
             <label for="cin">CIN:</label>
-            <input type="text" id="cin" name="cin" th:field="*{CIN}" th:value="${receptionist.CIN}">
+            <input type="text" id="cin" name="cin" th:field="*{CIN}" th:value="${receptionist.CIN}" required/>
         </div>
         <div class="form-group">
             <label for="first_name">First Name:</label>
-            <input type="text" id="first_name" name="first_name" th:field="*{first_name}" th:value="${receptionist.first_name}">
+            <input type="text" id="first_name" name="first_name" th:field="*{first_name}" th:value="${receptionist.first_name}" required/>
         </div>
         <div class="form-group">
             <label for="last_name">Last Name:</label>
-            <input type="text" id="last_name" name="last_name" th:field="*{last_name}" th:value="${receptionist.last_name}">
+            <input type="text" id="last_name" name="last_name" th:field="*{last_name}" th:value="${receptionist.last_name}" required/>
         </div>
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" th:field="*{email}" th:value="${receptionist.email}">
+            <input type="email" id="email" name="email" th:field="*{email}" th:value="${receptionist.email}" required/>
             <p style="color: #ed6d7a ; font-size: 15px" th:text="${message}"></p>
         </div>
         <div class="form-group">
             <label for="phone">Phone:</label>
-            <input type="tel" id="phone" name="phone" placeholder="+123-456-7890" pattern="\+?[0-9\s\-]{7,15}" th:field="*{phone}" th:value="${receptionist.phone}"/>
+            <input type="tel" id="phone" name="phone" placeholder="+123-456-7890" pattern="\+?[0-9\s\-]{7,15}" th:field="*{phone}" th:value="${receptionist.phone}" required/>
         </div>
         <div class="form-group">
             <label for="cnss">CNSS:</label>
-            <input type="text" id="cnss" name="quantity" th:field="*{CNSS_number}" th:value="${receptionist.CNSS_number}" required>
+            <input type="text" id="cnss" name="quantity" th:field="*{CNSS_number}" th:value="${receptionist.CNSS_number}" required/>
         </div>
         <div class="form-group">
             <label for="password">Mot de passe:</label>
             <div class="password-container">
-                <input id="password" type="password" name="password" placeholder="Entrez le mot de passe" th:field="*{password}" value="">
+                <input id="password" type="password" name="password" th:field="*{password}" value="" placeholder="Enter password"
+                       pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                       title="Doit contenir au moins un chiffre, une lettre majuscule et minuscule, et au moins 8 caractères ou plus"
+                       />
                 <span class="eye-icon" onclick="togglePasswordVisibility('password', this)">
                     <img src="/image/closed_icon.png" alt="eye icon">
                 </span>
             </div>
         </div>
         <br>
+        <div id="message">
+            <p id="letter" class="invalid">Une lettre <b>minuscule</b></p>
+            <p id="capital" class="invalid">Une lettre <b>majuscule</b></p>
+            <p id="number" class="invalid">Une <b>chiffre</b></p>
+            <p id="length" class="invalid">Minimum <b>8 caractères</b></p>
+        </div>
         <div class="form-actions">
             <button type="submit">Enregistrer</button>
             <a class="cancel-link" th:href="@{/manager/list-receptionist}">Annuler</a>
         </div>
     </form>
 
+</div>
 
 
-<!-- ICON SCRIPT -->
-<script src="/js/password.js"></script>
 <script>
-    feather.replace();
+    var myInput = document.getElementById("password");
+    var letter = document.getElementById("letter");
+    var capital = document.getElementById("capital");
+    var number = document.getElementById("number");
+    var length = document.getElementById("length");
 
-    document.querySelector('.password-icon').addEventListener('click', function() {
-        const passwordField = document.getElementById('password');
-        const eyeIcon = document.querySelector('.feather-eye');
-        const eyeOffIcon = document.querySelector('.feather-eye-off');
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            eyeIcon.style.display = "none";
-            eyeOffIcon.style.display = "block";
+    myInput.onfocus = function () {
+        document.getElementById("message").style.display = "block";
+    }
+    myInput.onkeyup = function () {
+        var lowerCaseLetters = /[a-z]/g;
+        if (myInput.value.match(lowerCaseLetters)) {
+            letter.classList.remove("invalid");
+            letter.classList.add("valid");
         } else {
-            passwordField.type = "password";
-            eyeIcon.style.display = "block";
-            eyeOffIcon.style.display = "none";
+            letter.classList.remove("valid");
+            letter.classList.add("invalid");
         }
-    });
+
+        var upperCaseLetters = /[A-Z]/g;
+        if (myInput.value.match(upperCaseLetters)) {
+            capital.classList.remove("invalid");
+            capital.classList.add("valid");
+        } else {
+            capital.classList.remove("valid");
+            capital.classList.add("invalid");
+        }
+
+        var numbers = /[0-9]/g;
+        if (myInput.value.match(numbers)) {
+            number.classList.remove("invalid");
+            number.classList.add("valid");
+        } else {
+            number.classList.remove("valid");
+            number.classList.add("invalid");
+        }
+
+        if (myInput.value.length >= 8) {
+            length.classList.remove("invalid");
+            length.classList.add("valid");
+        } else {
+            length.classList.remove("valid");
+            length.classList.add("invalid");
+        }
+    }
+
+    // Toggle password visibility function
+    function togglePasswordVisibility(inputId, eyeIcon) {
+        const passwordInput = document.getElementById(inputId);
+        const icon = eyeIcon.querySelector('img');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.src = '/image/open_icon.png'; // Change to open eye icon
+            passwordInput.style.backgroundColor = "#ffffff";
+            passwordInput.style.color = "#000000"
+        } else {
+            passwordInput.type = 'password';
+            icon.src = '/image/closed_icon.png'; // Change to closed eye icon
+            passwordInput.style.backgroundColor = "transparent";
+            passwordInput.style.color = "#ffffff"
+        }
+        document.getElementById("message").style.display = "block";
+
+    }
 </script>
 </body>
 </html>
