@@ -58,7 +58,8 @@
                 <td th:text="${receptionist.CNSS_number}">CNSS</td>
                 <td>
                     <div class="action-buttons">
-                        <form th:action="@{/manager/update-receptionist(receptionistId=${receptionist.id})}" method="post">
+                        <form th:action="@{/manager/update-receptionist}" method="get">
+                            <input type="hidden" name="receptionistId" th:value="${receptionist.id}">
                             <abbr title="Modifier un réceptioniste">
                                 <button type="submit"><i class="fa fa-edit"></i></button>
                             </abbr>

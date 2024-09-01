@@ -3,6 +3,7 @@ package com.management.leaderspace.Controllers;
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.AdminRepository;
 import com.management.leaderspace.Repositories.ManagerRepository;
+import com.management.leaderspace.Repositories.UtilisateurRepository;
 import com.management.leaderspace.Services.Admin.AdminService;
 import com.management.leaderspace.model.QrCodeGenerator;
 import jakarta.servlet.http.HttpSession;
@@ -30,7 +31,7 @@ public class AdminController {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final HttpSession httpSession;
-
+    private  final UtilisateurRepository utilisateurRepository;
     //==============================MANAGER CRUD============================
     @GetMapping("list-managers")
     String getAllManagers(Model model) {
@@ -40,28 +41,46 @@ public class AdminController {
     }
 
     @GetMapping("add-manager")
-    String addManager(Model model) {
+    String addManager(@RequestParam(defaultValue = "") String message,Model model) {
         model.addAttribute("manager", new Manager());
+        model.addAttribute("message", message);
         return "Admin_espace/add-manager-form";
     }
 
     @PostMapping("save-manager")
     public String saveManager(@ModelAttribute Manager manager) {
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(manager.getEmail());
+        if (utilisateur != null) {
+            return "redirect:/admin/add-manager?message=Email est deja exist, veuillez utiliser un autre !";
+        }
         adminService.saveManager(manager);
         return "redirect:/admin/list-managers";
     }
 
-    @PostMapping("update-manager")
-    String updateManager(@RequestParam("managerId") UUID managerId, Model model) {
+    @GetMapping("update-manager")
+    String updateManager(@RequestParam(defaultValue = "") String message,@RequestParam("managerId") UUID managerId, Model model) {
         Manager manager = managerRepository.findById(managerId).orElse(null);
         model.addAttribute("manager", manager);
+        model.addAttribute("message", message);
         return "Admin_espace/update-manager-form";
     }
 
     @PostMapping("save-update-manager")
     public String saveUpdateManager(@ModelAttribute Manager manager) {
-        adminService.saveUpdateManager(manager);
-        return "redirect:/admin/list-managers";
+        Manager oldManager = managerRepository.findById(manager.getId()).orElse(null);
+        boolean newEmail=!oldManager.getEmail().equals(manager.getEmail());
+        if (newEmail) {
+            if(utilisateurRepository.findByEmail(manager.getEmail()) == null) {
+                adminService.saveUpdateManager(manager);
+                return "redirect:/admin/list-managers";
+            }else {
+                return "redirect:/admin/list-managers?message=Email est deja exist&managerId="+manager.getId();
+            }
+        }else {
+            adminService.saveUpdateManager(manager);
+            return "redirect:/admin/list-managers";
+        }
+
     }
 
     @PostMapping("delete-manager")
@@ -80,28 +99,44 @@ public class AdminController {
     }
 
     @GetMapping("add-admin")
-    String addAdmin(Model model) {
+    String addAdmin(@RequestParam(defaultValue = "") String message,Model model) {
         model.addAttribute("admin", new Admin());
+        model.addAttribute("message", message);
         return "Admin_espace/add-admin-form";
     }
 
     @PostMapping("save-admin")
     public String saveAdmin(@ModelAttribute Admin admin) {
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(admin.getEmail());
+        if (utilisateur != null) {
+            return "redirect:/admin/add-admin?message=Email est deja exist, veuillez utiliser un autre !";
+        }
         adminService.saveAdmin(admin);
         return "redirect:/admin/list-admins";
     }
 
-    @PostMapping("update-admin")
-    String updateAdmin(@RequestParam("adminId") UUID adminId, Model model) {
+    @GetMapping("update-admin")
+    String updateAdmin(@RequestParam(defaultValue = "") String message,@RequestParam("adminId") UUID adminId, Model model) {
         Admin admin = adminRepository.findById(adminId).orElse(null);
         model.addAttribute("admin", admin);
+        model.addAttribute("message", message);
         return "Admin_espace/update-admin-form";
     }
 
     @PostMapping("save-update-admin")
     public String saveUpdateAdmin(@ModelAttribute Admin admin) {
+        Admin oldAdmin=adminRepository.findById(admin.getId()).orElse(null);
+        boolean newEmail= !oldAdmin.getEmail().equals(admin.getEmail());
+        if (newEmail) {
+            if(utilisateurRepository.findByEmail(admin.getEmail()) == null) {
+                adminService.saveUpdateAdmin(admin);
+                return "redirect:/admin/list-admins";
+            }else {
+                return "redirect:/admin/update-admin?message=Email est deja exist&adminId="+admin.getId();
+            }
+        }else {
         adminService.saveUpdateAdmin(admin);
-        return "redirect:/admin/list-admins";
+        return "redirect:/admin/list-admins";}
     }
 
     @PostMapping("delete-admin")
@@ -164,13 +199,11 @@ public class AdminController {
     String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
                              @RequestParam("firstName") String firstName,
                              @RequestParam("lastName") String lastName,
-                             @RequestParam("email") String email,
                              @RequestParam("phone") String phone,
                              @RequestParam("CIN") String CIN,
                              @RequestParam("CNSS") String CNSS,
                              Model model) {
         Admin admin = adminService.getProfile();
-        admin.setEmail(email);
         admin.setPhone(phone);
         admin.setCNSS_number(CNSS);
         admin.setCIN(CIN);

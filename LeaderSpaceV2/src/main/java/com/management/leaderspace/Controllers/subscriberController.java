@@ -8,6 +8,11 @@ import com.management.leaderspace.Repositories.UtilisateurRepository;
 import com.management.leaderspace.Services.Subscriber.SubscriberService;
 import com.management.leaderspace.model.QrCodeGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,12 +71,10 @@ public class subscriberController {
     String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
                              @RequestParam("firstName") String firstName,
                              @RequestParam("lastName") String lastName,
-                             @RequestParam("email") String email,
                              @RequestParam("phone") String phone,
                              @RequestParam("CIN") String CIN,
                              Model model) {
         Subscriber subscriber = subscriberService.getProfile();
-        subscriber.setEmail(email);
         subscriber.setPhone(phone);
         subscriber.setCIN(CIN);
         subscriber.setLast_name(lastName);
@@ -84,10 +87,10 @@ public class subscriberController {
             subscriberRepository.save(subscriber);
         } catch (IOException e) {
             e.printStackTrace();
-            model.addAttribute("message", "Failed to upload image.");
         }
         return "redirect:/subscriber/profile";
     }
+
     @GetMapping("update-password")
     String updatePassword(@RequestParam(defaultValue = "") String message, Model model) {
         model.addAttribute("message", message);

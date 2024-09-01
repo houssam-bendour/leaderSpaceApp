@@ -424,12 +424,12 @@ public class ReceptionistController {
 
 
     @GetMapping("add-subscriber")
-    public String addSubscriber(Model model) {
+    public String addSubscriber(@RequestParam(defaultValue = "") String message,Model model) {
 
         List<SubscriptionType> subscriptionTypes = subscriptionTypeRepository.findAll();
 
         model.addAttribute("subscriptionTypes", subscriptionTypes);
-
+        model.addAttribute("message", message);
         return "/Receptionist_espace/add-subscriber";
 
     }
@@ -443,7 +443,10 @@ public class ReceptionistController {
                                  @RequestParam("phone") String phone,
                                  @RequestParam("quantity") int quantity,
                                  @RequestParam("password") String password) {
-
+        Utilisateur utilisateur =utilisateurRepository.findByEmail(email);
+        if (utilisateur != null){
+            return "redirect:/manager/add-subscriber?message=Email est deja exist, veuillez utiliser un autre !";
+        }
         receptionistService.saveSubscriber(subscriptionTypeId, quantity, cin, firstName, lastName, email, phone, password);
 
         CaisseService caisseService = new CaisseService(caisseRepository);
@@ -1804,13 +1807,11 @@ public class ReceptionistController {
     String saveUpdateProfile(@RequestParam("profileImage") MultipartFile file,
                              @RequestParam("firstName") String firstName,
                              @RequestParam("lastName") String lastName,
-                             @RequestParam("email") String email,
                              @RequestParam("phone") String phone,
                              @RequestParam("CIN") String CIN,
                              @RequestParam("CNSS") String CNSS,
                              Model model) {
         Receptionist receptionist = receptionistService.getProfile();
-        receptionist.setEmail(email);
         receptionist.setPhone(phone);
         receptionist.setCNSS_number(CNSS);
         receptionist.setCIN(CIN);
@@ -1827,9 +1828,7 @@ public class ReceptionistController {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            model.addAttribute("message", "Failed to upload image.");
         }
-        model.addAttribute("profile", receptionist);
         return "redirect:/reception/profile";
     }
 

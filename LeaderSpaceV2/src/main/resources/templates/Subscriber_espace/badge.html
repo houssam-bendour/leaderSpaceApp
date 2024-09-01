@@ -153,6 +153,9 @@
                 min-width: 140px;
             }
         }
+        #idCard{
+            transition: transform 2s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -212,5 +215,18 @@
         }
     }, { passive: false });
 </script>
+<script>
+    // Fonction pour faire tourner la div après le chargement de la page
+    function rotateDiv() {
+        var div = document.getElementById("idCard");
+        div.style.transform = "rotateY(360deg)";
+    }
+
+    // Ajout de l'événement pour déclencher la rotation après le chargement de la page
+    window.onload = function() {
+        rotateDiv();
+    };
+</script>
+
 </body>
 </html>

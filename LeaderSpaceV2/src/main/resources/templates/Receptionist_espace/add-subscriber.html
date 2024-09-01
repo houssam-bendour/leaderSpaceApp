@@ -11,6 +11,7 @@
 <div class="form-container">
     <h1>Ajouter abonné</h1>
     <hr/>
+    <p style="color: #ed6d7a ; text-align: center ; font-size: 20px" th:text="${message}"></p>
     <form th:action="@{/reception/save-subscriber}" method="post">
         <div class="form-group">
             <label for="subscriptionType">Subscription Type:</label>

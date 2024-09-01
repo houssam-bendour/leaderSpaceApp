@@ -211,15 +211,11 @@
     </div>
     <div class="profile-footer">
         <button  type="button" onclick="document.getElementById('updateProfileForm').submit();">Modifier</button>
-        <button type="button" onclick="document.getElementById('MyBadg').submit();">Mon badge</button>
     </div>
 </div>
 
 <form  id="passwordForm" method="get" th:action="@{/subscriber/update-password}" style="display:none;"></form>
 <form  id="updateProfileForm" method="get" th:action="@{/subscriber/updateProfile}" style="display:none;"></form>
-<form id="MyBadg" method="post" th:action="@{/reception/badge}" style="display:none;">
-    <input type="hidden" name="userId" th:value="${profile.id}">
-    <input type="hidden" name="qrCodeBase64" th:value="${qrCodeBase64}">
-</form>
+
 </body>
 </html>
