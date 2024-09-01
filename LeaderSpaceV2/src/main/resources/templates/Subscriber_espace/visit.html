@@ -270,6 +270,7 @@
             padding: 0;
         }
 
+
         @media screen and (min-width: 1025px) {
 
             .search-form {
@@ -351,59 +352,68 @@
                 /*overflow-y: auto;*/
             }
 
-            #search-btn{
+            #search-btn {
                 margin-top: 1rem;
             }
+
+            .header-buttons {
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                width: min-content;
+                margin: 10px;
+            }
+
+            .table-scroll thead th {
+                position: sticky;
+                top: 0;
+                background-color: #29978d; /* Ensures header background remains visible */
+                color: white; /* Ensures header text is visible */
+                z-index: 1; /* Ensures header stays on top during scroll */
+                padding: 10px; /* Adds padding for better visual spacing */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds subtle shadow for better header separation */
+            }
+
+
+            }
+
+
+        @media screen and (max-width: 600px) {
+
+            /* Ensure table container scrolls horizontally */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch; /* Smooth scrolling for mobile devices */
+                width: 100%;
+            }
+
+            /* Table should be as wide as its content */
+            .table-scroll {
+                width: 100%;
+                min-width: 800px; /* Force table to have a minimum width to enable scrolling */
+                border-collapse: collapse;
+            }
+
+            /* Make sure the table still scrolls horizontally */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Re-enable hidden columns on scroll */
+            .table-scroll {
+                display: inline-table;
+                min-width: 800px; /* Match this to your full table width */
+            }
         }
+
+
+
+
 
     </style>
 </head>
 <body>
-<!--<header>-->
-<!--    <h1>My visits</h1>-->
-<!--    <div class="header-buttons">-->
-<!--        <form th:action="@{/}" method="get">-->
-<!--            <button type="submit">Cancel</button>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--    &lt;!&ndash; Search form &ndash;&gt;-->
-
-<!--    <form method="post" th:action="@{/subscriber/visit}">-->
-<!--        <input type="date" name="date_debut" th:value="${param.date_debut != null ? param.date_debut : null}">-->
-<!--        <input type="date" name="date_fin" th:value="${param.date_fin != null ? param.date_fin : null}">-->
-<!--        <button type="submit">Chercher</button>-->
-<!--    </form>-->
-
-<!--</header>-->
-
-<!--<main>-->
-<!--    <h2>Visits</h2>-->
-
-<!--    <table border="1">-->
-
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>Day</th>-->
-<!--            <th>Start time</th>-->
-<!--            <th>End time</th>-->
-<!--            <th>Snacks</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="visit : ${visits}">-->
-<!--            <td th:text="${visit.day}">Day</td>-->
-<!--            <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>-->
-<!--            <td th:text="${#temporals.format(visit.endTime, 'HH:mm')}">End Time</td>-->
-<!--            <td>-->
-<!--                <ul th:each="snack : ${visit.snacksAndBoissonsOfVisits}">-->
-<!--                    <li th:text="${snack.snacksAndBoissons.name}"></li>-->
-<!--                </ul>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</main>-->
-
 
 <div class="navbar" th:replace="~{Subscriber_espace/fragments/navbar :: navbar}"></div>
 
@@ -416,13 +426,13 @@
         <div class="header-buttons">
             <form th:action="@{/}" method="get">
                 <abbr title="Retourner à la page d'accueil">
-                    <button type="submit"><i class="fa fa-arrow-left" th:style="'padding-left:3px'"></i></button> <!-- Cancel icon -->
+                    <button id="return-btn" type="submit"><i class="fa fa-arrow-left" th:style="'padding-left:3px'"></i></button> <!-- Cancel icon -->
                 </abbr>
             </form>
         </div>
         <!-- Search form -->
         <div class="search-form">
-            <form method="get" th:action="@{/subscriber/visit}">
+            <form method="get" th:action="@{/subscriber/visit}" onsubmit="return validateDates();">
                 <label for="dateDebut" class="form-label">De</label>
                 <input type="date" name="date_debut" id="dateDebut" th:value="${param.date_debut != null ? param.date_debut : null}" th:style="'margin-right:20px'">
                 <label for="dateFin" class="form-label">À</label>
@@ -440,7 +450,9 @@
                 <th>Date</th>
                 <th>Heure de début</th>
                 <th>Heure de fin</th>
-                <th>Snacks</th>
+                <th>Snacks (Quantité, Prix)</th>
+                <th>Services supplimentaires (Prix)</th>
+                <th>Total (MAD)</th>
             </tr>
             </thead>
             <tbody>
@@ -451,12 +463,21 @@
                 <td>
                     <ul th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) > 1}"
                         th:each="snack : ${visit.snacksAndBoissonsOfVisits}">
-                        <li th:text="${snack.snacksAndBoissons.name}"></li>
+                        <li th:text="${snack.snacksAndBoissons.name} + ' (' + ${snack.quantity} + ', ' + ${snack.selling_price} + ')'"></li>
                     </ul>
                     <div th:if="${#lists.size(visit.snacksAndBoissonsOfVisits) == 1}"
                          th:each="snack : ${visit.snacksAndBoissonsOfVisits}"
-                         th:text="${snack.snacksAndBoissons.name}">
+                         th:text="${snack.snacksAndBoissons.name} + ' (' + ${snack.quantity} + ', ' + ${snack.selling_price} + ')'">
                     </div>
+                </td>
+                <td>
+                    <div th:if="${visit.service_suplementaire != null}"
+                         th:text="${visit.service_suplementaire} + ' (' + ${visit.service_suplementaire_price} + ')'"></div>
+                </td>
+                <td>
+                    <div th:if="${visit.service_suplementaire != null}" class="service-price" th:text="${visit.service_suplementaire_price}" th:style="'display:none'"></div>
+                    <div th:each="snack : ${visit.snacksAndBoissonsOfVisits}" class="snack-price" th:text="${(snack.selling_price * snack.quantity)}" style="display:none"></div>
+                    <div class="total-price"></div>
                 </td>
             </tr>
             </tbody>
@@ -476,4 +497,55 @@
 </div>
 </main>
 </body>
+<script>
+    window.onload = function () {
+        document.querySelectorAll('tbody tr').forEach(function (row) {
+            let total = 0;
+
+            // Additionner les prix des snacks
+            row.querySelectorAll('.snack-price').forEach(function (element) {
+                total += parseFloat(element.textContent);
+            });
+
+            // Ajouter le prix du service supplémentaire, s'il existe
+            let servicePrice = parseFloat(row.querySelector('.service-price')?.textContent || 0);
+            total += servicePrice;
+
+            // Afficher le total
+            row.querySelector('.total-price').textContent = total.toFixed(2);
+        });
+    }
+
+
+
+
+        function validateDates() {
+        const dateDebutInput = document.getElementById('dateDebut').value;
+        const dateFinInput = document.getElementById('dateFin').value;
+        const dateInMoroccoObj = new Date(); // Remplacez par votre méthode pour obtenir la date actuelle au Maroc
+
+        /*if (!dateDebutInput || !dateFinInput) {
+          alert("Veuillez saisir les deux dates.");
+          return false;
+        }*/
+
+        const dateDebut = new Date(dateDebutInput);
+        const dateFin = new Date(dateFinInput);
+        const currentDate = new Date(dateInMoroccoObj);
+
+        if (dateDebut > dateFin) {
+        alert("La date de début doit être antérieure ou égale à la date de fin.");
+        return false;
+    }
+
+        if (dateFin > currentDate) {
+        alert("La date de fin ne peut pas être future.");
+        return false;
+    }
+
+        return true;
+    }
+
+
+</script>
 </html>

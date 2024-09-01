@@ -801,8 +801,8 @@ public class ReceptionistController {
 
         int oldNumberOfFreeBoissons = 0;
 
-        for (Visit v : visits) {
 
+        for (Visit v : visits) {
             oldNumberOfFreeBoissons += v.getFreeDrinksNumber();
 
         }

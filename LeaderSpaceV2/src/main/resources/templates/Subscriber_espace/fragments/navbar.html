@@ -1,21 +1,21 @@
 <div th:fragment="navbar">
     <nav>
-        <ul class="sidebar">
+        <ul class="sidebar" th:style="'z-index:2'">
             <li onclick=hideSidebar()><a href="#"><svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26"><path d="m249 849-42-42 231-231-231-231 42-42 231 231 231-231 42 42-231 231 231 231-42 42-231-231-231 231Z" fill="white"/></svg></a></li>
-            <li><a href="#" onclick="document.getElementById('profileForm').submit();">Profile</a></li>
-            <li><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon Badge</a></li>
-            <li><a href="#" onclick="document.getElementById('visitForm').submit();">visites</a></li>
-            <li><a href="#" onclick="document.getElementById('about').submit();">à propos</a></li>
-            <li><a href="#" onclick="document.getElementById('logoutForm').submit();">se déconnecter</a></li>
+            <li><a href="#" onclick="document.getElementById('profileForm').submit();">Mon profile</a></li>
+            <li><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon badge</a></li>
+            <li><a href="#" onclick="document.getElementById('visitForm').submit();">Mes visites</a></li>
+            <li><a href="#" onclick="document.getElementById('about').submit();">À propos</a></li>
+            <li><a href="#" onclick="document.getElementById('logoutForm').submit();">Se déconnecter</a></li>
         </ul>
         <ul>
             <li><a href="#" onclick="document.getElementById('homeForm').submit();"><img src="/image/logo_leader_space.png"
                                                                                         alt="esc_logo" ></a></li>
-            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('profileForm').submit();">Profile</a></li>
-            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon Badge</a></li>
-            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('visitForm').submit();">visites</a></li>
-            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('about').submit();">à propos</a></li>
-            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('logoutForm').submit();">se déconnecter</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('profileForm').submit();">Mon profile</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('badgeForm').submit();">Mon badge</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('visitForm').submit();">Mes visites</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('about').submit();">À propos</a></li>
+            <li class="hideOnMobile"><a href="#" onclick="document.getElementById('logoutForm').submit();">Se déconnecter</a></li>
             <li class="menu-button" onclick="showSidebar()">
                 <a href="#">
                     <svg xmlns="http://www.w3.org/2000/svg" height="26" viewBox="0 96 960 960" width="26">
