@@ -231,7 +231,7 @@
                 </form>
                 <div class="mt-4 text-center">
                     <th:block th:if="${param.date_debut != null && param.date_fin != null}">
-                        <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${totalPriceByVisits + totaleOfSubscriptions + totaleOfAllVisitsOfRoom +totaleOfVisitsOfDesk +totaleMontantOfContracts + totaleVisitsForTeam}"></h4>
+                        <h4 class="text-success" th:text="'Totale du chiffre d\'affaires = ' + ${#numbers.formatDecimal(totalPriceByVisits + totaleOfSubscriptions + totaleOfAllVisitsOfRoom +totaleOfVisitsOfDesk +totaleMontantOfContracts + totaleVisitsForTeam, 1, 2)}"></h4>
                     </th:block>
                 </div>
             </div>
