@@ -4,11 +4,38 @@
     <meta charset="UTF-8">
     <title>Error Page</title>
     <link rel="stylesheet" type="text/css" href="/css/error.css">
+<!--    <link rel="stylesheet" type="text/css" href="/css/admin/navBar.css">-->
+    <style>
+        /* Default button styles */
+        .btn-pagination-custom {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #ffffff;
+            background-color: #29978d;
+            border: 1px solid #29978d;
+            border-radius: 0.375rem; /* Rounded corners */
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 20px; /* Base font size */
+            margin-top: 2rem;
+            font-weight: bold;
+        }
+
+        /* Hover effect for pagination buttons */
+        .btn-pagination-custom:hover {
+            background-color: #ffffff;
+            color: #29978d;
+            border-color: #29978d;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
+<!--<div th:replace="Admin_espace/fragments/navbar :: navbar"></div>-->
 <div class="error-container">
-    <h1>Expires today</h1>
-    <p>Please try again later.</p>
+    <h1>Expire aujourd'hui</h1>
+    <p>Veuillez réessayer plus tard.</p>
+    <a class="btn-pagination-custom" href="/" >Retour à la page d'accueil</a>
 </div>
 </body>
 </html>

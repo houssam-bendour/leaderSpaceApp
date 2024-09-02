@@ -180,7 +180,7 @@ public class ReceptionistServiceImp implements ReceptionistService {
 
     @Override
     public Page<Subscriber> getSubscribers(Pageable pageable) {
-        return subscriberRepository.findAll(pageable);
+        return subscriberRepository.getAllSubscriberOrdered(pageable);
     }
 
     @Override

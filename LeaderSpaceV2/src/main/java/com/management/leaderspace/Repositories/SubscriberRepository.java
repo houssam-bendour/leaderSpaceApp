@@ -23,6 +23,5 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, UUID> {
 
     @Query("select v from  Visit v where v.subscriber.id = :id order by v.day desc , v.StartTime desc ")
     Page<Visit> getVisits(@Param("id") UUID id,Pageable pageable);
-
-
+    
 }
