@@ -24,11 +24,14 @@ public interface SubscriberRepository extends JpaRepository<Subscriber, UUID> {
     @Query("select v from  Visit v where v.subscriber.id = :id order by v.day desc , v.StartTime desc ")
     Page<Visit> getVisits(@Param("id") UUID id,Pageable pageable);
 
+
     @Query("select s from Subscriber s order by s.date_debut desc ")
     Page<Subscriber> getAllSubscriberOrdered(Pageable pageable);
 
     @Query("select s from Subscriber s where s.date_fin= :date_fin")
     List<Subscriber> SubscriptionAboutToExpire(@Param("date_fin") LocalDate localDate);
+
     @Query("select s from Subscriber s where s.date_fin > :date and s.number_of_visits<= 3 and s.sendEmail= false ")
     List<Subscriber> VisitsAreAboutToExpire(@Param("date") LocalDate localDate);
+
 }
