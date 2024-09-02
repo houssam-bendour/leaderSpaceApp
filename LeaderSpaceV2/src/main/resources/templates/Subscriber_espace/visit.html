@@ -315,6 +315,12 @@
             }
         }
 
+        .old-visit {
+            color: grey;
+        }
+        .new-visit {
+            color: black;
+        }
 
 
         @media screen and (max-width: 600px) {
@@ -450,7 +456,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="visit : ${visits}">
+            <tr th:each="visit : ${visits}" th:class="${visit.day.isBefore(visit.getSubscriber().date_debut)}? 'old-visit' : 'new-visit'">
                 <td th:text="${visit.day}">Day</td>
                 <td th:text="${#temporals.format(visit.startTime, 'HH:mm')}">Start Time</td>
                 <td  th:text="${(visit.endTime)==null?'visite en cours': #temporals.format(visit.endTime, 'HH:mm')}">End Time</td>
@@ -509,9 +515,6 @@
             row.querySelector('.total-price').textContent = total.toFixed(2);
         });
     }
-
-
-
 
         function validateDates() {
         const dateDebutInput = document.getElementById('dateDebut').value;

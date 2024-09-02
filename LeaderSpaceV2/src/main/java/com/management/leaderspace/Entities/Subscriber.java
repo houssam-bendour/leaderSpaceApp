@@ -1,8 +1,6 @@
 package com.management.leaderspace.Entities;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -13,6 +11,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
+@Getter
 public class Subscriber extends Utilisateur{
 
     @Temporal(TemporalType.DATE)
@@ -25,8 +25,6 @@ public class Subscriber extends Utilisateur{
     private boolean finished=false;
 
     private long quantity;
-
-
 
     private double price_actuel_d_abonnemet;
 

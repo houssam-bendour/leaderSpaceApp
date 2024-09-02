@@ -2,10 +2,12 @@ package com.management.leaderspace.Controllers;
 
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.SubscriberRepository;
+import com.management.leaderspace.Repositories.SubscriptionHistoryRepository;
 import com.management.leaderspace.Repositories.UtilisateurRepository;
 import com.management.leaderspace.Services.Subscriber.SubscriberService;
 import com.management.leaderspace.model.QrCodeGenerator;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/subscriber")
@@ -36,6 +40,7 @@ public class subscriberController {
 
     private final SubscriberRepository subscriberRepository;
     private final UtilisateurRepository utilisateurRepository;
+    private final SubscriptionHistoryRepository subscriptionHistoryRepository;
     SubscriberService subscriberService;
     PasswordEncoder passwordEncoder;
 
@@ -54,6 +59,8 @@ public class subscriberController {
             pageVisits = subscriberService.getVisitsByDate(date_debut,date_fin,PageRequest.of(page,30));
             visits = pageVisits.getContent();
         }
+
+
         model.addAttribute("date_debut", date_debut);
         model.addAttribute("date_fin", date_fin);
         model.addAttribute("pages",new int[pageVisits.getTotalPages()]);

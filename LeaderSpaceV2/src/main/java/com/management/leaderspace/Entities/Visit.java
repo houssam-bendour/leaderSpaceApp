@@ -33,6 +33,8 @@ public class Visit {
     private double service_suplementaire_price =0;
 
     private int freeDrinksNumber=0;
+    private boolean isOld;
+
     @ManyToOne
     @JoinColumn(name = "subscriber_id")
     private Subscriber subscriber;
@@ -43,6 +45,18 @@ public class Visit {
 
     @OneToMany(mappedBy = "visit", cascade = CascadeType.ALL, orphanRemoval = true)
     List<SnacksAndBoissonsOfVisit> snacksAndBoissonsOfVisits;
+
+    // getters and setters
+    public boolean isOld() {
+        return isOld;
+    }
+
+    public void setOld(boolean isOld) {
+        this.isOld = isOld;
+    }
+
+    // Other existing methods...
+
 
 //    @ManyToOne
 //    @JoinColumn(name = "seviceType_id")

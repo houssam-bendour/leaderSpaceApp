@@ -26,5 +26,4 @@ public interface SubscriptionHistoryRepository extends JpaRepository<Subscriptio
 
     @Query("select coalesce(sum(sh.price),0.0) from SubscriptionHistory sh where sh.startDate >= :dateDebut and sh.startDate <= :dateFin")
     double sumPriceOfSubscriptions (@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin);
-
 }
