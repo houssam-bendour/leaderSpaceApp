@@ -1495,7 +1495,6 @@ public class ReceptionistController {
     public String saveResubscribeOfSubscriber(@ModelAttribute Subscriber subscriber, @RequestParam("subscriptionType_id") UUID subscriptionType_id, Model model) {
         managerService.saveResubscribeOfSubscriber(subscriber, subscriptionType_id);
         return "redirect:/reception/Resubscription-completed-successfully?subscriberId=" + subscriber.getId();
-
     }
 
     @GetMapping("Resubscription-completed-successfully")

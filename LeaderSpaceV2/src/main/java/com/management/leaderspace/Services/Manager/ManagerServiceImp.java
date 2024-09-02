@@ -4,12 +4,15 @@ import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
 import com.management.leaderspace.model.CaisseService;
 import com.management.leaderspace.model.DesignationForm;
+import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 
 import org.springframework.boot.jdbc.metadata.DataSourcePoolMetadataProvider;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,7 +48,7 @@ public class ManagerServiceImp implements ManagerService {
     SubscriberRepository subscriberRepository;
     ContratRepository contratRepository;
     CaisseRepository caisseRepository;
-
+    JavaMailSender mailSender;
     @Override
     public Manager getProfile() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -287,7 +290,7 @@ public class ManagerServiceImp implements ManagerService {
         SubscriptionType subscriptionType = subscriptionTypeRepository.findById(subscriptionType_id).orElse(null);
         subscriber.setSubscription_type(subscriptionType);
         LocalDate localDate = moroccoDateTime.toLocalDate();
-
+        String password =subscriber.getPassword();
 
         LocalDate endDate = localDate.plusMonths(subscriber.getSubscription_type().getFlexibility_duration()*subscriber.getQuantity());
 
@@ -314,6 +317,36 @@ public class ManagerServiceImp implements ManagerService {
         subscriptionHistory.setQuantity(subscriber.getQuantity());
         subscriptionHistory.setPrice(subscriber.getPrice_actuel_d_abonnemet());
         subscriptionHistoryRepository.save(subscriptionHistory);
+        try {
+
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            // Remplir les informations dynamiques du client
+            String clientName = subscriber.getFirst_name()+" "+subscriber.getLast_name();
+
+            helper.setTo(subscriber.getEmail());
+            helper.setFrom("noreply@leaderspace.net");
+            helper.setSubject(" Informations de connexion à votre compte Leader Space");
+
+            String emailContent = "<p>Bonjour " + clientName + ",</p>" +
+                    "<p>Nous sommes ravis de vous accueillir au sein de Leader Space.</p>" +
+                    "<p>Voici les informations de connexion à votre compte :" +
+                    "<p>Email : <strong>"+subscriber.getEmail()+"</strong></p>" +
+                    "<p>Mot de passe temporaire : <strong style='color:red;'>"+password+"</strong></p>" +
+                    "<p>Pour des raisons de sécurité, nous vous recommandons fortement de changer ce mot de passe lors de votre première connexion. Pour ce faire, rendez-vous dans les paramètres de votre compte.</p>" +
+                    "<p>Si vous avez besoin d'assistance ou si vous avez des questions, n'hésitez pas à nous contacter.</p>" +
+                    "<p>Nous vous souhaitons une excellente expérience chez Leader Space.</p>" +
+                    "<p>Cordialement,</p>" +
+                    "<p>[Leader Space - Coworking]<br>Adresse : Kessou Meddah, Résidence Bella,n°4,Taza<br>Téléphone : 0808691616<br>Email : <a href='mailto:contact@leaderspace.net'>contact@leaderspace.net</a> <br><a href='https://www.leaderspace.net'>www.leaderspace.net</a></p>";
+
+            helper.setText(emailContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            // Gérer l'exception comme nécessaire (par exemple, journaliser l'erreur)
+        }
     }
 
     @Override
@@ -342,7 +375,7 @@ public class ManagerServiceImp implements ManagerService {
         subscriberToUpdate.setQuantity(subscriber.getQuantity());
         LocalDate endDate = localDate.plusMonths(subscriberToUpdate.getSubscription_type().getFlexibility_duration() * subscriberToUpdate.getQuantity());
 
-
+        subscriberToUpdate.setSendEmail(false);
         subscriberToUpdate.setDate_fin(endDate);
 
 
@@ -384,6 +417,38 @@ public class ManagerServiceImp implements ManagerService {
         caisse.setTotale_caisse(caisseService.calculerTotalCaisse(total, 0));
 
         caisseRepository.save(caisse);
+
+
+        try {
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            // Remplir les informations dynamiques du client
+            String clientName = subscriberToUpdate.getFirst_name()+" "+subscriberToUpdate.getLast_name();
+
+            helper.setTo(subscriberToUpdate.getEmail());
+            helper.setFrom("noreply@leaderspace.net");
+            helper.setSubject("Renouvellement de votre abonnement chez Leader Space");
+
+            String emailContent = "<p>Bonjour " + clientName + ",</p>" +
+                    "<p>Nous avons le plaisir de vous informer que votre abonnement chez Leader Space a été renouvelé avec succès.</p>" +
+                    "<p>Voici les détails de votre nouveau abonnement :" +
+                    "<p>Type d'abonnement : <strong>"+subscriberToUpdate.getSubscription_type().getName()+"</strong></p>" +
+                    "<p>Date de début : <strong>"+subscriberToUpdate.getDate_debut()+"</strong></p>" +
+                    "<p>Date de fin  : <strong>"+subscriberToUpdate.getDate_fin()+"</strong></p>" +
+                    "<p>Nous vous remercions pour votre confiance et sommes ravis de continuer à vous accueillir dans notre espace de coworking.</p>" +
+                    "<p>Si vous avez des questions ou si vous avez besoin d'informations supplémentaires, n'hésitez pas à nous contacter.</p>" +
+                    "<p>Cordialement,</p>" +
+                    "<p>[Leader Space - Coworking]<br>Adresse : Kessou Meddah, Résidence Bella,n°4,Taza<br>Téléphone : 0808691616<br>Email : <a href='mailto:contact@leaderspace.net'>contact@leaderspace.net</a> <br><a href='https://www.leaderspace.net'>www.leaderspace.net</a></p>";
+
+            helper.setText(emailContent, true);
+
+            mailSender.send(message);
+            System.out.println("resubscriber");
+        } catch (Exception e) {
+            System.out.println("Non sending");
+        }
 
     }
 

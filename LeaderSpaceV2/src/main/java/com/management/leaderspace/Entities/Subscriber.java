@@ -32,6 +32,8 @@ public class Subscriber extends Utilisateur{
 
     private Long number_of_visits;
 
+    private boolean sendEmail=false;
+
     @ManyToOne
     @JoinColumn(name = "subscription_id")
     private SubscriptionType subscription_type;

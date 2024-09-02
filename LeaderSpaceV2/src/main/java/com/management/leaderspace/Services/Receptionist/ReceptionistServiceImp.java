@@ -3,9 +3,12 @@ package com.management.leaderspace.Services.Receptionist;
 import com.management.leaderspace.Entities.*;
 import com.management.leaderspace.Repositories.*;
 import com.management.leaderspace.model.SnackForm;
+import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +39,7 @@ public class ReceptionistServiceImp implements ReceptionistService {
     ParticipantOfvisitRoomRepository participantOfvisitRoomRepository;
     UtilisateurRepository utilisateurRepository;
     VisitOfTeamRepository visitOfTeamRepository;
+    JavaMailSender mailSender;
 
     @Override
     public Receptionist getProfile() {
@@ -282,6 +286,36 @@ public class ReceptionistServiceImp implements ReceptionistService {
         subscriptionHistory.setQuantity(quantity);
         subscriptionHistory.setPrice(subscriber.getPrice_actuel_d_abonnemet());
         subscriptionHistoryRepository.save(subscriptionHistory);
+
+        try {
+
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            // Remplir les informations dynamiques du client
+            String clientName = subscriber.getFirst_name()+" "+subscriber.getLast_name();
+
+            helper.setTo(subscriber.getEmail());
+            helper.setFrom("noreply@leaderspace.net");
+            helper.setSubject(" Informations de connexion à votre compte Leader Space");
+
+            String emailContent = "<p>Bonjour " + clientName + ",</p>" +
+                    "<p>Nous sommes ravis de vous accueillir au sein de Leader Space.</p>" +
+                    "<p>Voici les informations de connexion à votre compte :" +
+                    "<p>Email : <strong>"+subscriber.getEmail()+"</strong></p>" +
+                    "<p>Mot de passe temporaire : <strong style='color:red;'>"+password+"</strong></p>" +
+                    "<p>Pour des raisons de sécurité, nous vous recommandons fortement de changer ce mot de passe lors de votre première connexion. Pour ce faire, rendez-vous dans les paramètres de votre compte.</p>" +
+                    "<p>Si vous avez besoin d'assistance ou si vous avez des questions, n'hésitez pas à nous contacter.</p>" +
+                    "<p>Nous vous souhaitons une excellente expérience chez Leader Space.</p>" +
+                    "<p>Cordialement,</p>" +
+                    "<p>[Leader Space - Coworking]<br>Adresse : Kessou Meddah, Résidence Bella,n°4,Taza<br>Téléphone : 0808691616<br>Email : <a href='mailto:contact@leaderspace.net'>contact@leaderspace.net</a> <br><a href='https://www.leaderspace.net'>www.leaderspace.net</a></p>";
+
+            helper.setText(emailContent, true);
+
+            mailSender.send(message);
+        } catch (Exception e) {
+            // Gérer l'exception comme nécessaire (par exemple, journaliser l'erreur)
+        }
 
     }
 

@@ -95,80 +95,37 @@ public class AdminServiceImp implements AdminService {
     }
 
 
-//    @Scheduled(cron = "0 0 11 * * ?")
-//    public void SubscriptionAboutToExpire() {
-//        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
-//        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
-//
-//        LocalDate localDate = moroccoDateTime.toLocalDate().plusDays(3);
-//        List<Subscriber> subscribers = subscriberRepository.SubscriptionAboutToExpire(localDate);
-//        for (Subscriber subscriber : subscribers) {
-//            try {
-//                MimeMessage message = mailSender.createMimeMessage();
-//                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-//
-//                // Remplir les informations dynamiques du client
-//                String clientName = subscriber.getFirst_name()+" "+subscriber.getLast_name();
-//                long usedVisits = subscriber.getSubscription_type().getDuration()-subscriber.getNumber_of_visits();
-//                long remainingVisits = subscriber.getNumber_of_visits();
-//
-//                helper.setTo(subscriber.getEmail());
-//                helper.setFrom("noreply@leaderspace.net");
-//                helper.setSubject("Votre abonnement approche de sa fin… Ne manquez pas l'occasion de le renouvelez dès maintenant !");
-//
-//                String emailContent = "<p>Bonjour " + clientName + ",</p>" +
-//                        "<p>Nous espérons que vous allez bien !</p>" +
-//                        "<p>Nous tenions à vous informer que vous avez utilisé <strong>" + usedVisits + " visites</strong> sur votre abonnement actuel à Leader Space. " +
-//                        "Il vous reste seulement <strong>" + remainingVisits + " visites</strong> avant l'épuisement de votre abonnement.</p>" +
-//                        "<p>Pour continuer à profiter de notre espace dynamique et inspirant sans interruption, nous vous invitons à renouveler votre abonnement dès aujourd'hui.</p>" +
-//                        "<p>Si vous avez des questions ou besoin d'assistance pour le renouvellement de votre abonnement, n'hésitez pas à nous contacter à <strong>[Email/Téléphone]</strong>. " +
-//                        "Nous sommes à votre disposition pour vous aider !</p>" +
-//                        "<p>Merci pour votre confiance et pour faire partie de notre communauté Leader Space. " +
-//                        "Nous avons hâte de continuer à vous accueillir et à soutenir votre travail.</p>" +
-//                        "<p>Cordialement,</p>" +
-//                        "<p>HIBA ESSAIH<br>Chargée de communication<br>LEADER SPACE<br>AV Kessou meddah, Résidence bella, Bureau N°4<br><a href='https://www.leaderspace.net'>www.leaderspace.net</a></p>";
-//
-//                helper.setText(emailContent, true);
-//
-//                mailSender.send(message);
-//            } catch (Exception e) {
-//                // Gérer l'exception comme nécessaire (par exemple, journaliser l'erreur)
-//            }
-//        }
-//    }
 
-    @Scheduled(cron = "0 32 23 * * ?")
     public void SubscriptionAboutToExpire() {
         ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
         ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
 
         LocalDate localDate = moroccoDateTime.toLocalDate().plusDays(3);
-        Subscriber subscriber = subscriberRepository.findByEmail("hsmbndr1@gmail.com");
-
+        List<Subscriber> subscribers = subscriberRepository.SubscriptionAboutToExpire(localDate);
+        for (Subscriber subscriber : subscribers) {
             try {
                 MimeMessage message = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
                 // Remplir les informations dynamiques du client
                 String clientName = subscriber.getFirst_name()+" "+subscriber.getLast_name();
-                long usedVisits = subscriber.getSubscription_type().getDuration()-subscriber.getNumber_of_visits();
-                long remainingVisits = subscriber.getNumber_of_visits();
+//                long usedVisits = subscriber.getSubscription_type().getDuration()-subscriber.getNumber_of_visits();
+//                long remainingVisits = subscriber.getNumber_of_visits();
 
                 helper.setTo(subscriber.getEmail());
                 helper.setFrom("noreply@leaderspace.net");
-                helper.setSubject("Votre abonnement approche de sa fin… Ne manquez pas l'occasion de le renouvelez dès maintenant !");
+                helper.setSubject("Expiration imminente de votre abonnement chez Leader Space");
 
                 String emailContent = "<p>Bonjour " + clientName + ",</p>" +
-                        "<p>Nous espérons que vous allez bien !</p>" +
-                        "<p>Nous tenions à vous informer que vous avez utilisé <strong>" + usedVisits + " visites</strong> sur votre abonnement actuel à Leader Space. " +
-                        "Il vous reste seulement <strong>" + remainingVisits + " visites</strong> avant l'épuisement de votre abonnement.</p>" +
-                        "<p>Pour continuer à profiter de notre espace dynamique et inspirant sans interruption, nous vous invitons à renouveler votre abonnement dès aujourd'hui.</p>" +
-                        "<p>Si vous avez des questions ou besoin d'assistance pour le renouvellement de votre abonnement, n'hésitez pas à nous contacter à <strong><a href='mailto:contact@leaderspace.net'>contact@leaderspace.net</a> ou (+212 808 69 16 16 / +212 653 56 36 72)</strong>. " +
-                        "Nous sommes à votre disposition pour vous aider !</p>" +
-                        "<p>Merci pour votre confiance et pour faire partie de notre communauté Leader Space. " +
-                        "Nous avons hâte de continuer à vous accueillir et à soutenir votre travail.</p>" +
+                        "<p>Nous espérons que vous profitez pleinement de votre expérience au sein de Leader Space.</p>" +
+                        "<p>Nous souhaitons vous informer que votre abonnement arrive à échéance dans <strong>3 jours</strong>. Si"+
+                        " vous souhaitez renouveler votre abonnement et continuer à bénéficier de nos services, "+
+                        "il vous suffit de nous envoyer un email à l'adresse suivante : <strong><a href='mailto:contact@leaderspace.net'>contact@leaderspace.net<a></strong>" +
+                        ", ou de nous envoyer un message WhatsApp au <strong>0653 563 672</strong>.</p>" +
+                        "<p>Nous restons à votre disposition pour toute question ou assistance supplémentaire.</p>" +
+                        "<p>Dans l'attente de votre retour, nous vous souhaitons une excellente journée.</p>" +
                         "<p>Cordialement,</p>" +
-                        "<p>HIBA ESSAIH<br>Chargée de communication<br>LEADER SPACE<br>AV Kessou meddah, Résidence bella, Bureau N°4<br><a href='https://www.leaderspace.net'>www.leaderspace.net</a></p>";
+                        "<p>[Leader Space - Coworking]<br>Adresse : Kessou Meddah, Résidence Bella,n°4,Taza<br><a href='https://www.leaderspace.net'>www.leaderspace.net</a></p>";
 
                 helper.setText(emailContent, true);
 
@@ -176,7 +133,53 @@ public class AdminServiceImp implements AdminService {
             } catch (Exception e) {
                 // Gérer l'exception comme nécessaire (par exemple, journaliser l'erreur)
             }
-
+        }
     }
+    public void VisitsAreAboutToExpire() {
+        ZoneId moroccoZoneId = ZoneId.of("Africa/Casablanca");
+        ZonedDateTime moroccoDateTime = ZonedDateTime.now(moroccoZoneId);
+
+        LocalDate localDate = moroccoDateTime.toLocalDate().plusDays(3);
+        List<Subscriber> subscribers = subscriberRepository.VisitsAreAboutToExpire(localDate);
+        for (Subscriber subscriber : subscribers) {
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+                // Remplir les informations dynamiques du client
+                String clientName = subscriber.getFirst_name()+" "+subscriber.getLast_name();
+
+                helper.setTo(subscriber.getEmail());
+                helper.setFrom("noreply@leaderspace.net");
+                helper.setSubject("Information sur votre abonnement chez Leader Space");
+
+                String emailContent = "<p>Bonjour " + clientName + ",</p>" +
+                        "<p>Nous espérons que vous trouvez votre expérience chez Leader Space agréable et productive.</p>" +
+                        "<p>Nous souhaitons vous informer qu'il vous reste <strong>"+subscriber.getNumber_of_visits()+" visites</strong> sur votre abonnement. Pour"+
+                        " continuer à profiter de notre espace après épuisement de ces visites, vous pouvez renouveler votre abonnement en nous envoyant un email à "+
+                        "<strong><a href='mailto:contact@leaderspace.net'>contact@leaderspace.net<a></strong>" +
+                        ", ou de nous envoyer un message WhatsApp au <strong>0653 563 672</strong>.</p>" +
+                        "<p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à nous contacter.</p>" +
+                        "<p>Merci de votre fidélité et à très bientôt.</p>" +
+                        "<p>Cordialement,</p>" +
+                        "<p>[Leader Space - Coworking]<br>Adresse : Kessou Meddah, Résidence Bella,n°4,Taza<br>Téléphone : 0808691616<br>Email : <a href='mailto:contact@leaderspace.net'>contact@leaderspace.net</a> <br><a href='https://www.leaderspace.net'>www.leaderspace.net</a></p>";
+
+                helper.setText(emailContent, true);
+
+                mailSender.send(message);
+                subscriber.setSendEmail(true);
+                subscriberRepository.save(subscriber);
+            } catch (Exception e) {
+                // Gérer l'exception comme nécessaire (par exemple, journaliser l'erreur)
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0 11 * * ?")
+    public void sendingEmail(){
+        SubscriptionAboutToExpire();
+        VisitsAreAboutToExpire();
+    }
+
 
 }
