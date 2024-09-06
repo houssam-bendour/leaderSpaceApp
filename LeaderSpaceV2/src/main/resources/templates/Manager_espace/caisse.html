@@ -24,10 +24,10 @@
 
   <!-- Formulaire de transfert -->
   <div class="transfer-form">
-    <form th:action="@{/manager/transfer}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir transférer cette somme ?')">
+    <form th:action="@{/manager/transfer}" method="post" onsubmit="return validateAndConfirmTransfer()">
       <label for="sum" class="form-label me-2">Somme à transférer</label>
       <div class="mb-3 row g-3 align-items-end">
-        <input type="number" class="form-control form-transfer me-2" id="sum" name="sum" placeholder="Entrez la somme à transférer" min="0" th:max="${FirstCaisse.totale_caisse}" required>
+        <input type="number" class="form-control form-transfer me-2" id="sum" name="sum" placeholder="Entrez la somme à transférer" required>
         <div class="col-md-2">
           <abbr title="Transférer à la banque">
             <button type="submit" class="btn btn-custom w-100" style="width: 100%">
@@ -71,7 +71,7 @@
 
   <!-- Tableau des transactions -->
   <main>
-    <h2 th:text="'Total: '+ ${FirstCaisse.totale_caisse}+' DH'" th:style="'color: #29978d; text-align: center'"></h2>
+    <h2 th:text="'Total: ' + (${FirstCaisse != null ? FirstCaisse.totale_caisse : '0'}) + ' DH'" th:style="'color: #29978d; text-align: center'"></h2>
     <div id="ancreTest">
       <div class="table-container">
         <table border="1" class="subscriber-table table-fixed">
@@ -84,13 +84,16 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="cs : ${caisse}">
+          <tr th:each="cs : ${caisse}" th:unless="${#lists.isEmpty(caisse)}">
             <td th:text="${cs.date}">Date</td>
             <td th:text="${cs.time}">Heure</td>
             <td th:text="${cs.somme > 0} ? '+' + ${cs.somme} : ${cs.somme}"
                 th:style="${cs.somme < 0} ? 'color: red;' : 'color: green;'">
             </td>
             <td th:text="${cs.totale_caisse}">Totale</td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(caisse)}">
+            <td colspan="5">Aucune transaction trouvée.</td>
           </tr>
           </tbody>
         </table>
@@ -139,6 +142,31 @@
 
 </script>
 
+<script>
+
+    function validateAndConfirmTransfer() {
+    var sum = parseFloat(document.getElementById("sum").value);
+    var totalCaisse= parseFloat([[${FirstCaisse?.totale_caisse ?: 0}]]);
+
+    if (totalCaisse === 0) {
+    alert("Transaction non autorisée : Le total de la caisse est égal à 0.");
+    return false;
+  }
+
+    if (sum <= 0) {
+    alert("Transaction non autorisée : Vous ne pouvez pas transférer une somme inférieure ou égale à 0.");
+    return false;
+  }
+
+    if (sum > totalCaisse) {
+    alert("Transaction non autorisée : Vous ne pouvez pas transférer une somme supérieure au total de la caisse.");
+    return false;
+  }
+
+    return confirm("Êtes-vous sûr de vouloir transférer cette somme ?");
+  }
+
+</script>
 
 <!-- Intégration de Bootstrap JS et de ses dépendances -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

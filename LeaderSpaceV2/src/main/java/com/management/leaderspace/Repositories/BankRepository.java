@@ -11,6 +11,7 @@ import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface BankRepository extends JpaRepository<Bank, UUID> {
@@ -28,4 +29,6 @@ public interface BankRepository extends JpaRepository<Bank, UUID> {
 
     @Query("SELECT d FROM Bank d WHERE d.somme >= 0 AND d.date >= :dateDebut AND d.date <= :dateFin ORDER BY d.date DESC")
     Page<Bank> filterToBankByDate(@Param("dateDebut") LocalDate dateDebut, @Param("dateFin") LocalDate dateFin, Pageable pageable);
+
+
 }

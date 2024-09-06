@@ -27,11 +27,12 @@
 <div class="container my-2">
     <h1 class="text-center main-title">La banque</h1>
     <div class="transfer-form">
-        <form th:action="@{/manager/transferFromBank}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir transférer cette somme ?')">
+        <form th:action="@{/manager/transferFromBank}" method="post" onsubmit="return validateAndConfirmTransfer()">
             <label for="sumBank" class="form-label me-2">Somme à transférer</label>
             <div class="mb-3 row g-3 align-items-end">
-                <input type="number" name="sumBank" class="form-control form-transfer me-2" id="sumBank" placeholder="Entrez la somme à transférer" min="0" th:max="${FirstBank.totale_bank}" required/></td><br>
-                <textarea id="motif" name="motif" class="form-control form-transfer me-2" rows="1" cols="50" placeholder="Motif pour transférer" required></textarea></td>
+                <input type="number" name="sumBank" class="form-control form-transfer me-2" id="sumBank" placeholder="Entrez la somme à transférer" required />
+                <textarea id="motif" name="motif" class="form-control form-transfer me-2" rows="1" cols="50"
+                          placeholder="Motif pour transférer" required></textarea>
                 <div class="col-md-2">
                     <abbr title="Transférer">
                         <button type="submit" class="btn btn-custom w-100" style="width: 100%">
@@ -72,7 +73,7 @@
         </form>
     </div>
     <main>
-        <h2 th:text="'Total: '+ ${FirstBank.totale_bank}+' DH'" th:style="'color: #29978d; text-align: center'"></h2>
+        <h2 th:text="'Total: ' + (${FirstBank != null ? FirstBank.totale_bank : '0'}) + ' DH'" th:style="'color: #29978d; text-align: center'"></h2>
         <div class="btn-group-custom" role="group" aria-label="Navigation des sections">
             <div class="visitType-buttons">
                 <button class="btn-custom" onclick="showTable('FromBank')" id="from-bank-btn">De la banque</button>
@@ -91,14 +92,18 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="bk : ${FromBank}">
+                    <tr th:each="bk : ${FromBank}" th:unless="${#lists.isEmpty(FromBank)}">
                         <td th:text="${bk.date}">Date</td>
                         <td th:text="${bk.time}">Time</td>
                         <td th:text="${bk.somme}" th:style="'color:red'">Somme</td>
                         <td th:text="${bk.totale_bank}">Totale</td>
                         <td th:text="${bk.motif}">Motif</td>
                     </tr>
+                    <tr th:if="${#lists.isEmpty(FromBank)}">
+                        <td colspan="5">Aucune transaction trouvée.</td>
+                    </tr>
                     </tbody>
+
                 </table>
                 <nav aria-label="Page navigation example" th:style="'margin-top:0.8rem'">
                     <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
@@ -124,13 +129,17 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="bk : ${ToBank}">
+                        <tr th:each="bk : ${ToBank}" th:unless="${#lists.isEmpty(ToBank)}">
                             <td th:text="${bk.date}">Date</td>
                             <td th:text="${bk.time}">Time</td>
                             <td th:text="${'+'+bk.somme}" th:style="'color:green'">Somme</td>
                             <td th:text="${bk.totale_bank}">Totale</td>
                         </tr>
+                        <tr th:if="${#lists.isEmpty(ToBank)}">
+                            <td colspan="4">Aucune transaction trouvée.</td>
+                        </tr>
                         </tbody>
+
                     </table>
                 <nav aria-label="Page navigation example" th:style="'margin-top:0.8rem'">
                     <ul style="list-style-type: none; display: flex; justify-content: center; padding: 0;">
@@ -211,5 +220,31 @@
     }
 
 </script>
+
+<script>
+
+        function validateAndConfirmTransfer() {
+        var sumBank = parseFloat(document.getElementById("sumBank").value);
+        var totalBank = parseFloat([[${FirstBank?.totale_bank ?: 0}]]);
+
+        if (totalBank === 0) {
+            alert("Transaction non autorisée : Le total de la banque est égal à 0.");
+            return false;
+        }
+
+        if (sumBank <= 0) {
+            alert("Transaction non autorisée : Vous ne pouvez pas transférer une somme inférieure ou égale à 0.");
+            return false;
+        }
+
+        if (sumBank > totalBank) {
+            alert("Transaction non autorisée : Vous ne pouvez pas transférer une somme supérieure au total de la banque.");
+            return false;
+        }
+
+        return confirm("Êtes-vous sûr de vouloir transférer cette somme ?");
+    }
+</script>
+
 </body>
 </html>

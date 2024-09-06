@@ -1419,44 +1419,51 @@ public class ManagerController {
                    @RequestParam(defaultValue = "0") int toBankPage,
                    @RequestParam(defaultValue = "") String section,
                    Model model) {
+
+        // Fetch the most recent bank transaction
+        List<Bank> bankList = bankRepository.findTopByOrderByDateTimeDesc();
+        Bank firstBank = (bankList.isEmpty()) ? null : bankList.getFirst(); // Use get(0) for first element
+
         Page<Bank> pageFromBank;
         Page<Bank> pageToBank;
 
-        List<Bank> Bank = bankRepository.findTopByOrderByDateTimeDesc();
-        Bank FirstBank = Bank.isEmpty() ? null : Bank.getFirst();
+        // Default date fallback if not provided
         if (startDate == null || endDate == null) {
+            // No dates provided, fetch all records with pagination
             pageFromBank = bankRepository.findAllFromBank(PageRequest.of(fromBankPage, 50));
             pageToBank = bankRepository.findAllFromCaisseToBank(PageRequest.of(toBankPage, 50));
-
-            List<Bank> fromBank = pageFromBank.getContent();
-            List<Bank> toBank = pageToBank.getContent();
-
-            model.addAttribute("FromBank", fromBank);
-            model.addAttribute("ToBank", toBank);
         } else {
+            // Fetch records based on date filters
             pageFromBank = bankRepository.filterFromBankByDate(startDate, endDate, PageRequest.of(fromBankPage, 50));
             pageToBank = bankRepository.filterToBankByDate(startDate, endDate, PageRequest.of(toBankPage, 50));
 
-            List<Bank> fromBank = pageFromBank.getContent();
-            List<Bank> toBank = pageToBank.getContent();
-
-            model.addAttribute("FromBank", fromBank);
-            model.addAttribute("ToBank", toBank);
-
+            // Add start and end date to the model for Thymeleaf
             model.addAttribute("dateDebut", startDate);
             model.addAttribute("dateFin", endDate);
         }
+
+        // Fetch content from the paginated results
+        List<Bank> fromBank = pageFromBank.getContent();
+        List<Bank> toBank = pageToBank.getContent();
+
+        // Add the lists to the model
+        model.addAttribute("FromBank", fromBank);
+        model.addAttribute("ToBank", toBank);
+
+        // Pagination details for the view
         model.addAttribute("fromBankPages", new int[pageFromBank.getTotalPages()]);
         model.addAttribute("toBankPages", new int[pageToBank.getTotalPages()]);
-
         model.addAttribute("fromBankCurrentPage", fromBankPage);
         model.addAttribute("toBankCurrentPage", toBankPage);
 
+        // Section handling and firstBank details
         model.addAttribute("section", section);
+        model.addAttribute("FirstBank", firstBank);
 
-        model.addAttribute("FirstBank", FirstBank);
         return "Manager_espace/bank";
     }
+
+
 
     @PostMapping("/transfer")
     public String transferSumToBank(@RequestParam("sum") double sum) {
@@ -1505,6 +1512,7 @@ public class ManagerController {
         if (b == null) {
             return "redirect:/error?message=no_bank_found";
         }
+
         double total_bank = b.getTotale_bank();
         double total_bank_restant = total_bank - sum;
 
